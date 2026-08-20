@@ -485,6 +485,7 @@ export function FirstSceneStage() {
                 {[
                   { href: '/profile', label: 'what it knows about you' },
                   { href: '/held-back', label: 'what it did not send' },
+                  { href: '/double', label: 'four people' },
                   { href: '/after', label: 'after the date' },
                 ].map((link) => (
                   <Link

@@ -19,6 +19,7 @@ import { CLOUD_COUNT, possibilityCloud } from '../src/lib/possibility';
 import { HELD_BACK } from '../src/data/heldBack';
 import { heldBack } from '../src/lib/restraint';
 import { privateSignals } from '../src/lib/redaction';
+import { doubleDate, rankDoubles } from '../src/lib/doubleDate';
 import { QUESTIONS, STARTING_TRAITS } from '../src/data/livingProfile';
 import { ACTIONABLE, CONFIDENCE_CEILING, applyAnswer, unknowns } from '../src/lib/profile';
 import {
@@ -48,6 +49,7 @@ const HEADING9 = '\nClaim 9 — the possibility cloud is uncertainty made physic
 const HEADING10 = '\nClaim 10 — restraint names what it is waiting for:';
 const HEADING11 = '\nClaim 11 — the profile never claims to know a person:';
 const HEADING12 = '\nClaim 12 — the redaction has nothing behind it:';
+const HEADING13 = '\nClaim 13 — four people is not two pairs:';
 
 const HEADING7 = '\nClaim 7 — last week changes this week:';
 
@@ -618,6 +620,80 @@ console.log(HEADING12);
   const widths = new Set(everyWord.map((w) => Math.round(w)));
   console.log(`  ${widths.size} distinct word widths across ${everyWord.length} shapes`);
   expect('word widths vary like language', widths.size >= 5, true);
+}
+
+
+/* ---- claim 13: four people is not two pairs ----------------------------- */
+
+console.log(HEADING13);
+{
+  const [A, B] = PAIRS;
+
+  // Splitting is a property of the room. The moment it varies by who is in it,
+  // it has stopped being about the room and become a second opinion on people.
+  const viaA = rankDoubles(A, B).map((d) => [d.scene.id, d.split] as const);
+  const viaB = rankDoubles(B, A).map((d) => [d.scene.id, d.split] as const);
+  const sameSplit = viaA.every(([id, v]) => viaB.find(([id2]) => id2 === id)?.[1] === v);
+  expect('splitting depends only on the room', sameSplit, true);
+
+  for (const d of rankDoubles(A, B)) {
+    // A double date is never the sum of two dates. If it ever is, every
+    // cross-term has cancelled and the model is not modelling anything.
+    const additive = Math.abs(d.a.joint - d.a.solo) < 1e-9 && Math.abs(d.b.joint - d.b.solo) < 1e-9;
+    expect(`${d.scene.id}: four people is not two pairs`, additive, false);
+
+    // Cover has to be worth most to whoever needs it most, or the term is
+    // backwards and the whole argument inverts.
+    const needier = d.scene.metrics.firstFifteenMinutesForecast < 0.5;
+    if (needier) {
+      expect(`${d.scene.id}: cover favours the pair who cannot start`, d.a.cover > 0, true);
+    }
+  }
+
+  // The structural result, and the reason the page exists: a room that splits
+  // protects a strong pairing, and a room that cannot split punishes it.
+  const walk = doubleDate(A, B, 'postshow')!;
+  const cafe = doubleDate(A, B, 'coffee')!;
+  console.log(`  post show walk splits ${walk.split} -- dilution costs the stronger pair ${walk.a.dilution.toFixed(3)}`);
+  console.log(`  cafe splits ${cafe.split} -- dilution costs ${cafe.b.dilution.toFixed(3)}`);
+  expect('a room that splits dilutes less', walk.a.dilution < cafe.a.dilution, true);
+
+  // And the finding nobody wrote: the cafe, which is the best evening on the
+  // board for Priya and Theo, is where a double date does the most damage.
+  const worst = rankDoubles(A, B)
+    .flatMap((d) => [d.a, d.b])
+    .sort((x, y) => x.delta - y.delta)[0];
+  console.log(
+    `  worst outcome anywhere: ${worst.pair.id} loses ${Math.abs(worst.delta).toFixed(3)}`,
+  );
+  expect('the biggest loss lands on a strong evening', worst.solo > 0.5, true);
+
+  // Across every pairing and every room, nothing clears. Asserted so that if a
+  // future tuning change makes one work, this fails loudly and the page copy
+  // gets revisited rather than quietly becoming wrong.
+  const all = [...PAIRS, WEEK_TWO];
+  let sendable = 0;
+  let considered = 0;
+  for (let i = 0; i < all.length; i++) {
+    for (let j = i + 1; j < all.length; j++) {
+      for (const d of rankDoubles(all[i], all[j])) {
+        considered++;
+        if (d.worthIt) sendable++;
+      }
+    }
+  }
+  console.log(`  ${considered} double dates considered, ${sendable} worth sending`);
+  expect('no double date is worth sending', sendable, 0);
+
+  // The near miss is load-bearing copy on the page, so it is checked here.
+  const near = rankDoubles(PAIRS[0], WEEK_TWO)
+    .filter((d) => d.a.joint >= SEND_THRESHOLD && d.b.joint >= SEND_THRESHOLD)
+    .sort((x, y) => Math.min(y.a.delta, y.b.delta) - Math.min(x.a.delta, x.b.delta))[0];
+  const shortfall = Math.abs(Math.min(near.a.delta, near.b.delta));
+  console.log(`  closest: ${near.scene.label} misses by ${shortfall.toFixed(4)} with net ${near.net >= 0 ? '+' : ''}${near.net.toFixed(3)}`);
+  expect('the closest case has both evenings sendable', near.a.joint >= SEND_THRESHOLD && near.b.joint >= SEND_THRESHOLD, true);
+  expect('and a positive net', near.net > 0, true);
+  expect('and is refused anyway', near.worthIt, false);
 }
 
 

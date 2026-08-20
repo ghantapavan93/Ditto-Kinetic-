@@ -48,6 +48,7 @@ export type EventName =
   | 'feedback_submitted'
   | 'memory_update_viewed'
   | 'held_back_viewed'
+  | 'double_date_viewed'
   | 'held_back_expanded'
   | 'profile_viewed'
   | 'profile_answered'
