@@ -30,6 +30,7 @@ import {
   actionable as actionableTraits,
 } from '../src/lib/profile';
 import { ODDS_CEILING, guaranteeCost, oddsFor } from '../src/lib/odds';
+import { EXIT_WEIGHT, exitVerdict, readExits } from '../src/lib/exit';
 import {
   LENSES,
   challengeSet,
@@ -60,6 +61,7 @@ const HEADING12 = '\nClaim 12 — the redaction has nothing behind it:';
 const HEADING13 = '\nClaim 13 — four people is not two pairs:';
 const HEADING14 = '\nClaim 14 — free is not the same as alive:';
 const HEADING15 = '\nClaim 15 — nobody is guaranteed anything:';
+const HEADING16 = '\nClaim 16 — the twelfth dimension did not earn its place:';
 
 const HEADING7 = '\nClaim 7 — last week changes this week:';
 
@@ -822,6 +824,80 @@ console.log(HEADING15);
   expect('a guarantee is funded by a real pair', Boolean(cost.fundedBy), true);
   expect('whose evening did not clear the bar', cost.theirUtility < SEND_THRESHOLD, true);
   expect('and who appears on the held-back page', HELD_BACK.includes(cost.fundedBy!), true);
+}
+
+
+/* ---- claim 16: the twelfth dimension did not earn its place ------------- */
+
+console.log(HEADING16);
+{
+  // The scorer must be untouched. A proposed term that quietly edits the model
+  // it is being tested against proves nothing.
+  const weightKeys = Object.keys(weightsFor());
+  expect('the exit term is not in the weights', weightKeys.includes('exitQuality'), false);
+  expect('the scorer still has ten weighted terms', weightKeys.length, 10);
+
+  for (const pair of PAIRS) {
+    const v = exitVerdict(pair);
+
+    // Every room has to have an ending described, or the dimension is partial
+    // and the null result is an artefact of missing data.
+    expect(`${pair.id}: every room has an exit`, v.reads.length, pair.scenes.length);
+
+    // The base ranking inside the verdict has to match the real one exactly.
+    const real = rankScenes(pair).map((r) => r.scene.id);
+    expect(`${pair.id}: the before-ranking is the real ranking`, v.before.join(), real.join());
+
+    console.log(`  ${pair.id}: reorders ${v.reorders} -- ${v.after.join(' > ')}`);
+    expect(`${pair.id}: adding the ending changes no order`, v.reorders, false);
+  }
+
+  // The weight was generous, which is what makes the null result mean something.
+  const w = weightsFor();
+  console.log(`  exit weight ${EXIT_WEIGHT} vs schedule fit ${w.scheduleFit}, travel ${Math.abs(w.travelFriction)}`);
+  expect('the exit weight is heavier than schedule fit', EXIT_WEIGHT > w.scheduleFit, true);
+  expect('and heavier than travel friction', EXIT_WEIGHT > Math.abs(w.travelFriction), true);
+
+  // The one real divergence, which is the reason the page exists. contextFit is
+  // about two people in a room; the exit is about the room for anybody.
+  const mj = exitVerdict(PAIRS[0]);
+  const pt = exitVerdict(PAIRS[1]);
+  console.log(
+    `  widest blind spot -- maya-jonah ${mj.worstBlindSpot!.blindSpot.toFixed(2)} (${mj.worstBlindSpot!.scene.id}), priya-theo ${pt.worstBlindSpot!.blindSpot.toFixed(2)} (${pt.worstBlindSpot!.scene.id})`,
+  );
+  expect('for maya and jonah the model already knows', mj.worstBlindSpot!.blindSpot < 0.3, true);
+  expect('for priya and theo it does not', pt.worstBlindSpot!.blindSpot > 0.5, true);
+  expect('and the blind spot is the cafe', pt.worstBlindSpot!.scene.id, 'coffee');
+
+  // And the cafe is still correctly their best room. The gap is not an error.
+  expect('which is still the room we would send them to', pt.before[0], 'coffee');
+
+  // Hardest room to leave is the same for everybody, because it is the room.
+  expect('the hardest room to leave is the same for both pairs', mj.hardestToLeave!.scene.id, pt.hardestToLeave!.scene.id);
+
+  // Where a room supplies no ending we supply one, and the closing time has to
+  // come from the scene. The first version hardcoded "at 4:40", which was right
+  // for exactly one of the two cafes on this site.
+  for (const pair of PAIRS) {
+    for (const r of readExits(pair)) {
+      if (!r.needsAnEnding) {
+        expect(`${pair.id}/${r.scene.id}: a room that ends itself is not given an ending`, r.supplied, null);
+        continue;
+      }
+      expect(`${pair.id}/${r.scene.id}: gets an ending`, Boolean(r.supplied), true);
+      // It must name a clock time, and never the start time.
+      const times: string[] = r.supplied!.match(/\d{1,2}:\d{2}\s?(AM|PM)/g) ?? [];
+      expect(`${pair.id}/${r.scene.id}: names a closing time`, times.length > 0, true);
+      expect(
+        `${pair.id}/${r.scene.id}: and it is not when it starts`,
+        times.includes(r.scene.time),
+        false,
+      );
+    }
+  }
+  const cafes = PAIRS.map((p) => readExits(p).find((r) => r.scene.id === 'coffee')!);
+  console.log(`  cafe endings: ${cafes.map((c) => c.scene.time + ' -> ' + (c.supplied!.match(/\d{1,2}:\d{2}\s?(AM|PM)/) ?? [''])[0]).join(', ')}`);
+  expect('the two cafes close at different times', cafes[0].supplied === cafes[1].supplied, false);
 }
 
 

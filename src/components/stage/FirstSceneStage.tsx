@@ -488,6 +488,7 @@ export function FirstSceneStage() {
                   { href: '/held-back', label: 'what it did not send' },
                   { href: '/double', label: 'four people' },
                   { href: '/odds', label: 'your odds' },
+                  { href: '/ending', label: 'how it ends' },
                   { href: '/after', label: 'after the date' },
                 ].map((link) => (
                   <Link

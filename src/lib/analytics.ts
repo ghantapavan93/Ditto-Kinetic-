@@ -50,6 +50,8 @@ export type EventName =
   | 'held_back_viewed'
   | 'double_date_viewed'
   | 'app_shell_viewed'
+  | 'ending_viewed'
+  | 'ending_message_shown'
   | 'odds_viewed'
   | 'odds_pulled'
   | 'odds_guarantee_attempted'
