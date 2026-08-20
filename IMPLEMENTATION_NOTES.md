@@ -343,6 +343,32 @@ is a separate `intimacy` term threaded through `cardTarget`, **not** a change to
 magnetism — so no amount of scrubbing can move the ranking, and the six motion
 assertions still hold because `intimacy` defaults to 0.
 
+## The pair swap, as choreography
+
+This is the strongest proof the piece has — same six rooms, same engine, same
+weights, a different answer — and as a button that instantly replaced two images
+it read as a utility toggle. Nobody watches a toggle closely enough to notice
+what it proved.
+
+It now runs as a sequence. The current photographs recede and go dark, a strip
+of empty frames passes across the stage, the pair data changes at the midpoint
+while nothing is legible, and the new photographs develop forward. Then one
+line, once: *same rooms. different people. different answer.* — and it leaves on
+its own. Over-explaining would turn evidence back into a claim.
+
+Two details worth defending:
+
+- **The destination is derived, not hardcoded.** The swap asks `sendDecision`
+  which opening wins for the incoming pair and lands the dial there. Baking in
+  "coffee" would have been three fewer lines and would also have been a lie
+  about the exact thing this sequence exists to demonstrate. Verified live: it
+  lands on `COFFEE, 3:40 PM` — Priya × Theo's own coffee time, not Maya ×
+  Jonah's 6:00.
+- **The develop is the photograph, not a fade.** The material colour multiplies
+  the texture, so driving it to black and back means the image is present the
+  whole time and simply not there yet. A fade would be an opacity trick; this is
+  closer to what actually happens to a Polaroid.
+
 ## Hear Me Out is a note now, not a dialog
 
 It was a centred Radix modal, which was wrong twice over. It dimmed and blocked
@@ -361,6 +387,21 @@ The addition that matters is `change the scene and see`. Ditto stops arguing and
 demonstrates: verified moving COFFEE → POST SHOW WALK straight from the note.
 Radix Dialog is retained for the decision view, which genuinely *is* a modal
 deep-dive.
+
+## Three collisions that only a browser could find
+
+Every one of these passed typecheck, lint, build and all six claim assertions.
+
+1. The journey rail ran down the left edge, straight through the scene copy —
+   which also sits left.
+2. Moved to mid-height centre, it printed across the top of the photographs.
+   It is now pinned to the strip above the header, the one band on this stage
+   nothing else occupies.
+3. The swap line landed on the photographs, and the synthetic-data disclosure
+   ran into the resilience controls along the bottom edge.
+
+There is no static check that catches "two absolutely positioned things want the
+same pixels". The only instrument for it is a screenshot.
 
 ## On screenshots of an animated stage
 

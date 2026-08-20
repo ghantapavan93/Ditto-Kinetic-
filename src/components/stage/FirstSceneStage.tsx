@@ -21,6 +21,7 @@ import { TimeDial } from './TimeDial';
 import { JourneyRail } from './JourneyRail';
 import { PairHeader } from './PairHeader';
 import { FirstFifteen } from './FirstFifteen';
+import { PairSwap } from './PairSwap';
 import { temperatureFor } from '@/lib/temperature';
 import { useReducedMotion } from '@/components/shared/useReducedMotion';
 import { play } from '@/components/shared/sound';
@@ -36,6 +37,7 @@ import {
   usePrototype,
   useIntimacy,
   useSendDecision,
+  useSwap,
   useTimeShift,
 } from '@/store/prototypeStore';
 
@@ -62,6 +64,8 @@ export function FirstSceneStage() {
   const decision = useSendDecision();
   const timeShift = useTimeShift();
   const intimacy = useIntimacy();
+  const swap = useSwap();
+  const swapPhase = usePrototype((s) => s.swapPhase);
 
   const begin = usePrototype((s) => s.begin);
   const goToScene = usePrototype((s) => s.goToScene);
@@ -193,6 +197,7 @@ export function FirstSceneStage() {
           reducedMotion={reduced}
           timeShift={timeShift}
           intimacy={intimacy}
+          swap={swap}
           onFragment={setReading}
         />
       </div>
@@ -221,17 +226,19 @@ export function FirstSceneStage() {
                 </p>
                 <button
                   onClick={swapPair}
-                  className="border border-paper/15 px-2.5 py-1.5 font-mono text-micro uppercase text-paper/60 transition-colors hover:border-paper/45 hover:text-paper"
+                  disabled={swapPhase !== 'idle'}
+                  data-cursor="same rooms, different people"
+                  className="border border-paper/15 px-2.5 py-1.5 font-editorial text-[0.68rem] lowercase tracking-wide text-paper/60 transition-colors hover:border-paper/45 hover:text-paper disabled:opacity-30"
                   title="Run the same six rooms for a different pair"
                 >
-                  other pair
+                  try another pair
                 </button>
                 <button
                   onClick={toggleSound}
                   aria-pressed={soundOn}
                   aria-label={soundOn ? 'Mute sound' : 'Enable sound'}
                   data-cursor={soundOn ? 'go quiet' : 'let it click'}
-                  className="flex items-center gap-1.5 border border-paper/15 px-2.5 py-1.5 font-mono text-micro uppercase text-paper/60 transition-colors hover:border-paper/45 hover:text-paper"
+                  className="flex items-center gap-1.5 border border-paper/15 px-2.5 py-1.5 font-editorial text-[0.68rem] lowercase tracking-wide text-paper/60 transition-colors hover:border-paper/45 hover:text-paper"
                 >
                   {soundOn ? (
                     <Volume2 size={12} strokeWidth={2} aria-hidden />
@@ -460,13 +467,14 @@ export function FirstSceneStage() {
         )}
       </AnimatePresence>
 
+      <PairSwap />
       {showStageChrome && <JourneyRail phase={phase} />}
       <NarrativeCursor />
       {showStageChrome && <TooMuch />}
 
       {/* Disclosure persists on the stage, quietly. */}
       {showStageChrome && (
-        <PrototypeDisclosure className="pointer-events-none absolute bottom-2 left-1/2 hidden -translate-x-1/2 text-center lg:block" />
+        <PrototypeDisclosure className="pointer-events-none absolute bottom-9 right-gutter hidden text-right lg:block" />
       )}
     </div>
   );

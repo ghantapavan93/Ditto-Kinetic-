@@ -55,6 +55,14 @@ type State = {
   timeShift: -1 | 0 | 1;
   /** How far into the opening fifteen minutes the user has scrubbed. */
   minute: 0 | 5 | 10 | 15;
+  /**
+   * The pair swap choreography. `out` pulls the current photographs back into
+   * the sheet, `in` develops the new ones forward. The data changes at the
+   * midpoint, so the swap is never visible as a pop.
+   */
+  swapPhase: 'idle' | 'out' | 'in';
+  /** True while the closing line is on screen. */
+  swapLine: boolean;
 };
 
 type Actions = {
@@ -101,6 +109,8 @@ const initial: State = {
   tldrOpen: false,
   timeShift: 0,
   minute: 0,
+  swapPhase: 'idle',
+  swapLine: false,
 };
 
 /** Move the dial onto whichever scene the engine currently ranks first. */
@@ -245,20 +255,48 @@ export const usePrototype = create<State & Actions>((set, get) => ({
     track('conditions_reset');
   },
 
+  /**
+   * The pair swap, as a sequence rather than a state change.
+   *
+   * This is the strongest proof the piece has — same rooms, same engine, same
+   * weights, different answer — and as a button that instantly replaced two
+   * images it read as a utility toggle. Run as choreography instead: the
+   * current photographs recede and go dark, the data changes while nothing is
+   * legible, the new ones develop forward, and the dial lands on whichever
+   * opening now wins.
+   *
+   * Note it does *not* hardcode coffee. It asks the engine which scene wins for
+   * the incoming pair — which is the entire point, and would be a lie if the
+   * destination were baked in.
+   */
   swapPair: () => {
+    if (get().swapPhase !== 'idle') return;
     const current = get().pairId;
     const next = PAIRS.find((p) => p.id !== current) ?? PAIRS[0];
-    set({
-      pairId: next.id,
-      phase: 'exploring',
-      sceneId: 'coffee',
-      dialPosition: 0,
-      conditions: NO_CONDITIONS,
-      reasoningOpen: false,
-      feedback: null,
-      feedbackText: '',
-    });
-    track('pair_swapped', { pair: next.id });
+
+    set({ swapPhase: 'out', reasoningOpen: false, decisionOpen: false, hearMeOutOpen: false });
+
+    // Midpoint: nothing is legible on stage, so the data can change here.
+    setTimeout(() => {
+      const decision = sendDecision(next, NO_CONDITIONS);
+      const landing = decision.send ? decision.scene.id : next.scenes[0].id;
+      set({
+        pairId: next.id,
+        phase: 'exploring',
+        sceneId: landing,
+        dialPosition: SCENE_ORDER.indexOf(landing as (typeof SCENE_ORDER)[number]),
+        conditions: NO_CONDITIONS,
+        minute: 0,
+        feedback: null,
+        feedbackText: '',
+        swapPhase: 'in',
+      });
+      track('pair_swapped', { pair: next.id, landedOn: landing });
+    }, 620);
+
+    // The line arrives after the new pair has settled, and leaves on its own.
+    setTimeout(() => set({ swapPhase: 'idle', swapLine: true }), 1750);
+    setTimeout(() => set({ swapLine: false }), 6200);
   },
 
   startFeedback: () => {
@@ -339,6 +377,12 @@ export const useTimeShift = () => usePrototype((s) => s.timeShift);
  * the ranking maths is never touched by a scrub.
  */
 export const useIntimacy = () => usePrototype((s) => s.minute / 15);
+
+/**
+ * 0 on stage, 1 fully receded into the sheet. One number for the whole swap, so
+ * the cards, their photographs and the contact sheet can never disagree.
+ */
+export const useSwap = () => usePrototype((s) => (s.swapPhase === 'out' ? 1 : 0));
 
 export const useCurrentScene = () => {
   const pair = useCurrentPair();

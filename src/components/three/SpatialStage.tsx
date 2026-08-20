@@ -33,6 +33,8 @@ type StageProps = {
   timeShift?: -1 | 0 | 1;
   /** 0..1 across the first fifteen minutes. */
   intimacy?: number;
+  /** 0 on stage, 1 receded during a pair swap. */
+  swap?: number;
 };
 
 /**
@@ -67,7 +69,7 @@ function CameraRig({ magnetism, exiting, reducedMotion }: { magnetism: number; e
   return null;
 }
 
-function StageContents({ pair, scene, magnetism, locked, exiting, reducedMotion, timeShift = 0, intimacy = 0, onFragment }: StageProps & { onFragment: (f: Fragment | null) => void }) {
+function StageContents({ pair, scene, magnetism, locked, exiting, reducedMotion, timeShift = 0, intimacy = 0, swap = 0, onFragment }: StageProps & { onFragment: (f: Fragment | null) => void }) {
   // Hovering a `spark` fragment warms the paper. It is the one purely
   // affectionate thing on the stage and it is deliberately tiny.
   const [blush, setBlush] = useState(false);
@@ -100,6 +102,7 @@ function StageContents({ pair, scene, magnetism, locked, exiting, reducedMotion,
         reducedMotion={reducedMotion}
         blush={blush}
         intimacy={intimacy}
+        swap={swap}
       />
       <Polaroid3D
         person={pair.personB}
@@ -110,6 +113,7 @@ function StageContents({ pair, scene, magnetism, locked, exiting, reducedMotion,
         reducedMotion={reducedMotion}
         blush={blush}
         intimacy={intimacy}
+        swap={swap}
       />
 
       <ReasonField

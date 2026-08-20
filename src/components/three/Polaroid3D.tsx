@@ -80,6 +80,8 @@ type Props = {
   blush?: boolean;
   /** 0..1 across the first fifteen minutes. */
   intimacy?: number;
+  /** 0 on stage, 1 receded into the contact sheet during a pair swap. */
+  swap?: number;
 };
 
 /**
@@ -90,11 +92,13 @@ type Props = {
  * strong one pulls them in and squares them up. Nothing about this is decorative
  * — the geometry is the argument.
  */
-export function Polaroid3D({ person, side, magnetism, locked, exiting, reducedMotion, blush = false, intimacy = 0 }: Props) {
+export function Polaroid3D({ person, side, magnetism, locked, exiting, reducedMotion, blush = false, intimacy = 0, swap = 0 }: Props) {
   const group = useRef<THREE.Group>(null);
   const [hovered, setHovered] = useState(false);
   const layout = useStageLayout();
   const material = useMemo(() => makeCardMaterial(), []);
+  /** Damped separately and slowly, so the develop reads as chemistry not a cut. */
+  const swapNow = useRef(0);
 
   const texture = useMemo(
     () => portraitTexture(person.portraitSeed, person.portraitTint),
@@ -116,21 +120,32 @@ export function Polaroid3D({ person, side, magnetism, locked, exiting, reducedMo
 
     const lambda = locked ? 9 : 4.2;
 
+    // The swap: back into the sheet, then forward again as the new pair
+    // develops. Slow lambda on purpose — a Polaroid does not appear, it arrives.
+    swapNow.current = damp(swapNow.current, swap, 3.4, dt);
+    const receded = swapNow.current;
+
     g.position.x = damp(g.position.x, target.x, lambda, dt);
     g.position.y = damp(g.position.y, target.y + exitY * layout.scale, lambda, dt);
-    g.position.z = damp(g.position.z, target.z + (hovered ? 0.3 : 0), 7, dt);
+    g.position.z = damp(g.position.z, target.z + (hovered ? 0.3 : 0) - receded * 3.4, 7, dt);
 
     g.rotation.z = damp(g.rotation.z, target.rotZ, lambda, dt);
     g.rotation.y = damp(g.rotation.y, target.rotY + (hovered ? side * 0.06 : 0), lambda, dt);
     g.rotation.x = damp(g.rotation.x, hovered ? -0.05 : 0, 6, dt);
 
-    const s = damp(g.scale.x, exitScale * (hovered ? 1.035 : 1), 7, dt);
+    const s = damp(g.scale.x, exitScale * (hovered ? 1.035 : 1) * (1 - receded * 0.36), 7, dt);
     g.scale.setScalar(s);
 
     const photo = (g.getObjectByName('photo') as THREE.Mesh | undefined)?.material as
       | THREE.MeshBasicMaterial
       | undefined;
-    if (photo) photo.opacity = 1 - exiting;
+    if (photo) {
+      photo.opacity = 1 - exiting;
+      // Colour multiplies the map, so driving it to black and back *is* the
+      // develop: the image is present the whole time and simply not there yet.
+      const light = 1 - receded;
+      photo.color.setRGB(light, light, light);
+    }
 
     // The blush. Barely there, and gone the moment you look away.
     material.color.lerp(blush ? PAPER_WARM : PAPER_COLD, 1 - Math.exp(-4.5 * dt));

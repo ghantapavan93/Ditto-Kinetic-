@@ -35,15 +35,16 @@ export function JourneyRail({ phase }: { phase: Phase }) {
   return (
     <>
       {/*
-        A horizontal rail, centred under the header.
+        A horizontal rail, pinned to the very top.
 
-        The first version ran down the left edge and printed straight through
-        the scene copy, which also sits left — a collision that only became
-        visible in a real browser. Across the top it has a lane of its own.
+        Two collisions to avoid, both found only by looking. Down the left edge
+        it printed straight through the scene copy; centred at mid-height it
+        printed across the top of the photographs. The strip above the header is
+        the one band on this stage nothing else occupies.
       */}
       <nav
         aria-label="Progress through the introduction"
-        className="pointer-events-none absolute left-1/2 top-[calc(50%-11rem)] z-artifacts hidden -translate-x-1/2 items-center gap-0 lg:flex"
+        className="pointer-events-none absolute left-1/2 top-[clamp(0.9rem,2.6vh,1.6rem)] z-artifacts hidden -translate-x-1/2 items-center gap-0 lg:flex"
       >
         {STOPS.map((stop, i) => {
           const done = i < activeIndex;
@@ -89,7 +90,7 @@ export function JourneyRail({ phase }: { phase: Phase }) {
       </nav>
 
       {/* narrow: the same fact, one line, tucked under the top bar */}
-      <p className="pointer-events-none absolute left-1/2 top-[calc(50%-9rem)] z-artifacts -translate-x-1/2 font-mono text-micro uppercase tabular-nums text-paper/25 lg:hidden">
+      <p className="pointer-events-none absolute left-1/2 top-[clamp(0.9rem,2.6vh,1.6rem)] z-artifacts -translate-x-1/2 font-mono text-micro uppercase tabular-nums text-paper/25 lg:hidden">
         {String(activeIndex + 1).padStart(2, '0')} / {String(STOPS.length).padStart(2, '0')}
         <span className="ml-2 text-tungsten/50">{STOPS[activeIndex]?.label}</span>
       </p>
