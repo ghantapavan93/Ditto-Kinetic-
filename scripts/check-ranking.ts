@@ -20,6 +20,7 @@ import { HELD_BACK } from '../src/data/heldBack';
 import { heldBack } from '../src/lib/restraint';
 import { privateSignals } from '../src/lib/redaction';
 import { doubleDate, rankDoubles } from '../src/lib/doubleDate';
+import { ENOUGH_MINUTES, label, readSchedule } from '../src/lib/schedule';
 import { QUESTIONS, STARTING_TRAITS } from '../src/data/livingProfile';
 import { ACTIONABLE, CONFIDENCE_CEILING, applyAnswer, unknowns } from '../src/lib/profile';
 import {
@@ -50,6 +51,7 @@ const HEADING10 = '\nClaim 10 — restraint names what it is waiting for:';
 const HEADING11 = '\nClaim 11 — the profile never claims to know a person:';
 const HEADING12 = '\nClaim 12 — the redaction has nothing behind it:';
 const HEADING13 = '\nClaim 13 — four people is not two pairs:';
+const HEADING14 = '\nClaim 14 — free is not the same as alive:';
 
 const HEADING7 = '\nClaim 7 — last week changes this week:';
 
@@ -694,6 +696,67 @@ console.log(HEADING13);
   expect('the closest case has both evenings sendable', near.a.joint >= SEND_THRESHOLD && near.b.joint >= SEND_THRESHOLD, true);
   expect('and a positive net', near.net > 0, true);
   expect('and is refused anyway', near.worthIt, false);
+}
+
+
+/* ---- claim 14: free is not the same as alive ---------------------------- */
+
+console.log(HEADING14);
+{
+  const [MJ, PT] = PAIRS;
+
+  // Order must not matter. A scheduler that answers differently depending which
+  // person it was handed first is not reading a shared calendar.
+  const fwd = readSchedule(MJ.personA, MJ.personB);
+  const rev = readSchedule(MJ.personB, MJ.personA);
+  expect(
+    'the same two people get the same windows either way round',
+    JSON.stringify(fwd.windows) === JSON.stringify(rev.windows),
+    true,
+  );
+
+  // Joint energy is the minimum, never the average — one person's enthusiasm is
+  // not allowed to cover for the other being asleep.
+  for (const w of fwd.windows) {
+    const a = MJ.personA.availability.find((s) => s.day === w.day)!;
+    const b = MJ.personB.availability.find((s) => s.day === w.day)!;
+    expect(
+      `${w.dayName}: joint energy is the less present person`,
+      Math.abs(w.jointEnergy - Math.min(a.energy, b.energy)) < 1e-9,
+      true,
+    );
+    expect(
+      `${w.dayName}: and never the average`,
+      w.jointEnergy <= (a.energy + b.energy) / 2 + 1e-9,
+      true,
+    );
+  }
+
+  // Length stops counting once there is room for a first meeting. Without this
+  // the longest window always wins, which is the bug the surface exists to show.
+  const pt = readSchedule(PT.personA, PT.personB);
+  const long = pt.windows.find((w) => w.minutes > ENOUGH_MINUTES * 3)!;
+  expect('a very long window is not scored as better for being long', long.adequacy, 1);
+
+  // The finding: for Priya and Theo the longest window is the worst one.
+  console.log(
+    `  priya-theo longest: ${label(pt.longest!)} (${Math.round(pt.longest!.minutes / 60)}h, score ${pt.longest!.score.toFixed(3)})`,
+  );
+  console.log(`  priya-theo best   : ${label(pt.best!)} (score ${pt.best!.score.toFixed(3)})`);
+  expect('solving for overlap picks a different hour', pt.disagree, true);
+  expect('and the longest window scores worst of all', pt.longest!.score, Math.min(...pt.windows.map((w) => w.score)));
+
+  // What the drop day costs, per pair. It is a product constraint, and the
+  // three pairs show all three outcomes rather than one convenient one.
+  const mjCost = fwd.dropDayCost!;
+  const ptCost = pt.dropDayCost!;
+  const ns = readSchedule(WEEK_TWO.personA, WEEK_TWO.personB);
+  console.log(
+    `  wednesday costs -- maya-jonah ${mjCost.toFixed(3)}, priya-theo ${ptCost.toFixed(3)}, noor-sam ${ns.dropDayCost!.toFixed(3)}`,
+  );
+  expect('holding maya and jonah to wednesday costs them real energy', mjCost > 0.1, true);
+  expect('for noor and sam wednesday is genuinely the best hour', ns.dropDayCost, 0);
+  expect('so the drop day is not uniformly wrong', mjCost > 0 && ns.dropDayCost === 0, true);
 }
 
 

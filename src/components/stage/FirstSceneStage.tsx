@@ -483,6 +483,7 @@ export function FirstSceneStage() {
               >
                 <span className="font-mono text-micro uppercase text-paper/25">also:</span>
                 {[
+                  { href: '/app', label: 'the whole thing as an app' },
                   { href: '/profile', label: 'what it knows about you' },
                   { href: '/held-back', label: 'what it did not send' },
                   { href: '/double', label: 'four people' },

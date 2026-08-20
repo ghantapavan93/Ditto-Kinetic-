@@ -49,6 +49,7 @@ export type EventName =
   | 'memory_update_viewed'
   | 'held_back_viewed'
   | 'double_date_viewed'
+  | 'app_shell_viewed'
   | 'held_back_expanded'
   | 'profile_viewed'
   | 'profile_answered'
