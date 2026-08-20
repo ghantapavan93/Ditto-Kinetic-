@@ -31,6 +31,7 @@ import {
 } from '../src/lib/profile';
 import { ODDS_CEILING, guaranteeCost, oddsFor } from '../src/lib/odds';
 import { EXIT_WEIGHT, exitVerdict, readExits } from '../src/lib/exit';
+import { compile, scaffolding } from '../src/lib/compiler';
 import {
   LENSES,
   challengeSet,
@@ -62,6 +63,7 @@ const HEADING13 = '\nClaim 13 — four people is not two pairs:';
 const HEADING14 = '\nClaim 14 — free is not the same as alive:';
 const HEADING15 = '\nClaim 15 — nobody is guaranteed anything:';
 const HEADING16 = '\nClaim 16 — the twelfth dimension did not earn its place:';
+const HEADING17 = '\nClaim 17 — the compiler reads its input, and never lowers the bar:';
 
 const HEADING7 = '\nClaim 7 — last week changes this week:';
 
@@ -898,6 +900,83 @@ console.log(HEADING16);
   const cafes = PAIRS.map((p) => readExits(p).find((r) => r.scene.id === 'coffee')!);
   console.log(`  cafe endings: ${cafes.map((c) => c.scene.time + ' -> ' + (c.supplied!.match(/\d{1,2}:\d{2}\s?(AM|PM)/) ?? [''])[0]).join(', ')}`);
   expect('the two cafes close at different times', cafes[0].supplied === cafes[1].supplied, false);
+}
+
+
+/* ---- claim 17: the compiler reads its input, and never lowers the bar --- */
+
+console.log(HEADING17);
+{
+  const INPUTS = [
+    'I just moved here and do not really know anyone.',
+    'I need a cracked designer who thinks like me.',
+    'I am tired but I do not want to waste Friday.',
+    'I want to go on an actual date.',
+    'surprise me',
+  ];
+
+  const compiled = INPUTS.map((s) => compile(s));
+
+  // The rule that keeps a preference from becoming a licence: intent reorders
+  // the rooms that already clear the bar. It never reaches below it.
+  for (const c of compiled) {
+    const utility = rankScenes(c.pair).find((r) => r.scene.id === c.scene.id)!.utility;
+    expect(
+      `"${c.sentence.slice(0, 24)}...": never sends below the bar`,
+      c.withheld || utility >= SEND_THRESHOLD,
+      true,
+    );
+  }
+
+  // A compiler that reads its input and then ignores it is a slideshow. Two
+  // materially different sentences must not compile to the same evening.
+  const outcomes = compiled.map((c) => `${c.pair.id}/${c.scene.id}`);
+  console.log(`  ${new Set(outcomes).size} distinct evenings from ${INPUTS.length} sentences`);
+  for (const c of compiled) {
+    console.log(`    ${c.reading.kind.padEnd(13)} -> ${c.scene.label}`);
+  }
+  expect('different sentences compile differently', new Set(outcomes).size > 2, true);
+
+  // The reader is deterministic. Same sentence, same evening, always.
+  const twice = compile(INPUTS[0]);
+  expect(
+    'the same sentence compiles the same way',
+    JSON.stringify(twice.stages) === JSON.stringify(compiled[0].stages),
+    true,
+  );
+
+  // Every stage says which kind of claim it is, and the derived ones have to
+  // outnumber the read ones or this is a questionnaire wearing a costume.
+  const derived = compiled[0].stages.filter((s) => s.derived).length;
+  console.log(`  ${derived} of ${compiled[0].stages.length} stages are computed, not read`);
+  expect('most stages are computed rather than parsed', derived > compiled[0].stages.length / 2, true);
+
+  // The thesis, arriving from the machine: the cafe is what you get when you
+  // ask for a date, and only then. Every other sentence earns a room that
+  // carries more of the conversation.
+  const romantic = compiled.find((c) => c.reading.kind === 'romantic')!;
+  const others = compiled.filter((c) => c.reading.kind !== 'romantic' && !c.reading.wantsSurprise);
+  console.log(`  romantic -> ${romantic.scene.label} at ${Math.round(scaffolding(romantic.scene) * 100)}% carried`);
+  expect('asking for a date is what produces the cafe', romantic.scene.id, 'coffee');
+  expect(
+    'and every other ask earns a room that carries more',
+    others.every((c) => scaffolding(c.scene) > scaffolding(romantic.scene)),
+    true,
+  );
+
+  // Tiredness must be heard: it routes to the room doing the most work.
+  const tired = compiled.find((c) => c.reading.readiness < 0.5)!;
+  expect('being tired routes to a room that carries it', scaffolding(tired.scene) > 0.7, true);
+
+  // What the surface says about the choice has to be true of the choice. This
+  // caught a real one: `top` and `chosen` come from separate rankScenes calls,
+  // so comparing them by identity told the reader that the top room was not
+  // the top room.
+  for (const c of compiled) {
+    const isTop = rankScenes(c.pair)[0].scene.id === c.scene.id;
+    const saysTop = c.stages.find((s) => s.key === 'where')!.detail.includes('highest scoring');
+    expect(`"${c.sentence.slice(0, 20)}...": says top only when it is top`, saysTop, isTop);
+  }
 }
 
 
