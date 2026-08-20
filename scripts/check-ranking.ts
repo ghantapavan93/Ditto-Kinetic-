@@ -15,6 +15,8 @@
 
 import { PAIRS } from '../src/data/pairs';
 import { CARD_H, CARD_W, computeStageLayout } from '../src/components/three/useStageLayout';
+import { cardTarget } from '../src/components/three/cardTransform';
+import { damp } from '../src/lib/motion';
 import {
   NO_CONDITIONS,
   SEND_THRESHOLD,
@@ -23,6 +25,8 @@ import {
   sendDecision,
   type Conditions,
 } from '../src/lib/rankScenes';
+
+const HEADING6 = '\nClaim 6 — the motion resolves from a cold start:';
 
 let failures = 0;
 
@@ -206,6 +210,78 @@ for (const pair of PAIRS) {
     pair.fragments.every((f) => f.surfacesAt >= 0 && f.surfacesAt <= 0.9),
     true,
   );
+}
+
+/* ---- claim 6: the motion actually resolves -------------------------------- */
+
+console.log(HEADING6);
+{
+  const layout = computeStageLayout(8.89, 4.22);
+  const DT = 1 / 60;
+
+  /** Step both cards through a damped loop and report where they end up. */
+  const settle = (magnetism: number, seconds: number) => {
+    let left = { x: 0, y: 0, rotZ: 0 };
+    let right = { x: 0, y: 0, rotZ: 0 };
+    const trail: number[] = [];
+    for (let i = 0; i < seconds / DT; i++) {
+      const t = i * DT;
+      const a = cardTarget(-1, magnetism, layout, t);
+      const b = cardTarget(1, magnetism, layout, t);
+      left = {
+        x: damp(left.x, a.x, 4.2, DT),
+        y: damp(left.y, a.y, 4.2, DT),
+        rotZ: damp(left.rotZ, a.rotZ, 4.2, DT),
+      };
+      right = {
+        x: damp(right.x, b.x, 4.2, DT),
+        y: damp(right.y, b.y, 4.2, DT),
+        rotZ: damp(right.rotZ, b.rotZ, 4.2, DT),
+      };
+      if (t > seconds - 1.5) trail.push(Math.abs(right.x - left.x));
+    }
+    return {
+      separation: Math.abs(right.x - left.x),
+      tilt: Math.abs(left.rotZ) + Math.abs(right.rotZ),
+      height: Math.abs(left.y - right.y),
+      // How much the separation is still wandering once it should have settled.
+      wander: Math.max(...trail) - Math.min(...trail),
+    };
+  };
+
+  const worst = settle(0.06, 4);
+  const best = settle(1, 4);
+
+  console.log(
+    `  wrong context  sep ${worst.separation.toFixed(2)}  tilt ${worst.tilt.toFixed(2)}  ` +
+      `height offset ${worst.height.toFixed(2)}  still wandering ${worst.wander.toFixed(4)}`,
+  );
+  console.log(
+    `  right context  sep ${best.separation.toFixed(2)}  tilt ${best.tilt.toFixed(2)}  ` +
+      `height offset ${best.height.toFixed(2)}  still wandering ${best.wander.toFixed(4)}`,
+  );
+
+  // Both arrangements have to actually arrive, from a cold start at the origin.
+  // The tolerance on the wrong context is looser on purpose: its rest position
+  // is itself oscillating (that is the unrest), so the damped follower trails a
+  // moving target and never sits exactly on it.
+  expect('wrong context reaches its rest separation', Math.abs(worst.separation - layout.spreadMax) < 0.3, true);
+  expect('right context reaches its rest separation', Math.abs(best.separation - layout.spreadMin) < 0.06, true);
+
+  // And the four channels have to resolve together, not just the one.
+  expect('wrong context ends visibly askew', worst.tilt > 0.4, true);
+  expect('right context ends square', best.tilt < 0.02, true);
+  expect('wrong context ends unlevel', worst.height > 0.4, true);
+  expect('right context ends level', best.height < 0.02, true);
+
+  // The unrest is the point: a scene the system would not send must never look
+  // like it has settled. The winning one is not perfectly frozen -- the cards
+  // keep a small idle breath, deliberately, because photographs held by a
+  // system that has stopped moving entirely look dead. What matters is the
+  // ratio: settled has to be visibly calmer than unsettled.
+  expect('wrong context never stops moving', worst.wander > 0.01, true);
+  expect('right context is at least 4x calmer', worst.wander / best.wander > 4, true);
+  expect('right context is nearly still', best.wander < 0.008, true);
 }
 
 console.log(failures ? `\n${failures} assertion(s) FAILED` : '\nall assertions passed');

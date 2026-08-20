@@ -218,18 +218,40 @@ geometry:
   context must open a gap wider than a third of a card, a right one must come
   close *without* overlapping, and the arrangement must fit the screen.
 
-The general lesson: when motion carries the meaning, "does it render" and "does
-it move enough to be read" are correctness properties, and they need
-instrumentation rather than screenshots.
+And when the browser tab turned out to be permanently backgrounded — suspending
+`requestAnimationFrame`, so every screenshot showed the cards frozen at their
+origin — the resting transform was extracted into a pure function
+(`cardTransform.ts`) and the damped loop was simulated in Node instead. Stepping
+it from a cold start for four seconds gives numbers that answer the question
+directly:
+
+| | separation | tilt | height offset | still wandering |
+|---|---|---|---|---|
+| wrong context | 3.14 | 0.52 | 0.48 | 0.0237 |
+| right context | 1.54 | 0.00 | 0.01 | 0.0044 |
+
+All four channels resolve together, and the failing scene stays five times more
+restless than the winning one — which is the actual claim the physics is making.
+
+Two of those assertions failed on first run, and both times the *assertion* was
+wrong rather than the code: the cards keep a deliberate idle breath even when
+settled (a photograph held perfectly still looks dead), so "comes to a complete
+stop" was never the property worth testing. The ratio is.
+
+The general lesson: when motion carries the meaning, "does it render", "does it
+move enough to be read" and "does it come to rest" are correctness properties.
+They need instrumentation and simulation, not screenshots.
 
 ## Known issues
 
-- **The 3D stage still has not been watched in motion.** It has now been *seen*
-  — rendered in a real Chrome window, which is how the four bugs above surfaced
-  — but that browser tab was backgrounded, so `requestAnimationFrame` stayed
-  suspended and only single un-animated frames were ever captured. The
-  geometry is asserted and the still frames are right; the settling, the snap
-  and the mood lighting in motion are not verified.
+- **The 3D stage still has not been watched in motion by a human.** It has been
+  *seen* — rendered in a real Chrome window, which is how four of the bugs above
+  surfaced — and the motion is now simulated and asserted numerically. But the
+  browser tab reports `document.hidden` permanently, so `requestAnimationFrame`
+  stays suspended and only single un-animated frames were ever captured. What
+  remains unverified is aesthetic rather than behavioural: whether the snap
+  *feels* like a snap, whether the mood lighting transitions read, and whether
+  the handwritten fragments are legible at their rendered size.
 
   What *was* verified programmatically, end to end: WebGL context creation and
   canvas sizing at capped DPR; the full phase machine (intro → exploring →
