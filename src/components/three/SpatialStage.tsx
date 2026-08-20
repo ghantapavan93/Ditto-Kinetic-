@@ -1,12 +1,13 @@
 'use client';
 
-import { Suspense, useRef, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { Polaroid3D } from './Polaroid3D';
 import { ConnectionField } from './ConnectionField';
 import { Artifact3D } from './Artifact3D';
 import { SceneLighting } from './SceneLighting';
+import { StageProbe } from './StageProbe';
 import { damp, lerp } from '@/lib/motion';
 import { track } from '@/lib/analytics';
 import type { MatchPair, Scene } from '@/lib/types';
@@ -57,6 +58,7 @@ function StageContents({ pair, scene, magnetism, locked, exiting, reducedMotion 
     <>
       <fog attach="fog" args={['#08090C', 8, 20]} />
       <SceneLighting mood={scene.mood} locked={locked} />
+      {process.env.NODE_ENV !== 'production' && <StageProbe magnetism={magnetism} />}
       <CameraRig magnetism={magnetism} exiting={exiting} reducedMotion={reducedMotion} />
 
       <ConnectionField
@@ -134,6 +136,39 @@ function FlatFallback({ pair, scene }: { pair: MatchPair; scene: Scene }) {
 export function SpatialStage(props: StageProps) {
   const [failed, setFailed] = useState(false);
 
+  /**
+   * R3F sizes the canvas from a ResizeObserver and does not start its render
+   * loop until it has non-zero dimensions. If that first measurement never
+   * arrives — the page initialised in a background tab, a hidden container, or
+   * behind a slow paint — the canvas stays at its intrinsic 300x150, no frame
+   * ever renders, and there is no recovery path: the stage is simply black
+   * forever.
+   *
+   * This was not theoretical. It happened twice while building this, and both
+   * times it looked like a rendering bug rather than a measurement one.
+   *
+   * Nudging the observer on mount and whenever the document becomes visible
+   * costs nothing and closes the hole.
+   */
+  useEffect(() => {
+    const nudge = () => window.dispatchEvent(new Event('resize'));
+    // Both, deliberately: rAF catches the common case on the next paint, and
+    // the timer still fires in a backgrounded tab where rAF is suspended.
+    const raf = requestAnimationFrame(nudge);
+    const timer = setTimeout(nudge, 0);
+    const onVisible = () => {
+      if (!document.hidden) nudge();
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    window.addEventListener('pageshow', nudge);
+    return () => {
+      cancelAnimationFrame(raf);
+      clearTimeout(timer);
+      document.removeEventListener('visibilitychange', onVisible);
+      window.removeEventListener('pageshow', nudge);
+    };
+  }, []);
+
   if (failed) return <FlatFallback pair={props.pair} scene={props.scene} />;
 
   return (
@@ -149,6 +184,9 @@ export function SpatialStage(props: StageProps) {
         toneMapping: THREE.ACESFilmicToneMapping,
       }}
       camera={{ fov: 32, position: [0, 0, 7.4], near: 0.1, far: 40 }}
+      // Default measure debounce is 250ms; the stage is the whole page, so
+      // paying that on first paint is not worth it.
+      resize={{ scroll: false, debounce: { scroll: 0, resize: 0 } }}
       onCreated={({ gl }) => {
         gl.setClearColor('#08090C', 0);
       }}

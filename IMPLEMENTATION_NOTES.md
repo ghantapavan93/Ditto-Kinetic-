@@ -157,11 +157,64 @@ whole demo is offline.
    share one grid cell and the quiet screen mounts the instant state changes. The
    post-date receipt had the same flaw and got the same fix.
 
+5. **The stage could never render if the page loaded in a background tab.**
+   R3F sizes its canvas from a ResizeObserver and does not start the render
+   loop until it has non-zero dimensions. If that first measurement never
+   arrives, the canvas sits at its intrinsic 300x150, no frame ever renders,
+   and there is **no recovery path** — the stage is black forever. This is not
+   theoretical: it happened twice during this build, and both times it looked
+   like a rendering bug rather than a measurement one. `SpatialStage` now nudges
+   the observer on mount (rAF *and* a timer, since rAF is suspended while
+   hidden) and again on `visibilitychange`, and drops the default 250ms measure
+   debounce.
+6. **The physical language had nowhere near enough range.** The whole argument
+   is that a bad context should *feel* wrong, and the cards were moving about a
+   third of their own width between the worst opening and the best — which reads
+   as "shifted slightly", not "held apart". Worse, `spreadMin` was smaller than
+   the card, so at full magnetism the two photographs *overlapped*, which reads
+   as a z-fighting fault rather than as closeness. The gap now travels 1.93 →
+   0.14 world units against a 1.42-wide card (3.6x the previous range) and never
+   crosses. Three more channels were added alongside separation — height, depth
+   and a stronger roll — so a weak scene is askew, unlevel, and on two different
+   planes, and the winning one is square, level and sharing one.
+7. **The wider separation immediately broke portrait viewports**, running the
+   cards off both edges. Layout is now derived from the actual viewport
+   (`computeStageLayout`), stacking the pair vertically and scaling the rig down
+   in portrait.
+
+## On verifying a physical interface
+
+Three of the four bugs above were invisible to every check that existed. The
+type-checker, the linter, the production build, the DOM assertions and the
+ranking assertions all passed while the stage was rendering nothing at all.
+
+Two of them I then misdiagnosed by eye, in opposite directions, by estimating
+card positions from a compressed screenshot. So the stage now reports its own
+geometry:
+
+- `StageProbe` (development only) publishes live separation, scale, camera and
+  per-card transforms to `window.__fsStage`.
+- `magnetism` is attached to every `scene_changed` event, so the single number
+  the entire stage is driven by is visible in the funnel. That is what proved
+  magnetism was correct — spanning `coffee 0.06` to `postshow 1.0` — and moved
+  the investigation to the geometry, where the bug actually was.
+- `computeStageLayout` was extracted from its hook so the geometry can be
+  asserted in `npm run check` with no browser: across five viewports, a wrong
+  context must open a gap wider than a third of a card, a right one must come
+  close *without* overlapping, and the arrangement must fit the screen.
+
+The general lesson: when motion carries the meaning, "does it render" and "does
+it move enough to be read" are correctness properties, and they need
+instrumentation rather than screenshots.
+
 ## Known issues
 
-- **Nobody has looked at this running.** The browser pane was not displayed in the
-  session that built it, so `document.hidden` was `true`, `requestAnimationFrame`
-  was fully paused (0 frames in 2s), and every screenshot timed out.
+- **The 3D stage still has not been watched in motion.** It has now been *seen*
+  — rendered in a real Chrome window, which is how the four bugs above surfaced
+  — but that browser tab was backgrounded, so `requestAnimationFrame` stayed
+  suspended and only single un-animated frames were ever captured. The
+  geometry is asserted and the still frames are right; the settling, the snap
+  and the mood lighting in motion are not verified.
 
   What *was* verified programmatically, end to end: WebGL context creation and
   canvas sizing at capped DPR; the full phase machine (intro → exploring →

@@ -14,6 +14,7 @@
  */
 
 import { PAIRS } from '../src/data/pairs';
+import { CARD_H, CARD_W, computeStageLayout } from '../src/components/three/useStageLayout';
 import {
   NO_CONDITIONS,
   SEND_THRESHOLD,
@@ -142,6 +143,44 @@ console.log('\nClaim 3 — disruptions replan context and never touch the pair:'
     console.log(
       `        best survivor ${collapsed.best.scene.label} at ${collapsed.best.utility.toFixed(4)} — withdrawn`,
     );
+  }
+}
+
+/* ---- claim 4: the stage geometry can actually express the argument -------- */
+
+console.log('\nClaim 4 — the physical language has enough range to be read:');
+{
+  // world-space viewport sizes at the stage's camera distance
+  const VIEWPORTS: [string, number, number][] = [
+    ['desktop 1920x1080', 8.89, 4.22],
+    ['laptop 1440x900', 6.75, 4.22],
+    ['ultrawide 2560x1080', 10.0, 4.22],
+    ['tablet portrait', 3.16, 4.22],
+    ['phone portrait', 1.95, 4.22],
+  ];
+
+  for (const [name, w, h] of VIEWPORTS) {
+    const l = computeStageLayout(w, h);
+    const card = l.portrait ? CARD_H : CARD_W;
+    const gapWorst = l.spreadMax - card;
+    const gapBest = l.spreadMin - card;
+    const extent = (l.spreadMax + card) * l.scale;
+    const limit = l.portrait ? h : w;
+
+    console.log(
+      `  ${name.padEnd(19)} ${(l.portrait ? 'portrait' : 'landscape').padEnd(10)} ` +
+        `scale ${l.scale.toFixed(2)}  gap ${gapWorst.toFixed(2)} -> ${gapBest.toFixed(2)}  ` +
+        `extent ${extent.toFixed(2)}/${limit.toFixed(2)}`,
+    );
+
+    // A wrong context has to open a gap you can actually see, not a nudge.
+    expect(`${name}: wrong context opens a real gap`, gapWorst > card * 0.3, true);
+    // A right context brings them close, but overlapping reads as a rendering
+    // fault rather than as closeness — so they must never cross.
+    expect(`${name}: right context never overlaps`, gapBest > 0, true);
+    expect(`${name}: right context is genuinely close`, gapBest < card * 0.25, true);
+    // And the whole arrangement stays on screen.
+    expect(`${name}: fits the viewport`, extent <= limit * 1.001, true);
   }
 }
 

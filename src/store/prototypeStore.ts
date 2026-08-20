@@ -123,7 +123,14 @@ export const usePrototype = create<State & Actions>((set, get) => ({
       phase: phase === 'selected' || phase === 'reasoning' ? 'exploring' : phase,
       reasoningOpen: false,
     });
-    track('scene_changed', { scene: id, via });
+    // Magnetism is the one number the whole stage is driven by, so it belongs
+    // in the event: if the physical language ever stops tracking the model,
+    // this is where it shows up first.
+    track('scene_changed', {
+      scene: id,
+      via,
+      magnetism: Number(magnetismFor(pairById(get().pairId), id, conditions).toFixed(3)),
+    });
   },
 
   stepScene: (delta) => {

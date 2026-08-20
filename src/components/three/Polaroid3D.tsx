@@ -5,10 +5,9 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { portraitTexture } from '@/lib/portrait';
 import { damp, lerp, seeded } from '@/lib/motion';
+import { CARD_H, CARD_W, useStageLayout } from './useStageLayout';
 import type { Person } from '@/lib/types';
 
-const CARD_W = 1.42;
-const CARD_H = 1.74;
 const CARD_D = 0.034;
 const PHOTO_W = 1.2;
 const PHOTO_H = 1.28;
@@ -86,6 +85,7 @@ export function Polaroid3D({ person, side, magnetism, locked, exiting, reducedMo
   const group = useRef<THREE.Group>(null);
   const [hovered, setHovered] = useState(false);
   const wobble = useRef({ x: 0, y: 0 });
+  const layout = useStageLayout();
 
   const texture = useMemo(
     () => portraitTexture(person.portraitSeed, person.portraitTint),
@@ -100,17 +100,28 @@ export function Polaroid3D({ person, side, magnetism, locked, exiting, reducedMo
     if (!g) return;
     const dt = Math.min(rawDelta, 1 / 30);
     const t = state.clock.elapsedTime;
-
-    // Separation: 2.15 world units apart when the context is wrong, 1.05 when
-    // it is right. The cards never touch — this is an introduction, not a merge.
-    const spread = lerp(2.15, 1.06, magnetism);
-    const targetX = side * spread * 0.5;
-
-    // Misalignment. Roll and yaw both resolve toward zero as context improves.
     const misfit = 1 - magnetism;
-    const targetZRot = side * misfit * 0.17;
-    const targetYRot = -side * lerp(0.34, 0.05, magnetism);
-    const targetY = lerp(side === -1 ? 0.09 : -0.07, 0.02, magnetism);
+
+    // Separation is the argument. Wrong context holds them a card-and-a-half
+    // apart with a void between them; right context brings them to rest just
+    // short of touching. They never overlap — this is an introduction, not a
+    // merge — and they never meet, either.
+    const spread = lerp(layout.spreadMax, layout.spreadMin, magnetism);
+    const along = side * spread * 0.5;
+
+    // Portrait viewports stack the pair vertically, with a slight diagonal
+    // offset so the composition still reads as two people rather than a list.
+    const targetX = layout.portrait ? side * 0.16 * misfit : along;
+    const baseY = layout.portrait ? -along : lerp(side === -1 ? 0.3 : -0.26, 0, magnetism);
+
+    // Four independent channels resolve together as context improves: roll,
+    // yaw, height, and depth. A bad scene is askew, turned away, unlevel and
+    // on two different planes. The winning scene is square, facing in, level,
+    // and sharing one plane — which is why it stops looking like scattered
+    // objects and starts looking like a photograph.
+    const targetZRot = side * misfit * 0.3;
+    const targetYRot = -side * lerp(0.4, -0.07, magnetism);
+    const targetZ = side * misfit * 0.55;
 
     // A weak scene refuses to settle: the card keeps hunting around its rest
     // position. A strong one comes to rest and stays there.
@@ -122,13 +133,13 @@ export function Polaroid3D({ person, side, magnetism, locked, exiting, reducedMo
 
     // Handoff: the cards are the last thing to leave, and they leave upward.
     const exitY = exiting * 3.4;
-    const exitScale = lerp(1, 0.82, exiting);
+    const exitScale = layout.scale * lerp(1, 0.82, exiting);
 
     const lambda = locked ? 9 : 4.2;
 
-    g.position.x = damp(g.position.x, targetX + driftX, lambda, dt);
-    g.position.y = damp(g.position.y, targetY + driftY + exitY, lambda, dt);
-    g.position.z = damp(g.position.z, hovered ? 0.28 : 0, 7, dt);
+    g.position.x = damp(g.position.x, (targetX + driftX) * layout.scale, lambda, dt);
+    g.position.y = damp(g.position.y, (baseY + driftY + exitY) * layout.scale, lambda, dt);
+    g.position.z = damp(g.position.z, targetZ + (hovered ? 0.3 : 0), 7, dt);
 
     g.rotation.z = damp(g.rotation.z, targetZRot + driftRot, lambda, dt);
     g.rotation.y = damp(g.rotation.y, targetYRot + (hovered ? side * 0.06 : 0), lambda, dt);
@@ -170,4 +181,3 @@ export function Polaroid3D({ person, side, magnetism, locked, exiting, reducedMo
   );
 }
 
-export { CARD_W, CARD_H };

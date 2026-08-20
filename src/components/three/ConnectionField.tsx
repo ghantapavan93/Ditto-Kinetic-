@@ -4,6 +4,7 @@ import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { damp, lerp } from '@/lib/motion';
+import { CARD_H, CARD_W, useStageLayout } from './useStageLayout';
 
 const SEGMENTS = 48;
 
@@ -29,6 +30,7 @@ type Props = {
 export function ConnectionField({ magnetism, locked, exiting, reducedMotion }: Props) {
   const sag = useRef(0.55);
   const spread = useRef(1.07);
+  const layout = useStageLayout();
 
   const { geometry, material, positions } = useMemo(() => {
     const positions = new Float32Array((SEGMENTS + 1) * 3);
@@ -48,24 +50,28 @@ export function ConnectionField({ magnetism, locked, exiting, reducedMotion }: P
     const dt = Math.min(rawDelta, 1 / 30);
     const t = state.clock.elapsedTime;
 
-    const targetSpread = lerp(2.15, 1.06, magnetism);
-    const targetSag = lerp(0.62, 0.02, magnetism);
+    const targetSpread = lerp(layout.spreadMax, layout.spreadMin, magnetism);
+    const targetSag = lerp(0.62, 0.015, magnetism);
     spread.current = damp(spread.current, targetSpread, locked ? 9 : 4.2, dt);
     sag.current = damp(sag.current, targetSag, locked ? 9 : 4.2, dt);
 
-    const halfW = 0.66; // stop short of each card so the line reads as a field, not a tether
-    const x0 = -spread.current * 0.5 + halfW;
-    const x1 = spread.current * 0.5 - halfW;
+    // Stop short of each card so the line reads as a field between them rather
+    // than a tether bolted to their edges.
+    const inset = (layout.portrait ? CARD_H : CARD_W) * 0.5 + 0.06;
+    const a = (-spread.current * 0.5 + inset) * layout.scale;
+    const b = (spread.current * 0.5 - inset) * layout.scale;
     const jitter = reducedMotion ? 0 : (1 - magnetism) * 0.045;
 
     for (let i = 0; i <= SEGMENTS; i++) {
       const u = i / SEGMENTS;
-      const x = lerp(x0, x1, u);
+      const along = lerp(a, b, u);
       // catenary-ish sag, strongest at the middle
-      const droop = Math.sin(u * Math.PI) * sag.current;
+      const droop = Math.sin(u * Math.PI) * sag.current * layout.scale;
       const noise = Math.sin(u * 11 + t * 1.9) * jitter * Math.sin(u * Math.PI);
-      positions[i * 3] = x;
-      positions[i * 3 + 1] = -droop + noise;
+      // In portrait the pair is stacked, so the line runs vertically and its
+      // slack bows sideways instead of downward.
+      positions[i * 3] = layout.portrait ? droop - noise : along;
+      positions[i * 3 + 1] = layout.portrait ? -along : -droop + noise;
       positions[i * 3 + 2] = 0.02;
     }
     geometry.attributes.position.needsUpdate = true;
