@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Sheet } from '@/components/shared/Sheet';
+import { TheRoom } from './TheRoom';
 import {
   COST_TERMS,
   NO_CONDITIONS,
@@ -60,6 +61,17 @@ export function DecisionView({
       title="how this scene won"
       description="The ranking object isn't a person. It's a possible real-world introduction — the same two people under six sets of conditions."
     >
+      {/* Three lenses on the same decision, before any arithmetic. */}
+      <TheRoom
+        pair={pair}
+        conditions={conditions}
+        currentSceneId={currentSceneId}
+        onPick={(id) => {
+          onPick(id);
+          onClose();
+        }}
+      />
+
             {/* The flat line. */}
             <div className="mb-4 flex flex-wrap items-center gap-x-5 gap-y-2 border-y border-paper/10 py-3">
               <span className="font-mono text-micro uppercase text-mint">pair signal</span>

@@ -15,6 +15,13 @@
 
 import { PAIRS } from '../src/data/pairs';
 import { WEEK_TWO } from '../src/data/weekTwo';
+import {
+  LENSES,
+  challengeSet,
+  lensesDisagree,
+  readAllLenses,
+  whyNot,
+} from '../src/lib/lenses';
 import { CARD_H, CARD_W, computeStageLayout } from '../src/components/three/useStageLayout';
 import { cardTarget } from '../src/components/three/cardTransform';
 import { FRAGMENT_MAX_WIDTH, FRAGMENT_SCALE, fragmentSlot } from '../src/lib/fragments';
@@ -29,6 +36,8 @@ import {
   type Conditions,
   type Learned,
 } from '../src/lib/rankScenes';
+
+const HEADING8 = '\nClaim 8 — the lenses are a partition, not a cast:';
 
 const HEADING7 = '\nClaim 7 — last week changes this week:';
 
@@ -350,6 +359,70 @@ console.log(HEADING7);
   expect('learning re-weights exactly one existing term', moved.length, 1);
   expect('and that term is social pressure', moved[0], 'socialPressure');
   expect('no dimension is invented', Object.keys(w1).length, Object.keys(w0).length);
+}
+
+/* ---- claim 8: the reasoning lenses are honest ---------------------------- */
+
+console.log(HEADING8);
+{
+  const keys = Object.keys(LENSES) as (keyof typeof LENSES)[];
+  const terms = keys.flatMap((k) => LENSES[k].terms);
+  const weightKeys = Object.keys(weightsFor());
+
+  // The lenses may not be able to say anything the scorer does not say. That
+  // requires the partition to be disjoint and complete.
+  expect('every weighted term belongs to a lens', terms.length, weightKeys.length);
+  expect('no term belongs to two lenses', new Set(terms).size, terms.length);
+  expect('no lens invents a term', terms.every((t) => weightKeys.includes(t)), true);
+
+  for (const pair of PAIRS) {
+    const readings = readAllLenses(pair, NO_CONDITIONS);
+
+    // The three lenses must sum back to the real utility, exactly.
+    const worst = Math.max(
+      ...pair.scenes.map((scene) => {
+        const sum = keys.reduce(
+          (t, k) => t + (readings[k].ranked.find((r) => r.scene.id === scene.id)?.score ?? 0),
+          0,
+        );
+        return Math.abs(sum - scoreScene(scene.metrics));
+      }),
+    );
+    expect(`${pair.id}: lenses sum to the utility`, worst < 1e-9, true);
+
+    // PERSON must have no opinion about rooms. If it ever gains one, pairSignal
+    // has stopped being constant and the whole thesis has quietly broken.
+    expect(`${pair.id}: the person lens abstains`, readings.person.abstains, true);
+  }
+
+  // Disagreement has to be a property of a pair, not a permanent decoration.
+  const one = readAllLenses(PAIRS[0], NO_CONDITIONS);
+  const two = readAllLenses(PAIRS[1], NO_CONDITIONS);
+  console.log(
+    `  maya-jonah  moment=${one.moment.prefers?.label}  reality=${one.reality.prefers?.label}`,
+  );
+  console.log(
+    `  priya-theo  moment=${two.moment.prefers?.label}  reality=${two.reality.prefers?.label}`,
+  );
+  expect('the lenses disagree for pair 1', lensesDisagree(one), true);
+  expect('and agree for pair 2', lensesDisagree(two), false);
+
+  // "why not coffee" must be derived, not scripted.
+  const w = whyNot(PAIRS[0], 'coffee');
+  console.log(`  why not coffee: championed by ${w?.championedBy.join(', ')}, refused by ${w?.refusedBy.join(', ')}`);
+  expect('coffee was championed by reality', w?.championedBy.includes('reality'), true);
+  expect('and refused by moment', w?.refusedBy.includes('moment'), true);
+
+  // The surface has to actually offer that objection. Ranking coffee fifth is
+  // correct; hiding it because it ranked fifth is not.
+  for (const pair of PAIRS) {
+    const offered = challengeSet(pair, NO_CONDITIONS, pair.scenes[0].id).map((scene) => scene.id);
+    const top = rankScenes(pair, NO_CONDITIONS)[0].scene.id;
+    console.log(`  ${pair.id}: can challenge ${offered.join(', ') || '(nothing)'}`);
+    expect(`${pair.id}: the cafe can always be challenged`, offered.includes('coffee') || top === 'coffee', true);
+    expect(`${pair.id}: the winner is not offered against itself`, offered.includes(top), false);
+    expect(`${pair.id}: no room is offered twice`, new Set(offered).size, offered.length);
+  }
 }
 
 console.log(failures ? `\n${failures} assertion(s) FAILED` : '\nall assertions passed');
