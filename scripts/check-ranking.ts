@@ -22,7 +22,14 @@ import { privateSignals } from '../src/lib/redaction';
 import { doubleDate, rankDoubles } from '../src/lib/doubleDate';
 import { ENOUGH_MINUTES, label, readSchedule } from '../src/lib/schedule';
 import { QUESTIONS, STARTING_TRAITS } from '../src/data/livingProfile';
-import { ACTIONABLE, CONFIDENCE_CEILING, applyAnswer, unknowns } from '../src/lib/profile';
+import {
+  ACTIONABLE,
+  CONFIDENCE_CEILING,
+  applyAnswer,
+  unknowns,
+  actionable as actionableTraits,
+} from '../src/lib/profile';
+import { ODDS_CEILING, guaranteeCost, oddsFor } from '../src/lib/odds';
 import {
   LENSES,
   challengeSet,
@@ -52,6 +59,7 @@ const HEADING11 = '\nClaim 11 — the profile never claims to know a person:';
 const HEADING12 = '\nClaim 12 — the redaction has nothing behind it:';
 const HEADING13 = '\nClaim 13 — four people is not two pairs:';
 const HEADING14 = '\nClaim 14 — free is not the same as alive:';
+const HEADING15 = '\nClaim 15 — nobody is guaranteed anything:';
 
 const HEADING7 = '\nClaim 7 — last week changes this week:';
 
@@ -757,6 +765,63 @@ console.log(HEADING14);
   expect('holding maya and jonah to wednesday costs them real energy', mjCost > 0.1, true);
   expect('for noor and sam wednesday is genuinely the best hour', ns.dropDayCost, 0);
   expect('so the drop day is not uniformly wrong', mjCost > 0 && ns.dropDayCost === 0, true);
+}
+
+
+/* ---- claim 15: nobody is guaranteed anything ---------------------------- */
+
+console.log(HEADING15);
+{
+  let traits = STARTING_TRAITS;
+  for (const q of QUESTIONS) traits = applyAnswer(traits, q.answers[0], 'test').traits;
+  const known = actionableTraits(traits);
+  const conf = known.reduce((t, x) => t + x.confidence, 0) / known.length;
+
+  const odds = oddsFor(PAIRS[0].personA, PAIRS[0], conf);
+  console.log(`  odds land at ${Math.round(odds.value * 100)}% against a ceiling of ${Math.round(ODDS_CEILING * 100)}%`);
+
+  // The claim the page makes with its lever: certainty is never on offer.
+  expect('odds never reach certainty', odds.value < 1, true);
+  expect('and never pass the ceiling', odds.value <= ODDS_CEILING, true);
+
+  // Even a person offering every hour of the week cannot be guaranteed anyone.
+  const saturated = {
+    ...PAIRS[0].personA,
+    availability: [0, 1, 2, 3, 4, 5, 6].map((day) => ({
+      day: day as 0 | 1 | 2 | 3 | 4 | 5 | 6,
+      startMin: 0,
+      endMin: 24 * 60,
+      energy: 1,
+    })),
+  };
+  const maxed = oddsFor(saturated, PAIRS[0], 0.92);
+  console.log(`  a person free every hour of the week reaches ${Math.round(maxed.value * 100)}%`);
+  expect('total availability still is not a guarantee', maxed.value <= ODDS_CEILING, true);
+
+  // Decomposition has to be real: the parts must account for the whole.
+  const summed = odds.factors.reduce((t, f) => t + f.points, 0);
+  expect(
+    'the factors account for the number',
+    Math.abs(Math.min(ODDS_CEILING, summed) - odds.value) < 1e-9,
+    true,
+  );
+
+  // One of the four is the platform's fault, and the page says so rather than
+  // implying every input is the user's responsibility.
+  const theirs = odds.factors.filter((f) => !f.actionable);
+  console.log(`  ${theirs.length} of ${odds.factors.length} factors are not the user's to fix`);
+  expect('at least one factor is not the user to fix', theirs.length > 0, true);
+  expect('and the suggested move is never a referral', odds.bestMove?.actionable, true);
+
+  // Who pays. This is the load-bearing claim of the refusal, so it is computed
+  // from the pairs actually held back rather than named in copy.
+  const cost = guaranteeCost(odds.value, HELD_BACK);
+  console.log(
+    `  a guarantee would be funded by ${cost.fundedBy?.id} at ${cost.theirUtility.toFixed(3)}, ${cost.theirShortfall.toFixed(3)} short of the bar`,
+  );
+  expect('a guarantee is funded by a real pair', Boolean(cost.fundedBy), true);
+  expect('whose evening did not clear the bar', cost.theirUtility < SEND_THRESHOLD, true);
+  expect('and who appears on the held-back page', HELD_BACK.includes(cost.fundedBy!), true);
 }
 
 
