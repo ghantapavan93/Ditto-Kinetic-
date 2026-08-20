@@ -9,6 +9,7 @@ screenshots of the live signup flow captured 2026-08-19, as the basis for a rebu
 |---|---|
 | [docs/TEARDOWN.md](docs/TEARDOWN.md) | How the app is built — shell, state machine, chat framing, visual system, widget inventory, third-party surface, privacy posture, growth loop |
 | [docs/ONBOARDING-FLOW.md](docs/ONBOARDING-FLOW.md) | All 24 onboarding steps verbatim: prompt copy, widget, option lists, validation, plus a proposed data model |
+| [docs/COMPANY-RESEARCH.md](docs/COMPANY-RESEARCH.md) | Ditto the company — founders, funding, traction, how the founders describe the product, and the three open problems worth aiming at |
 | [reference/](reference) | The 27 source screenshots the teardown is built from |
 
 ## The one-paragraph version
