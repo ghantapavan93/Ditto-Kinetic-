@@ -52,6 +52,7 @@ export type EventName =
   | 'app_shell_viewed'
   | 'next_viewed'
   | 'network_viewed'
+  | 'zoom_viewed'
   | 'compiler_run'
   | 'compiler_quieted'
   | 'ending_viewed'

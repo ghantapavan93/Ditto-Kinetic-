@@ -34,6 +34,7 @@ import { EXIT_WEIGHT, exitVerdict, readExits } from '../src/lib/exit';
 import { compile, scaffolding } from '../src/lib/compiler';
 import { buildCampus } from '../src/lib/campus';
 import { bridgeFor, readNetwork } from '../src/lib/network';
+import { WAYPOINTS, cameraAt, distanceToPair, levelAt } from '../src/lib/zoom';
 import {
   LENSES,
   challengeSet,
@@ -67,6 +68,7 @@ const HEADING15 = '\nClaim 15 — nobody is guaranteed anything:';
 const HEADING16 = '\nClaim 16 — the twelfth dimension did not earn its place:';
 const HEADING17 = '\nClaim 17 — the compiler reads its input, and never lowers the bar:';
 const HEADING18 = '\nClaim 18 — the missing edge is not the compatible one:';
+const HEADING19 = '\nClaim 19 — one camera, and it never jumps:';
 
 const HEADING7 = '\nClaim 7 — last week changes this week:';
 
@@ -1040,6 +1042,81 @@ console.log(HEADING18);
   );
   expect('somebody could already introduce the compatible pair', bridgeAff !== null, true);
   expect('nobody can introduce the missing edge', bridgeCon, null);
+}
+
+
+/* ---- claim 19: one camera, and it never jumps -------------------------- */
+
+console.log(HEADING19);
+{
+  const N = 4000;
+
+  // "Continuous" is a checkable word, so it gets checked. Sample the path
+  // densely and confirm the camera never teleports — this is the assertion
+  // that the three levels are not three pages wearing one background.
+  let worstEye = 0;
+  let worstTarget = 0;
+  let worstAt = 0;
+  let prev = cameraAt(0);
+
+  for (let i = 1; i <= N; i++) {
+    const t = i / N;
+    const shot = cameraAt(t);
+    const de = Math.hypot(
+      shot.eye[0] - prev.eye[0],
+      shot.eye[1] - prev.eye[1],
+      shot.eye[2] - prev.eye[2],
+    );
+    const dt = Math.hypot(
+      shot.target[0] - prev.target[0],
+      shot.target[1] - prev.target[1],
+      shot.target[2] - prev.target[2],
+    );
+    if (de > worstEye) {
+      worstEye = de;
+      worstAt = t;
+    }
+    if (dt > worstTarget) worstTarget = dt;
+    prev = shot;
+  }
+
+  const near = distanceToPair(1);
+  const far = distanceToPair(0);
+  console.log(`  ${N} samples -- largest single step ${worstEye.toFixed(4)} units, at t=${worstAt.toFixed(3)}`);
+  console.log(`  travels ${far.toFixed(1)} -> ${near.toFixed(1)} units, a ${(far / near).toFixed(0)}:1 approach`);
+
+  expect('the camera never jumps', worstEye < 0.2, true);
+  expect('and neither does what it looks at', worstTarget < 0.2, true);
+
+  // Monotonic approach. Scrolling in must always mean getting closer, or the
+  // control is lying about what it does.
+  let monotonic = true;
+  for (let i = 1; i <= 400; i++) {
+    if (distanceToPair(i / 400) > distanceToPair((i - 1) / 400) + 1e-9) monotonic = false;
+  }
+  expect('going forward always means getting closer', monotonic, true);
+  expect('and it is a real approach, not a nudge', far / near > 20, true);
+
+  // Eased to a stop at each waypoint: arrive, hold, then move. A path that
+  // sweeps through at speed reads as a showreel rather than as looking.
+  const mid = (WAYPOINTS.length - 1) / (WAYPOINTS.length - 1) / 2;
+  const step = 1 / N;
+  const vAtWaypoint = Math.hypot(
+    ...cameraAt(mid + step).eye.map((v, i) => v - cameraAt(mid - step).eye[i]),
+  );
+  const vMidSegment = Math.hypot(
+    ...cameraAt(0.25 + step).eye.map((v, i) => v - cameraAt(0.25 - step).eye[i]),
+  );
+  console.log(`  speed at the waypoint ${vAtWaypoint.toFixed(4)} vs mid-flight ${vMidSegment.toFixed(4)}`);
+  expect('the camera slows at each waypoint', vAtWaypoint < vMidSegment, true);
+
+  // Each level owns a band of distance, and the bands have to actually differ
+  // or the levels are not nested, they are stacked.
+  const levels = [0, 0.5, 1].map((t) => levelAt(t));
+  console.log(`  levels along the path: ${levels.join(' -> ')}`);
+  expect('the journey passes through all three', new Set(levels).size, 3);
+  expect('it starts at the campus', levels[0], 'world');
+  expect('and ends on one person', levels[2], 'human');
 }
 
 

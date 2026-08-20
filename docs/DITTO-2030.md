@@ -112,12 +112,24 @@ product**. The missing edge has nobody: no friend, no party where it happens by
 itself. That is the introduction only a system can make, and it scores **zero**
 on every signal a compatibility ranker has.
 
+### The camera
+
+Built at [`/zoom`](../src/app/zoom/page.tsx). One camera, three scales, no page
+transition — 86 units out to 2.4, a **36:1 approach**, asserted continuous in
+claim 19 across 4,000 samples with a largest single step of 0.058 units.
+
+The levels are *nested*, not cross-faded. The campus is translated so the
+midpoint of the thread between Maya and Jonah sits at the origin, which means
+the camera does not fly toward "the pair view" — it flies into the specific edge
+between two specific dots. Distant geometry fades on the way down, and that is
+level-of-detail rather than a transition: every object stays where it was built.
+
+The path eases to a near-stop at each waypoint (0.0001 vs 0.1166 mid-flight), so
+it arrives, holds, and then moves. A continuous sweep would read as a showreel.
+
 ### Still not built
 
-1. **Three zoom levels** — one continuous camera from a person, to a pair, to
-   the campus. The stage is the middle level and the constellation is the outer
-   one; they are two cameras rather than one journey.
-2. **Connection gravity** — forces rather than percentages. The engine already
+1. **Connection gravity** — forces rather than percentages. The engine already
    produces every number; only the physics is missing.
 3. **Social weather** — the campus as a changing environment, at population
    scale. `Conditions` models a strained week for one pair; this is that for 96.
@@ -168,9 +180,9 @@ Fourteen acts, and the ones with routes already exist.
 | XIII | beyond dating | [`/compiler`](../src/app/compiler/page.tsx) (intersection kinds) |
 | XIV | full circle | — |
 
-Acts II and XII both needed a population, and now have one. What remains is
-Act XIV — the return to the opening question — and the single continuous camera
-that would make the zoom levels one journey rather than two pages.
+Acts II and XII needed a population and now have one; the camera that joins the
+scales is at [`/zoom`](../src/app/zoom/page.tsx). What remains is Act XIV — the
+return to the opening question — and everything in section 4 above.
 
 ---
 
