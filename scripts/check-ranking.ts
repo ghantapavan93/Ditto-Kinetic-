@@ -16,6 +16,7 @@
 import { PAIRS } from '../src/data/pairs';
 import { CARD_H, CARD_W, computeStageLayout } from '../src/components/three/useStageLayout';
 import { cardTarget } from '../src/components/three/cardTransform';
+import { FRAGMENT_MAX_WIDTH, FRAGMENT_SCALE, fragmentSlot } from '../src/lib/fragments';
 import { damp } from '../src/lib/motion';
 import {
   NO_CONDITIONS,
@@ -210,6 +211,20 @@ for (const pair of PAIRS) {
     pair.fragments.every((f) => f.surfacesAt >= 0 && f.surfacesAt <= 0.9),
     true,
   );
+
+  // Legibility. A note nobody can read is worse than no note, and the first
+  // layout buried three of six by spacing them closer together than they are
+  // wide. `gather` at full magnetism is the tightest the field ever gets.
+  const GATHER = 0.86;
+  const slots = pair.fragments.map((f, i) => fragmentSlot(i, pair.fragments.length, f.pull));
+  for (const row of [0, 1]) {
+    const xs = slots.filter((s2) => s2.row === row).map((s2) => s2.x * GATHER).sort((a, b) => a - b);
+    const pitch = xs.length > 1 ? Math.min(...xs.slice(1).map((x, i) => x - xs[i])) : Infinity;
+    expect(`${pair.id} row ${row}: notes never overlap each other`, pitch > FRAGMENT_MAX_WIDTH, true);
+  }
+  // And the rows stay off the photographs (card half-height 0.87).
+  const clearance = Math.min(...slots.map((s2) => Math.abs(s2.y) * GATHER)) - FRAGMENT_SCALE / 2;
+  expect(`${pair.id}: notes clear the photographs`, clearance > CARD_H / 2, true);
 }
 
 /* ---- claim 6: the motion actually resolves -------------------------------- */

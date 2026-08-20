@@ -4,6 +4,49 @@ Engineering decisions worth defending, and the things I'd fix next.
 
 ---
 
+## Matching Ditto's actual stack
+
+A technology fingerprint of the live site (2026-08-20) showed Ditto on
+**Next.js 16.2.6 with Turbopack, React, Tailwind, Radix UI, shadcn/ui, Lucide,
+Vercel, Cloudflare and PostHog**. This project was on Next 14 with webpack,
+React 18, a hand-rolled modal and a local-only event buffer — two majors behind,
+and reading as a separate artifact rather than something that could open as a PR
+against their codebase.
+
+Migrated:
+
+| | before | after |
+|---|---|---|
+| Framework | Next 14.2.18, webpack | **Next 16.2.6, Turbopack** (their exact version) |
+| React | 18.3.1 | **19.2.8** (required by Next 16) |
+| R3F | `@react-three/fiber` 8 | **9.7.0** (the React 19 line) |
+| Lint | `.eslintrc`, ESLint 8 | **flat config, ESLint 9** + React Compiler rules |
+| Modals | hand-rolled overlay | **Radix Dialog** — the primitive `shadcn/ui` is built on |
+| Icons | none | **Lucide**, utility only |
+| Analytics | local buffer | **PostHog-shaped `capture()`**, forwarded when a client exists |
+| Install | — | **PWA manifest** |
+
+Three things the upgrade surfaced that were worth fixing on their own merits:
+
+1. **`next/dynamic` with `ssr: false` is no longer allowed from a Server
+   Component.** Rather than mark the whole page as client, the dynamic import
+   moved into a `StageLoader` client boundary — so the `<noscript>` thesis stays
+   server-rendered.
+2. **React Compiler's `set-state-in-effect` caught a real double-render.**
+   `useReducedMotion` seeded its state in an effect; `matchMedia` is a
+   subscribable external source, so it now uses `useSyncExternalStore` — no
+   effect, no intermediate wrong value, and a defined server snapshot.
+3. **`react-hooks/immutability` flags every `useFrame` callback.** That one is a
+   genuine false positive: react-three-fiber's whole model is mutating the live
+   scene graph in place, and allocating fresh objects at 120Hz is exactly what
+   the imperative loop exists to avoid. Disabled per-file with the reasoning
+   written down, not globally.
+
+On PostHog specifically: no `posthog-js` dependency was added. A prototype
+should not ship a tracker, and matching the `capture(event, properties)`
+contract against an optional `window.posthog` is both the smaller diff and the
+one that leaves the decision to whoever integrates it.
+
 ## Architecture
 
 ```

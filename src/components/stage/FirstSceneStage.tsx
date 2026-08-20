@@ -15,6 +15,7 @@ import { Handoff } from '@/components/handoff/Handoff';
 import { FeedbackReceipt } from '@/components/feedback/FeedbackReceipt';
 import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
 import { NarrativeCursor } from '@/components/shared/NarrativeCursor';
+import { Volume2, VolumeX } from 'lucide-react';
 import { TooMuch } from './TooMuch';
 import { useReducedMotion } from '@/components/shared/useReducedMotion';
 import { play } from '@/components/shared/sound';
@@ -227,8 +228,15 @@ export function FirstSceneStage() {
                 <button
                   onClick={toggleSound}
                   aria-pressed={soundOn}
-                  className="border border-paper/15 px-2.5 py-1.5 font-mono text-micro uppercase text-paper/60 transition-colors hover:border-paper/45 hover:text-paper"
+                  aria-label={soundOn ? 'Mute sound' : 'Enable sound'}
+                  data-cursor={soundOn ? 'go quiet' : 'let it click'}
+                  className="flex items-center gap-1.5 border border-paper/15 px-2.5 py-1.5 font-mono text-micro uppercase text-paper/60 transition-colors hover:border-paper/45 hover:text-paper"
                 >
+                  {soundOn ? (
+                    <Volume2 size={12} strokeWidth={2} aria-hidden />
+                  ) : (
+                    <VolumeX size={12} strokeWidth={2} aria-hidden />
+                  )}
                   {soundOn ? 'sound on' : 'sound off'}
                 </button>
               </div>

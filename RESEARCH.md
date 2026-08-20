@@ -34,6 +34,7 @@ press. Each item is something Ditto says about itself.
 | Verification is **.edu email**, and scaling it beyond campus is a stated open problem | [TechCrunch, 2026-08-06](https://techcrunch.com/2026/08/06/gen-z-dating-apps-like-ditto-ditch-swiping-in-favor-of-ai-matchmaking/) |
 | A web onboarding flow exists at `app.ditto.ai/join`: ~24 steps, chat-framed, phone-number auth, Google Maps date-radius step | Direct observation of the live flow, 27 screenshots, 2026-08-19 (`reference/`) |
 | Frontend is **Next.js on Vercel** (`/_next/image` optimisation, `dpl_` deployment params in asset URLs) | Source inspection of tryditto.com, 2026-08-19 |
+| Full frontend stack: **Next.js 16.2.6** (server, framework and static generation) with **Turbopack**, **React**, **Tailwind CSS**, **Radix UI**, **shadcn/ui**, **Lucide** icons, **core-js 3.32.2**, on **Vercel** behind **Cloudflare**. Instrumented with **PostHog**, **Google Tag Manager**, **Google Ads** conversion tracking and **Facebook Pixel**. Ships a **PWA manifest** and **Open Graph** tags. | Technology fingerprint of the live site, 2026-08-20 |
 
 ## REASONABLE PRODUCT INFERENCE
 
@@ -49,9 +50,6 @@ implementation detail. Nothing here should be repeated as fact about Ditto.
 - **Match volume is user-throttleable.** The onboarding asks "how do u want ditto
   to match u rn?" with four pace options, which implies the answer reaches
   something. How, and with what effect, is unknown.
-- **PostHog is plausible but unconfirmed.** It is a common Next.js/Vercel pairing
-  and was reported to me as an earlier observation; I did not verify it in the
-  current source and do not rely on it.
 - **The 20% match-to-date figure implies venue/logistics loss, not only matching
   loss.** This is my reading, and it is the reading the whole project is built
   on. Ditto has not said this.

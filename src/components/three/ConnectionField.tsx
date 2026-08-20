@@ -1,5 +1,14 @@
 'use client';
 
+/* eslint-disable react-hooks/immutability -- 
+ * React Compiler's immutability rule assumes a declarative tree. react-three-fiber
+ * is the opposite by design: `useFrame` runs once per rendered frame and mutates
+ * the live scene graph in place — camera position, geometry attributes, material
+ * uniforms. Allocating new objects here instead would produce garbage every frame
+ * at 60-120Hz, which is precisely what the imperative loop exists to avoid.
+ * Scoped to files that own frame callbacks; the React tree elsewhere is unaffected.
+ */
+
 import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';

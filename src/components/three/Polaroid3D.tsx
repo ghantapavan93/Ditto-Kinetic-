@@ -4,7 +4,7 @@ import { useMemo, useRef, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { portraitTexture } from '@/lib/portrait';
-import { damp, lerp, seeded } from '@/lib/motion';
+import { damp, lerp } from '@/lib/motion';
 import { CARD_H, CARD_W, useStageLayout } from './useStageLayout';
 import { cardTarget } from './cardTransform';
 import type { Person } from '@/lib/types';
@@ -91,7 +91,6 @@ type Props = {
 export function Polaroid3D({ person, side, magnetism, locked, exiting, reducedMotion, blush = false }: Props) {
   const group = useRef<THREE.Group>(null);
   const [hovered, setHovered] = useState(false);
-  const wobble = useRef({ x: 0, y: 0 });
   const layout = useStageLayout();
   const material = useMemo(() => makeCardMaterial(), []);
 
@@ -99,9 +98,6 @@ export function Polaroid3D({ person, side, magnetism, locked, exiting, reducedMo
     () => portraitTexture(person.portraitSeed, person.portraitTint),
     [person.portraitSeed, person.portraitTint],
   );
-
-  // Per-card idle drift phase, so the two never breathe in lockstep.
-  const phase = useMemo(() => seeded(person.portraitSeed)() * Math.PI * 2, [person.portraitSeed]);
 
   useFrame((state, rawDelta) => {
     const g = group.current;
@@ -124,7 +120,7 @@ export function Polaroid3D({ person, side, magnetism, locked, exiting, reducedMo
 
     g.rotation.z = damp(g.rotation.z, target.rotZ, lambda, dt);
     g.rotation.y = damp(g.rotation.y, target.rotY + (hovered ? side * 0.06 : 0), lambda, dt);
-    g.rotation.x = damp(g.rotation.x, hovered ? -0.05 : wobble.current.x, 6, dt);
+    g.rotation.x = damp(g.rotation.x, hovered ? -0.05 : 0, 6, dt);
 
     const s = damp(g.scale.x, exitScale * (hovered ? 1.035 : 1), 7, dt);
     g.scale.setScalar(s);

@@ -101,6 +101,37 @@ function draw(canvas: HTMLCanvasElement, text: string, kind: FragmentKind) {
   ctx.restore();
 }
 
+/** On-stage size of a note, in world units of height. */
+export const FRAGMENT_SCALE = 0.46;
+
+/** Widest a note gets, in world units, at FRAGMENT_SCALE. */
+export const FRAGMENT_MAX_WIDTH = 1.35;
+
+/**
+ * Where a note sits, as a pure function.
+ *
+ * Two rows, evenly slotted. The first version spread every note across one
+ * 3-unit band, which put their centres 0.6 apart while each note is roughly
+ * 1.2 wide -- so they stacked and buried the middle ones completely. Notes you
+ * cannot read are worse than no notes.
+ *
+ * Extracted so `npm run check` can assert the slot pitch stays wider than a
+ * note and the rows stay clear of the photographs.
+ */
+export function fragmentSlot(index: number, total: number, pull: number) {
+  const row = index % 2; // 0 above the pair, 1 below
+  const inRow = Math.floor(index / 2);
+  const rowCount = Math.max(1, row === 0 ? Math.ceil(total / 2) : Math.floor(total / 2));
+  const u = rowCount > 1 ? inRow / (rowCount - 1) - 0.5 : 0;
+  return {
+    row,
+    // 4.6 across three slots gives a 2.3 pitch against a ~1.2 note.
+    x: u * 4.6 + pull * 0.3,
+    // Clear of the cards, whose half-height is 0.87.
+    y: (row === 0 ? 1 : -1) * 1.42,
+  };
+}
+
 const cache = new Map<string, { texture: THREE.CanvasTexture; aspect: number }>();
 
 export function fragmentTexture(text: string, kind: FragmentKind) {

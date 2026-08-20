@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { Sheet } from '@/components/shared/Sheet';
 import {
   COST_TERMS,
   NO_CONDITIONS,
@@ -11,7 +12,6 @@ import {
   type Conditions,
   type WeightKey,
 } from '@/lib/rankScenes';
-import { SPRING } from '@/lib/motion';
 import type { MatchPair } from '@/lib/types';
 
 /**
@@ -52,50 +52,14 @@ export function DecisionView({
   const sendsAtAll = (ranked[0]?.utility ?? 0) >= SEND_THRESHOLD;
 
   return (
-    <AnimatePresence>
-      {open && (
-        <motion.div
-          key="decision"
-          className="fixed inset-0 z-sheet flex items-end justify-center sm:items-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.24 }}
-        >
-          <button
-            aria-label="Close decision view"
-            onClick={onClose}
-            className="absolute inset-0 bg-ink/85 backdrop-blur-md"
-          />
-
-          <motion.section
-            role="dialog"
-            aria-modal="true"
-            aria-label="How this scene won"
-            initial={{ y: '4%', opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: '4%', opacity: 0 }}
-            transition={SPRING.copy}
-            className="relative max-h-[88vh] w-full max-w-4xl overflow-y-auto rounded-t-sheet border border-paper/10 bg-ink-soft/95 p-gutter shadow-lift sm:rounded-sheet"
-          >
-            <header className="mb-6 flex flex-wrap items-start justify-between gap-4">
-              <div>
-                <h2 className="font-display text-[clamp(1.5rem,3.6vw,2.4rem)] uppercase leading-none text-paper">
-                  how this scene won
-                </h2>
-                <p className="mt-2 max-w-[46ch] font-editorial text-[0.92rem] leading-snug text-paper/55">
-                  The ranking object isn’t a person. It’s a possible real-world introduction —
-                  the same two people under six sets of conditions.
-                </p>
-              </div>
-              <button
-                onClick={onClose}
-                className="shrink-0 border border-paper/20 px-3 py-1.5 font-mono text-micro uppercase text-paper/70 transition-colors hover:border-paper/50 hover:text-paper"
-              >
-                esc
-              </button>
-            </header>
-
+    <Sheet
+      open={open}
+      onOpenChange={(next) => {
+        if (!next) onClose();
+      }}
+      title="how this scene won"
+      description="The ranking object isn't a person. It's a possible real-world introduction — the same two people under six sets of conditions."
+    >
             {/* The flat line. */}
             <div className="mb-4 flex flex-wrap items-center gap-x-5 gap-y-2 border-y border-paper/10 py-3">
               <span className="font-mono text-micro uppercase text-mint">pair signal</span>
@@ -271,9 +235,6 @@ export function DecisionView({
                 these weights are invented for this prototype. they are not Ditto’s model.
               </p>
             </footer>
-          </motion.section>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    </Sheet>
   );
 }

@@ -3,7 +3,7 @@
 import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
-import { fragmentTexture } from '@/lib/fragments';
+import { FRAGMENT_SCALE, fragmentSlot, fragmentTexture } from '@/lib/fragments';
 import { damp, lerp, seeded, smoothstep } from '@/lib/motion';
 import { useStageLayout } from './useStageLayout';
 import type { Fragment, MatchPair } from '@/lib/types';
@@ -35,7 +35,7 @@ type Props = {
   onHover: (fragment: Fragment | null) => void;
 };
 
-const BASE_SCALE = 0.62;
+const BASE_SCALE = FRAGMENT_SCALE;
 
 function FragmentNote({
   fragment,
@@ -67,14 +67,12 @@ function FragmentNote({
 
   const place = useMemo(() => {
     const rand = seeded(index * 4241 + fragment.text.length * 97);
-    // Alternate above and below the pair so nothing lands on their faces.
-    const sign = index % 2 === 0 ? 1 : -1;
-    const t = total > 1 ? index / (total - 1) - 0.5 : 0;
+    const slot = fragmentSlot(index, total, fragment.pull);
     return {
-      x: t * 3.0 + fragment.pull * 0.55 + (rand() - 0.5) * 0.25,
-      y: sign * (0.98 + rand() * 0.42),
+      x: slot.x,
+      y: slot.y + (slot.row === 0 ? 1 : -1) * rand() * 0.16,
       z: 0.42 + rand() * 0.3,
-      rot: (rand() - 0.5) * 0.16,
+      rot: (rand() - 0.5) * 0.14,
       phase: rand() * Math.PI * 2,
     };
   }, [fragment.pull, fragment.text.length, index, total]);
@@ -88,8 +86,9 @@ function FragmentNote({
     // A fragment surfaces once the context is good enough to have earned it.
     const risen = smoothstep(fragment.surfacesAt, fragment.surfacesAt + 0.16, magnetism);
 
-    // As things resolve, the reasons gather inward toward the pair.
-    const gather = lerp(1, 0.66, magnetism);
+    // As things resolve the reasons gather inward — but only slightly. Pulling
+    // them all the way in re-creates the pile-up the row layout exists to fix.
+    const gather = lerp(1, 0.86, magnetism);
 
     // Tension never settles. Everything else does.
     const jitter =

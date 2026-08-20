@@ -1,13 +1,21 @@
 /**
- * Local event model.
+ * Event model, shaped to drop into PostHog.
  *
- * There is no production analytics service wired up here and no data leaves the
- * page. The point of shipping this anyway is that the event names *are* the
- * product's funnel — anyone reading them can reconstruct what the experience is
- * supposed to make someone do, in order.
+ * Ditto's site loads PostHog, so this deliberately matches its client contract
+ * — `capture(event, properties)` with snake_case event names — rather than
+ * inventing a parallel one. If a `posthog` client is present on the page these
+ * events flow straight into it with no adapter; if it is not, they stay local
+ * and nothing leaves the page.
  *
- * Events are also exposed on `window.__firstScene` so the funnel can be read
- * from the console during a demo without opening a dashboard.
+ * No `posthog-js` dependency is added. A prototype should not ship a tracker,
+ * and the integration surface here is one optional global rather than a
+ * package — which is also the smallest possible diff for anyone wiring it into
+ * a real app.
+ *
+ * The event names *are* the funnel: read them in order and you can reconstruct
+ * what the experience is supposed to make someone do. They are also exposed on
+ * `window.__firstScene` so the funnel can be read from the console during a
+ * demo without opening a dashboard.
  */
 
 export type EventName =
@@ -42,6 +50,14 @@ const buffer: TrackedEvent[] = [];
 /** Events that describe a session, not an action — fired at most once. */
 const ONCE: ReadonlySet<EventName> = new Set<EventName>(['prototype_loaded', 'prototype_started']);
 
+/** PostHog's client surface, as much of it as this file needs. */
+type PostHogLike = { capture: (event: string, properties?: Record<string, unknown>) => void };
+
+function client(): PostHogLike | undefined {
+  if (typeof window === 'undefined') return undefined;
+  return (window as unknown as { posthog?: PostHogLike }).posthog;
+}
+
 export function track(name: EventName, props?: Record<string, unknown>) {
   // React's development double-invoked effects would otherwise report two
   // loads per session and quietly corrupt the funnel.
@@ -56,8 +72,15 @@ export function track(name: EventName, props?: Record<string, unknown>) {
     };
   }
 
+  // Forward to PostHog when the host page provides it. Wrapped because an
+  // analytics failure must never be able to break an interaction.
+  try {
+    client()?.capture(name, props);
+  } catch {
+    /* analytics is never load-bearing */
+  }
+
   if (process.env.NODE_ENV === 'development') {
-    // eslint-disable-next-line no-console
     console.debug(`[first-scene] ${name}`, props ?? '');
   }
 }
