@@ -47,6 +47,25 @@ That is a product decision, not laziness:
 Three terms enter negatively, and `uncertainty` is one of them. The system is
 penalised for what it doesn't know rather than allowed to round it away.
 
+### Abstention
+
+`sendDecision(pair, conditions)` is the layer above ranking, and it is the
+difference between a sort and a decision: `rankScenes` always has a first
+element, but `sendDecision` can return `{ send: false }`.
+
+The send bar (`SEND_THRESHOLD = 0.48`) is placed deliberately. In a normal week
+it sits *above* COFFEE and STUDY BREAK for Maya × Jonah — the system would
+rather send nothing than send those — and for Priya × Theo exactly one of six
+openings clears it, which is the honest shape of that week rather than a menu.
+
+The strain transform is the interesting part. It degrades `scheduleFit`,
+`attendanceLikelihood`, `firstFifteenMinutesForecast`, `socialPressure` and
+`uncertainty`, and deliberately leaves `pairSignal` and `contextFit` untouched.
+That is not a detail — it is what lets the abstention copy make a true claim
+("pair signal did not move, the week did") rather than a consoling one. There is
+an assertion in `npm run check` that fails if a future edit ever lets a bad week
+reach either field.
+
 ### Magnetism
 
 `magnetismFor(pair, sceneId)` normalises a scene's utility against the best and
@@ -165,10 +184,11 @@ whole demo is offline.
   carry a "which one's your type" interaction honestly.
 - **Second-pair copy is thinner than the first pair's.** Priya × Theo proves the
   system inverts, but Maya × Jonah got the writing.
-- **Test coverage is one file.** `npm run check` asserts the load-bearing claim
-  (POST SHOW wins for pair 1, COFFEE for pair 2, `pairSignal` constant within a
-  pair, all metrics normalised, scoring deterministic). Nothing covers the
-  components — the interaction layer is untested.
+- **Test coverage is one file.** `npm run check` asserts the three load-bearing
+  claims: the ranking inverts between pairs; both pairs abstain under a strained
+  week *without* `pairSignal` or `contextFit` moving; and piled disruptions
+  withdraw the plan rather than shipping something under the bar. Nothing covers
+  the components — the interaction layer is untested.
 - **Sound is synthesised and minimal** — five short oscillator voices. Off by
   default; a real pass would use recorded paper and detent samples.
 

@@ -21,6 +21,8 @@ export type EventName =
   | 'make_real_clicked'
   | 'handoff_completed'
   | 'venue_broken'
+  | 'week_condition_changed'
+  | 'conditions_reset'
   | 'pair_swapped'
   | 'feedback_started'
   | 'feedback_submitted'

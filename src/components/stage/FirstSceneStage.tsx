@@ -9,6 +9,8 @@ import { IntroCurtain } from './IntroCurtain';
 import { WhyThisScene } from '@/components/reasoning/WhyThisScene';
 import { DecisionView } from '@/components/reasoning/DecisionView';
 import { HearMeOut } from '@/components/reasoning/HearMeOut';
+import { NotThisWeek } from '@/components/reasoning/NotThisWeek';
+import { DISRUPTION_LABELS, type Disruption } from '@/lib/rankScenes';
 import { Handoff } from '@/components/handoff/Handoff';
 import { FeedbackReceipt } from '@/components/feedback/FeedbackReceipt';
 import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
@@ -17,11 +19,13 @@ import { play } from '@/components/shared/sound';
 import { track } from '@/lib/analytics';
 import { damp } from '@/lib/motion';
 import {
+  useConditions,
   useCurrentPair,
   useCurrentScene,
   useIsWinner,
   useMagnetism,
   usePrototype,
+  useSendDecision,
 } from '@/store/prototypeStore';
 
 /**
@@ -42,8 +46,9 @@ export function FirstSceneStage() {
   const reasoningOpen = usePrototype((s) => s.reasoningOpen);
   const decisionOpen = usePrototype((s) => s.decisionOpen);
   const hearMeOutOpen = usePrototype((s) => s.hearMeOutOpen);
-  const brokenSceneId = usePrototype((s) => s.brokenSceneId);
   const soundOn = usePrototype((s) => s.soundOn);
+  const conditions = useConditions();
+  const decision = useSendDecision();
 
   const begin = usePrototype((s) => s.begin);
   const goToScene = usePrototype((s) => s.goToScene);
@@ -56,7 +61,9 @@ export function FirstSceneStage() {
   const toggleHearMeOut = usePrototype((s) => s.toggleHearMeOut);
   const makeItReal = usePrototype((s) => s.makeItReal);
   const reachQuiet = usePrototype((s) => s.reachQuiet);
-  const breakVenue = usePrototype((s) => s.breakVenue);
+  const applyDisruption = usePrototype((s) => s.applyDisruption);
+  const setWeek = usePrototype((s) => s.setWeek);
+  const resetConditions = usePrototype((s) => s.resetConditions);
   const swapPair = usePrototype((s) => s.swapPair);
   const startFeedback = usePrototype((s) => s.startFeedback);
   const toggleSound = usePrototype((s) => s.toggleSound);
@@ -121,6 +128,8 @@ export function FirstSceneStage() {
         stepScene(1);
       } else if (e.key === 'Enter') {
         e.preventDefault();
+        // Nothing to commit to when the system is declining to send.
+        if (!decision.send) return;
         if (phase === 'exploring') commit();
         else if (!reasoningOpen) openReasoning();
       } else if (e.key.toLowerCase() === 'd') {
@@ -133,6 +142,7 @@ export function FirstSceneStage() {
     closeDecision,
     closeReasoning,
     commit,
+    decision.send,
     decisionOpen,
     hearMeOutOpen,
     openDecision,
@@ -217,28 +227,53 @@ export function FirstSceneStage() {
               </div>
             </div>
 
-            {/* headline block */}
-            <div className="pointer-events-none max-w-[min(34rem,86vw)] pb-4 sm:pb-10">
-              <SceneHeadline scene={scene} isWinner={isWinner} />
+            {/* headline block — or the abstention, when there is nothing to send */}
+            <div className="max-w-[min(36rem,90vw)] pb-4 sm:pb-10">
+              <AnimatePresence mode="popLayout" initial={false}>
+                {decision.send ? (
+                  <motion.div key="headline" className="pointer-events-none">
+                    <SceneHeadline scene={scene} isWinner={isWinner} />
+                  </motion.div>
+                ) : (
+                  <NotThisWeek
+                    key="abstain"
+                    pair={pair}
+                    decision={decision}
+                    onSeeWorkings={openDecision}
+                    onEaseOff={resetConditions}
+                  />
+                )}
+              </AnimatePresence>
 
-              {brokenSceneId && (
+              {/* What the disruptions did, and — more importantly — did not do. */}
+              {(conditions.disruptions.length > 0 || conditions.excluded.length > 0) && (
                 <motion.p
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="mt-4 inline-block border-l-2 border-acid pl-3 font-mono text-micro uppercase leading-relaxed text-paper/55"
+                  className="pointer-events-none mt-5 inline-block border-l-2 border-acid pl-3 font-mono text-micro uppercase leading-relaxed text-paper/55"
                 >
-                  venue fell through · pair held · context replanned
-                  <br />
-                  <span className="text-acid/70">romance is fragile. the plan shouldn’t be.</span>
+                  {conditions.excluded.length > 0 && (
+                    <>
+                      {conditions.excluded.length} venue{conditions.excluded.length > 1 ? 's' : ''} lost
+                      <br />
+                    </>
+                  )}
+                  {conditions.disruptions.map((d) => (
+                    <span key={d}>
+                      {DISRUPTION_LABELS[d].label}
+                      <br />
+                    </span>
+                  ))}
+                  <span className="text-mint">pair held · context replanned · nobody rematched</span>
                 </motion.p>
               )}
             </div>
 
             {/* bottom bar */}
-            <div className="pointer-events-auto flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div className="pointer-events-auto flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
               <div className="order-2 flex flex-wrap items-center gap-2 sm:order-1">
                 <AnimatePresence mode="popLayout">
-                  {phase === 'exploring' ? (
+                  {!decision.send ? null : phase === 'exploring' ? (
                     <motion.button
                       key="choose"
                       layout
@@ -291,13 +326,52 @@ export function FirstSceneStage() {
                 >
                   hear me out
                 </button>
-                {locked && !brokenSceneId && (
+              </div>
+
+              {/*
+                Resilience. Each control invalidates one named part of the
+                context and the plan is re-derived from what survives. The pair
+                is never touched — and when nothing left clears the send bar,
+                the plan is withdrawn rather than downgraded.
+              */}
+              <div className="order-3 flex flex-wrap items-center gap-x-3 gap-y-1.5 sm:order-3 sm:w-full sm:justify-start">
+                <span className="font-mono text-micro uppercase text-paper/25">break it:</span>
+                {(Object.keys(DISRUPTION_LABELS) as Disruption[]).map((d) => {
+                  const spent =
+                    d === 'venue'
+                      ? conditions.excluded.length >= pair.scenes.length - 1
+                      : conditions.disruptions.includes(d);
+                  return (
+                    <button
+                      key={d}
+                      onClick={() => applyDisruption(d)}
+                      disabled={spent}
+                      title={DISRUPTION_LABELS[d].effect}
+                      className="min-h-[44px] px-1 py-2 font-mono text-micro uppercase text-paper/35 underline-offset-4 transition-colors hover:text-acid hover:underline disabled:text-paper/15 disabled:no-underline"
+                    >
+                      {DISRUPTION_LABELS[d].label}
+                    </button>
+                  );
+                })}
+                <span className="text-paper/15">·</span>
+                <button
+                  onClick={() => setWeek(conditions.week === 'normal' ? 'strained' : 'normal')}
+                  aria-pressed={conditions.week === 'strained'}
+                  className={`min-h-[44px] px-1 py-2 font-mono text-micro uppercase underline-offset-4 transition-colors hover:underline ${
+                    conditions.week === 'strained' ? 'text-acid' : 'text-paper/35 hover:text-acid'
+                  }`}
+                  title="Exam week. Nobody's calendar changes; everybody's capacity does."
+                >
+                  {conditions.week === 'strained' ? 'exam week: on' : 'make it exam week'}
+                </button>
+                {(conditions.disruptions.length > 0 ||
+                  conditions.excluded.length > 0 ||
+                  conditions.week !== 'normal') && (
                   <button
-                    onClick={breakVenue}
-                    className="min-h-[44px] px-2 py-2 font-mono text-micro uppercase text-paper/30 underline-offset-4 transition-colors hover:text-paper/70 hover:underline"
-                    title="Invalidate the venue and see what survives"
+                    onClick={resetConditions}
+                    className="min-h-[44px] px-1 py-2 font-mono text-micro uppercase text-paper/35 underline-offset-4 transition-colors hover:text-paper hover:underline"
                   >
-                    break the plan
+                    reset
                   </button>
                 )}
               </div>
@@ -315,6 +389,7 @@ export function FirstSceneStage() {
       <DecisionView
         pair={pair}
         currentSceneId={scene.id}
+        conditions={conditions}
         open={decisionOpen}
         onClose={closeDecision}
         onPick={(id) => goToScene(id, 'list')}

@@ -83,6 +83,28 @@ about how Ditto works.
   ends on a slot machine showing a personal match probability; FIRST SCENE
   deliberately does not copy it.
 
+### Claims from third-party concept documents, checked
+
+A set of externally-generated concept documents was supplied as input. Several
+made specific factual claims about Ditto. I checked them before reusing anything,
+and did not carry forward what failed.
+
+| Claim in those documents | Verdict |
+|---|---|
+| **Elsa Cai** is Head of Growth & Creative Director at Ditto | **VERIFIED.** LinkedIn profile, USC 2025–27, Los Angeles. |
+| Ditto runs **~1,000 date simulations** per match | **REPORTED, NOT FIRST-PARTY.** Appears near-verbatim across several secondary write-ups (Substack, Medium, an AI-tools blog), which indicates a single origin — most likely one press piece or deck — rather than independent confirmation. Not present on Ditto's own site. Treated as reported, never as architecture. |
+| Ditto has a **3-agent architecture** (Analysis / Matchmaking / Simulation agents) | **NOT VERIFIED.** A three-*stage* pipeline is described in secondary press; "three agents" is the concept document's own framing layered on top. No first-party source found. |
+| 163,000 students · 100+ schools · 69% match rate · $9.5M raised | **INCORRECT OR STALE.** Verified figures: 130,000 students who went on dates, $9.2M seed (reported elsewhere as "more than $9M" / "$10M backed"). The 69% match rate is unsourced. |
+
+Consequence: the strongest concept in those documents — a visual companion layer
+that renders Ditto's "three agents" at work — was **not built**, because it is
+constructed entirely on the one claim that failed verification. Shipping a
+fabricated internal architecture to the company that owns the real one is the
+specific failure mode this project was told to avoid.
+
+What *was* taken from them is the idea below, which needs no claim about Ditto's
+internals to stand up.
+
 ### Things I specifically did not claim
 
 No agent counts. No simulation counts. No model architecture. No ranking weights

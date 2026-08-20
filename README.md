@@ -34,6 +34,12 @@ across all six candidate openings**. The same two people are exactly as
 compatible in every row. Everything separating the best opening from the worst
 is context — which you can see as a flat line in the decision view.
 
+And the conclusion of that argument: if context is the variable, some weeks
+*every* context is wrong. So there's a send bar. When nothing clears it the
+system declines — **not this Wednesday** — and says the true thing about why:
+
+> pair signal did not move. the week did.
+
 Full argument: [PRODUCT_THESIS.md](PRODUCT_THESIS.md)
 
 ## What to do with it
@@ -46,8 +52,9 @@ Full argument: [PRODUCT_THESIS.md](PRODUCT_THESIS.md)
 | **why this one?** | three pieces of evidence and one thing the system admits it doesn't know |
 | **see the decision** (`D`) | the ranking with the arithmetic left in |
 | **hear me out** | stated preference vs. what the history suggests |
-| **break the plan** | invalidate the venue — the pair survives, only context is replanned |
-| **other pair** | same six rooms, different people. **coffee wins.** |
+| **break it** | three ways to sabotage the plan. context is replanned; the pair is never touched |
+| **make it exam week** | capacity drops, nobody's calendar changes — and the system stops sending |
+| **other pair** | same six rooms, different people. **coffee wins**, and it's the only opening that clears the bar |
 | **make it real** | the interface removes itself |
 
 The last one is the point. Ditto's manifesto says technology should *"make the
@@ -59,6 +66,10 @@ text message, then into one line.
 `0:00` two photographs, apart · `0:02` COFFEE — *possible. but too interview-y.*
 · `0:05` rotate, things start aligning · `0:08` POST SHOW WALK — **snap** ·
 `0:13` why this one? · `0:16` make it real · `0:20` *go have a real life.*
+
+For the systems version, press **break it** three times: the venue falls through
+and it replans, the shift moves and it holds, the walk doubles and it withdraws
+the plan rather than downgrading it.
 
 ## Stack
 

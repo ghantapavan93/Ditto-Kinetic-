@@ -2,15 +2,22 @@
 
 import { create } from 'zustand';
 import { PAIRS, SCENE_ORDER, pairById } from '@/data/pairs';
-import { magnetismFor, rankScenes, replanVenue } from '@/lib/rankScenes';
+import {
+  NO_CONDITIONS,
+  magnetismFor,
+  rankScenes,
+  sendDecision,
+  type Conditions,
+  type Disruption,
+} from '@/lib/rankScenes';
 import { track } from '@/lib/analytics';
 import type { Phase } from '@/lib/types';
 
 /**
  * Domain state and view state are kept in one store but never mixed in meaning:
- * `phase` / `selectedSceneId` are domain (they survive a re-render, a resize,
- * and a venue failure), while `dialAngle` is purely visual and is allowed to be
- * clobbered at any time.
+ * `phase` / `selectedSceneId` / `conditions` are domain (they survive a
+ * re-render, a resize, and a venue failure), while `dialPosition` is purely
+ * visual and is allowed to be clobbered at any time.
  */
 
 type FeedbackResult = {
@@ -26,13 +33,13 @@ type State = {
   phase: Phase;
   pairId: string;
   sceneId: string;
+  /** Everything that can degrade this week. The reason abstention is possible. */
+  conditions: Conditions;
   /** Continuous dial position in scene-index units. Visual only. */
   dialPosition: number;
   reasoningOpen: boolean;
   decisionOpen: boolean;
   hearMeOutOpen: boolean;
-  /** Set when the resilience test has broken the chosen venue. */
-  brokenSceneId: string | null;
   feedbackText: string;
   feedback: FeedbackResult | null;
   feedbackPending: boolean;
@@ -53,7 +60,9 @@ type Actions = {
   toggleHearMeOut: () => void;
   makeItReal: () => void;
   reachQuiet: () => void;
-  breakVenue: () => void;
+  applyDisruption: (d: Disruption) => void;
+  setWeek: (week: Conditions['week']) => void;
+  resetConditions: () => void;
   swapPair: () => void;
   startFeedback: () => void;
   setFeedbackText: (t: string) => void;
@@ -66,17 +75,28 @@ const initial: State = {
   phase: 'intro',
   pairId: PAIRS[0].id,
   sceneId: 'coffee',
+  conditions: NO_CONDITIONS,
   dialPosition: 0,
   reasoningOpen: false,
   decisionOpen: false,
   hearMeOutOpen: false,
-  brokenSceneId: null,
   feedbackText: '',
   feedback: null,
   feedbackPending: false,
   soundOn: false,
   hasInteracted: false,
 };
+
+/** Move the dial onto whichever scene the engine currently ranks first. */
+function snapToBest(pairId: string, conditions: Conditions) {
+  const ranked = rankScenes(pairById(pairId), conditions);
+  const best = ranked[0];
+  if (!best) return null;
+  return {
+    sceneId: best.scene.id,
+    dialPosition: SCENE_ORDER.indexOf(best.scene.id as (typeof SCENE_ORDER)[number]),
+  };
+}
 
 export const usePrototype = create<State & Actions>((set, get) => ({
   ...initial,
@@ -90,8 +110,9 @@ export const usePrototype = create<State & Actions>((set, get) => ({
   setDialPosition: (p) => set({ dialPosition: p, hasInteracted: true }),
 
   goToScene: (id, via) => {
-    const { sceneId, phase } = get();
+    const { sceneId, phase, conditions } = get();
     if (id === sceneId) return;
+    if (conditions.excluded.includes(id)) return;
     const index = SCENE_ORDER.indexOf(id as (typeof SCENE_ORDER)[number]);
     set({
       sceneId: id,
@@ -148,21 +169,55 @@ export const usePrototype = create<State & Actions>((set, get) => ({
   },
 
   /**
-   * Resilience test. The venue is invalidated; the pair is not.
-   * We re-plan context only — the humans were never what failed.
+   * Resilience. Each disruption invalidates a specific part of the *context*
+   * and the plan is re-derived — the pair is never touched. If the best
+   * surviving opening falls under the send bar, the plan is withdrawn rather
+   * than downgraded.
    */
-  breakVenue: () => {
-    const { pairId, sceneId } = get();
-    const pair = pairById(pairId);
-    const next = replanVenue(pair, sceneId);
-    if (!next) return;
+  applyDisruption: (d) => {
+    const { conditions, pairId, sceneId } = get();
+    if (conditions.disruptions.includes(d)) return;
+
+    const next: Conditions =
+      d === 'venue'
+        ? { ...conditions, excluded: [...conditions.excluded, sceneId] }
+        : { ...conditions, disruptions: [...conditions.disruptions, d] };
+
+    const decision = sendDecision(pairById(pairId), next);
+    const snapped = snapToBest(pairId, next);
+
     set({
-      brokenSceneId: sceneId,
-      sceneId: next.scene.id,
-      dialPosition: SCENE_ORDER.indexOf(next.scene.id as (typeof SCENE_ORDER)[number]),
-      phase: 'selected',
+      conditions: next,
+      ...(snapped ?? {}),
+      phase: decision.send ? 'selected' : 'exploring',
+      reasoningOpen: false,
     });
-    track('venue_broken', { from: sceneId, to: next.scene.id });
+
+    track('venue_broken', {
+      disruption: d,
+      from: sceneId,
+      to: snapped?.sceneId ?? null,
+      stillSending: decision.send,
+    });
+  },
+
+  setWeek: (week) => {
+    const { pairId, conditions } = get();
+    const next: Conditions = { ...conditions, week };
+    const decision = sendDecision(pairById(pairId), next);
+    const snapped = snapToBest(pairId, next);
+    set({
+      conditions: next,
+      ...(snapped ?? {}),
+      phase: decision.send ? get().phase : 'exploring',
+      reasoningOpen: false,
+    });
+    track('week_condition_changed', { week, stillSending: decision.send });
+  },
+
+  resetConditions: () => {
+    set({ conditions: NO_CONDITIONS, phase: 'exploring', reasoningOpen: false });
+    track('conditions_reset');
   },
 
   swapPair: () => {
@@ -173,8 +228,8 @@ export const usePrototype = create<State & Actions>((set, get) => ({
       phase: 'exploring',
       sceneId: 'coffee',
       dialPosition: 0,
+      conditions: NO_CONDITIONS,
       reasoningOpen: false,
-      brokenSceneId: null,
       feedback: null,
       feedbackText: '',
     });
@@ -231,23 +286,31 @@ export const usePrototype = create<State & Actions>((set, get) => ({
 
 export const useCurrentPair = () => usePrototype((s) => pairById(s.pairId));
 
+export const useConditions = () => usePrototype((s) => s.conditions);
+
 export const useCurrentScene = () => {
   const pair = useCurrentPair();
   const sceneId = usePrototype((s) => s.sceneId);
   return pair.scenes.find((sc) => sc.id === sceneId) ?? pair.scenes[0];
 };
 
-export const useRanked = () => rankScenes(useCurrentPair());
+export const useRanked = () => rankScenes(useCurrentPair(), useConditions());
 
 export const useMagnetism = () => {
   const pair = useCurrentPair();
   const sceneId = usePrototype((s) => s.sceneId);
-  return magnetismFor(pair, sceneId);
+  const conditions = useConditions();
+  return magnetismFor(pair, sceneId, conditions);
 };
 
-/** True when the currently viewed scene is the one the engine ranked first. */
+/** The send decision under current conditions. Drives the abstention surface. */
+export const useSendDecision = () => sendDecision(useCurrentPair(), useConditions());
+
+/** True when the viewed scene is the one the engine ranked first *and* would send. */
 export const useIsWinner = () => {
   const pair = useCurrentPair();
   const sceneId = usePrototype((s) => s.sceneId);
-  return rankScenes(pair)[0].scene.id === sceneId;
+  const conditions = useConditions();
+  const decision = sendDecision(pair, conditions);
+  return decision.send && decision.scene.id === sceneId;
 };

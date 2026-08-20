@@ -2,7 +2,15 @@
 
 import { useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { COST_TERMS, WEIGHTS, rankScenes, type WeightKey } from '@/lib/rankScenes';
+import {
+  COST_TERMS,
+  NO_CONDITIONS,
+  SEND_THRESHOLD,
+  WEIGHTS,
+  rankScenes,
+  type Conditions,
+  type WeightKey,
+} from '@/lib/rankScenes';
 import { SPRING } from '@/lib/motion';
 import type { MatchPair } from '@/lib/types';
 
@@ -22,22 +30,26 @@ import type { MatchPair } from '@/lib/types';
 export function DecisionView({
   pair,
   currentSceneId,
+  conditions = NO_CONDITIONS,
   open,
   onClose,
   onPick,
 }: {
   pair: MatchPair;
   currentSceneId: string;
+  conditions?: Conditions;
   open: boolean;
   onClose: () => void;
   onPick: (sceneId: string) => void;
 }) {
-  const ranked = useMemo(() => rankScenes(pair), [pair]);
+  const ranked = useMemo(() => rankScenes(pair, conditions), [pair, conditions]);
   const [expanded, setExpanded] = useState<string | null>(ranked[0]?.scene.id ?? null);
 
-  const max = ranked[0]?.utility ?? 1;
-  const min = ranked[ranked.length - 1]?.utility ?? 0;
-  const norm = (u: number) => (max - min < 1e-9 ? 1 : (u - min) / (max - min));
+  // Bars are scaled against the send bar rather than against the best row, so
+  // the threshold is a fixed position on every chart instead of a moving one.
+  const ceiling = Math.max(SEND_THRESHOLD * 1.6, ranked[0]?.utility ?? SEND_THRESHOLD);
+  const norm = (u: number) => Math.max(0, u) / ceiling;
+  const sendsAtAll = (ranked[0]?.utility ?? 0) >= SEND_THRESHOLD;
 
   return (
     <AnimatePresence>
@@ -85,31 +97,52 @@ export function DecisionView({
             </header>
 
             {/* The flat line. */}
-            <div className="mb-6 flex flex-wrap items-center gap-x-5 gap-y-2 border-y border-paper/10 py-3">
+            <div className="mb-4 flex flex-wrap items-center gap-x-5 gap-y-2 border-y border-paper/10 py-3">
               <span className="font-mono text-micro uppercase text-mint">pair signal</span>
               <span className="font-mono text-[1.05rem] font-bold text-paper">
                 {pair.pairSignal.toFixed(2)}
               </span>
               <span className="font-mono text-micro uppercase text-paper/40">
-                identical in all six rows — it is the same two people
+                identical in every row — it is the same two people
               </span>
+            </div>
+
+            {/* The send bar, and whether anything cleared it. */}
+            <div className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-2">
+              <span className="font-mono text-micro uppercase text-paper/35">send bar</span>
+              <span className="font-mono text-[0.9rem] tabular-nums text-paper/80">
+                {SEND_THRESHOLD.toFixed(2)}
+              </span>
+              <span
+                className={`font-mono text-micro uppercase ${sendsAtAll ? 'text-mint' : 'text-acid'}`}
+              >
+                {sendsAtAll
+                  ? `${ranked.filter((r) => r.utility >= SEND_THRESHOLD).length} of ${ranked.length} clear it`
+                  : 'nothing clears it — the system is declining to send'}
+              </span>
+              {conditions.week === 'strained' && (
+                <span className="font-mono text-micro uppercase text-acid/70">exam week applied</span>
+              )}
             </div>
 
             <ol className="space-y-1.5">
               {ranked.map((entry) => {
                 const isOpen = expanded === entry.scene.id;
                 const isCurrent = entry.scene.id === currentSceneId;
+                const clears = entry.utility >= SEND_THRESHOLD;
+                const isSelected = clears && entry.rank === 1;
                 return (
                   <li key={entry.scene.id}>
                     <button
                       onClick={() => setExpanded(isOpen ? null : entry.scene.id)}
                       aria-expanded={isOpen}
                       className={`group grid w-full grid-cols-[2rem_1fr_auto] items-center gap-3 border px-3 py-2.5 text-left transition-colors
-                        ${entry.rank === 1 ? 'border-acid/50 bg-acid/[0.07]' : 'border-paper/10 hover:border-paper/25'}
-                        ${isCurrent && entry.rank !== 1 ? 'border-cobalt/50' : ''}`}
+                        ${isSelected ? 'border-acid/50 bg-acid/[0.07]' : 'border-paper/10 hover:border-paper/25'}
+                        ${isCurrent && !isSelected ? 'border-cobalt/50' : ''}
+                        ${clears ? '' : 'opacity-55'}`}
                     >
                       <span
-                        className={`font-mono text-[0.72rem] font-bold ${entry.rank === 1 ? 'text-acid' : 'text-paper/35'}`}
+                        className={`font-mono text-[0.72rem] font-bold ${isSelected ? 'text-acid' : 'text-paper/35'}`}
                       >
                         {String(entry.rank).padStart(2, '0')}
                       </span>
@@ -122,20 +155,32 @@ export function DecisionView({
                           <span className="font-mono text-micro uppercase text-paper/35">
                             {entry.scene.time}
                           </span>
-                          {entry.rank === 1 && (
+                          {isSelected && (
                             <span className="font-mono text-micro uppercase text-acid">selected</span>
                           )}
+                          {!clears && (
+                            <span className="font-mono text-micro uppercase text-paper/30">
+                              under the bar
+                            </span>
+                          )}
                         </span>
+
+                        {/* The send bar is a fixed tick on every row, so you can
+                            see at a glance where the cut falls. */}
                         <span
                           aria-hidden
-                          className="mt-1.5 block h-[3px] w-full overflow-hidden bg-paper/10"
+                          className="relative mt-1.5 block h-[3px] w-full overflow-hidden bg-paper/10"
                         >
                           <span
                             className="block h-full transition-[width] duration-scene ease-settle"
                             style={{
-                              width: `${Math.max(4, norm(entry.utility) * 100)}%`,
-                              background: entry.rank === 1 ? '#FF2E88' : '#2B44FF',
+                              width: `${Math.max(2, norm(entry.utility) * 100)}%`,
+                              background: isSelected ? '#FF2E88' : clears ? '#2B44FF' : '#3A4470',
                             }}
+                          />
+                          <span
+                            className="absolute top-[-3px] h-[9px] w-px bg-paper/50"
+                            style={{ left: `${norm(SEND_THRESHOLD) * 100}%` }}
                           />
                         </span>
                       </span>

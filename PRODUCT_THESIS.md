@@ -83,6 +83,34 @@ the old one, not an update.
 
 ---
 
+## The conclusion of the same argument
+
+If context is the variable, then some weeks *every* context is wrong.
+
+A system that only ranks always returns a first element. A system that decides
+has to be able to return nothing. So this one has a send bar, and when the best
+available opening falls under it, it declines:
+
+> **not this Wednesday.**
+
+That is not a soft state. Ditto delivers one match per Wednesday, so declining
+costs a person their entire week — which is exactly what makes it a decision
+rather than a UI mode. The system has to believe waiting beats the best thing it
+can currently offer.
+
+The critical detail is what the bad week does *not* touch. A strained week
+degrades schedule fit, attendance, and the first fifteen minutes. It leaves
+`pairSignal` and `contextFit` exactly where they were. So the abstention can say
+the true thing:
+
+> Maya and Jonah are exactly as right for each other as they were an hour ago.
+> Pair signal did not move. The week did.
+
+An abstention that reads as rejection would be a worse product than sending the
+wrong date. The whole point is that it isn't one.
+
+---
+
 ## The falsifiable version
 
 If the thesis is right, the same six rooms scored for a different pair should
@@ -92,4 +120,10 @@ Press **other pair**. Priya has twelve-hour clinical shifts and doesn't need an
 activity to open up; Theo finds activities a way of avoiding the conversation.
 Same engine, same weights, same six rooms.
 
-Coffee wins. The post-show walk comes last.
+Coffee wins. The post-show walk comes last — and it is the *only* opening of the
+six that clears the send bar for them. One sendable option, which is the honest
+answer rather than a menu.
+
+Then press **make it exam week**. Nobody's calendar changes and nobody becomes
+less compatible; capacity drops. Both pairs go under the bar, and the system
+stops.
