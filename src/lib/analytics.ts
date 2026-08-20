@@ -57,6 +57,7 @@ export type EventName =
   | 'weather_viewed'
   | 'attention_viewed'
   | 'index_viewed'
+  | 'autonomy_viewed'
   | 'compiler_run'
   | 'compiler_quieted'
   | 'ending_viewed'

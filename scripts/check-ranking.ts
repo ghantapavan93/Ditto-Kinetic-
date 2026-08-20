@@ -46,6 +46,12 @@ import {
   saidAs,
 } from '../src/lib/attention';
 import {
+  INALIENABLE,
+  isConsentOnly,
+  ladder,
+  lastWorthClimbing,
+} from '../src/lib/autonomy';
+import {
   LENSES,
   challengeSet,
   lensesDisagree,
@@ -82,6 +88,7 @@ const HEADING19 = '\nClaim 19 — one camera, and it never jumps:';
 const HEADING20 = '\nClaim 20 — forces are the model, not a picture of it:';
 const HEADING21 = '\nClaim 21 — the weather is counted, not written:';
 const HEADING22 = '\nClaim 22 — the audit includes the auditor:';
+const HEADING23 = '\nClaim 23 — the top rung takes nothing and still costs you:';
 
 const HEADING7 = '\nClaim 7 — last week changes this week:';
 
@@ -1323,6 +1330,75 @@ console.log(HEADING22);
   };
   console.log(`  mean cost -- product ${saidAs(mean('product'))}, argument ${saidAs(mean('argument'))}`);
   expect('shippable surfaces are cheaper than arguments', mean('product') < mean('argument'), true);
+}
+
+
+/* ---- claim 23: the top rung takes nothing and still costs you ---------- */
+
+console.log(HEADING23);
+{
+  const rungs = ladder();
+  expect('six rungs', rungs.length, 6);
+
+  // Cumulative and monotonic: no rung ever hands a decision back.
+  for (let i = 1; i < rungs.length; i++) {
+    expect(
+      `level ${i}: takes everything the rung below took`,
+      rungs[i - 1].level.takes.every((d) => rungs[i].level.takes.includes(d)),
+      true,
+    );
+    expect(`level ${i}: never costs more time than the rung below`, rungs[i].attending <= rungs[i - 1].attending, true);
+  }
+
+  // The line this project will not cross, at any level.
+  for (const r of rungs) {
+    expect(
+      `level ${r.level.n}: whether you go is never taken`,
+      r.level.takes.includes(INALIENABLE),
+      false,
+    );
+    expect(`level ${r.level.n}: so at least one decision is always yours`, r.yours >= 1, true);
+  }
+
+  // Diminishing returns. The first rung buys far more per decision than the last
+  // one that buys anything at all.
+  const buying = rungs.filter((r) => r.boughtPerDecision !== null);
+  const first = buying[0];
+  const last = buying[buying.length - 1];
+  console.log(
+    `  level ${first.level.n} bought ${saidAs(first.boughtPerDecision!)} per decision; level ${last.level.n} bought ${saidAs(last.boughtPerDecision!)}`,
+  );
+  expect('the first rung buys far more per decision than the last', first.boughtPerDecision! > last.boughtPerDecision! * 10, true);
+
+  // The finding. Levels 4 and 5 transfer an identical set — the top rung hands
+  // over nothing further and removes only the asking.
+  const four = rungs[4];
+  const five = rungs[5];
+  console.log(
+    `  level 4 takes ${four.surrendered} decisions, level 5 takes ${five.surrendered} -- difference ${five.surrendered - four.surrendered}`,
+  );
+  expect('the top rung takes nothing new', five.given, 0);
+  expect('its decision set is identical to the rung below', five.surrendered, four.surrendered);
+  expect('and it is the only rung that stops asking', five.level.confirms, false);
+  expect('which the model flags as consent-only', isConsentOnly(rungs, 5), true);
+  expect('and no other rung is', rungs.filter((_, i) => isConsentOnly(rungs, i)).length, 1);
+
+  // So the ceiling is about consent, not capability.
+  const ceiling = lastWorthClimbing(rungs);
+  console.log(`  last rung worth climbing: level ${ceiling.level.n} — ${ceiling.level.name}`);
+  expect('the ceiling is level four', ceiling.level.n, 4);
+
+  // And the trap: on both attention measures the top rung is the cheapest thing
+  // here, which is exactly why attention cannot be the only number.
+  console.log(
+    `  level 5 costs ${saidAs(five.attending)} a week and ${saidAs(five.explaining)} to explain -- the least of both`,
+  );
+  expect('the top rung is the cheapest to live with', five.attending, Math.min(...rungs.map((r) => r.attending)));
+  expect(
+    'and the cheapest to explain of every built rung',
+    five.explaining < Math.max(...rungs.map((r) => r.explaining)),
+    true,
+  );
 }
 
 

@@ -34,6 +34,7 @@ const SAYS: Record<string, string> = {
   '/next': 'the bet, the order, and how it loses',
   '/attention': 'what all of this costs you to look at',
   '/all': 'this. measured like everything else.',
+  '/autonomy': 'six rungs, and the one that takes nothing and still costs you',
 };
 
 /**

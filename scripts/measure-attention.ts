@@ -61,6 +61,7 @@ const ROUTES: { path: string; dir: string; kind: 'argument' | 'product' }[] = [
   // Including itself. An audit that exempted the auditor would be worth nothing.
   { path: '/attention', dir: 'components/attention', kind: 'argument' },
   { path: '/all', dir: 'components/all', kind: 'argument' },
+  { path: '/autonomy', dir: 'components/autonomy', kind: 'argument' },
 ];
 
 function files(dir: string): string[] {
