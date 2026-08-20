@@ -18,6 +18,7 @@ import { WEEK_TWO } from '../src/data/weekTwo';
 import { CLOUD_COUNT, possibilityCloud } from '../src/lib/possibility';
 import { HELD_BACK } from '../src/data/heldBack';
 import { heldBack } from '../src/lib/restraint';
+import { privateSignals } from '../src/lib/redaction';
 import { QUESTIONS, STARTING_TRAITS } from '../src/data/livingProfile';
 import { ACTIONABLE, CONFIDENCE_CEILING, applyAnswer, unknowns } from '../src/lib/profile';
 import {
@@ -46,6 +47,7 @@ const HEADING8 = '\nClaim 8 — the lenses are a partition, not a cast:';
 const HEADING9 = '\nClaim 9 — the possibility cloud is uncertainty made physical:';
 const HEADING10 = '\nClaim 10 — restraint names what it is waiting for:';
 const HEADING11 = '\nClaim 11 — the profile never claims to know a person:';
+const HEADING12 = '\nClaim 12 — the redaction has nothing behind it:';
 
 const HEADING7 = '\nClaim 7 — last week changes this week:';
 
@@ -572,6 +574,50 @@ console.log(HEADING11);
   const untouched = spread.traits.filter((t) => t.since === null);
   expect('untouched beliefs stay untouched', untouched.every((t) => t.confidence < ACTIONABLE), true);
   expect('and are still on the books', unknowns(spread.traits).length > 0, true);
+}
+
+
+/* ---- claim 12: the redaction has nothing behind it ---------------------- */
+
+console.log(HEADING12);
+{
+  const signals = privateSignals('jonah');
+  expect('there are private signals to admit to', signals.length > 0, true);
+
+  // The claim the surface makes out loud: no text was ever produced, so there
+  // is nothing to select, inspect or read aloud. A blurred <p> fails this.
+  const everyWord = signals.flatMap((s) => s.lines.flatMap((l) => l.words));
+  expect('every redacted "word" is a number', everyWord.every((w) => typeof w === 'number'), true);
+  expect('and none of them is a string', everyWord.some((w) => typeof w === 'string'), false);
+
+  // Serialise the private half and confirm it carries no language at all.
+  const privateHalf = JSON.stringify(signals.map((s) => s.lines));
+  const letters = privateHalf.replace(/[^A-Za-z]/g, '').replace(/words/g, '');
+  console.log(`  private payload serialises to ${privateHalf.length} chars, ${letters.length} of them letters`);
+  expect('the private payload contains no words', letters.length, 0);
+
+  // The public half is deliberately public: you can audit what is held without
+  // being shown it. Kind and confidence, never content.
+  expect('each signal still says what kind it is', signals.every((s) => s.kind.length > 0), true);
+  expect('and how sure it is', signals.every((s) => s.confidence > 0 && s.confidence < 1), true);
+
+  // Same person, same redaction — otherwise it flickers on every render and
+  // the shape starts leaking information by changing.
+  expect(
+    'the redaction is stable for a person',
+    JSON.stringify(privateSignals('jonah')) === JSON.stringify(signals),
+    true,
+  );
+  expect(
+    'and differs between people',
+    JSON.stringify(privateSignals('maya')) !== JSON.stringify(signals),
+    true,
+  );
+
+  // Shape has to look like writing, not like a loading skeleton.
+  const widths = new Set(everyWord.map((w) => Math.round(w)));
+  console.log(`  ${widths.size} distinct word widths across ${everyWord.length} shapes`);
+  expect('word widths vary like language', widths.size >= 5, true);
 }
 
 

@@ -14,6 +14,7 @@ import {
   type Change,
   type Trait,
 } from '@/lib/profile';
+import { FrostedSignals } from './FrostedSignals';
 import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
 import { NarrativeCursor } from '@/components/shared/NarrativeCursor';
 import { track } from '@/lib/analytics';
@@ -237,6 +238,15 @@ export function ProfileStage() {
                 </p>
               </div>
             )}
+
+            {/*
+              The third state, and the page is incomplete without it. Above is
+              what the system knows about you, which it shows in full. Then what
+              it knows about nobody, which it admits to. This is what it knows
+              about someone else — held on their behalf, and the only category
+              it refuses outright.
+            */}
+            <FrostedSignals personId="jonah" name="Jonah" />
           </section>
         </div>
 

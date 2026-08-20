@@ -8,6 +8,7 @@ import { sendDecision } from '@/lib/rankScenes';
 import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
 import { NarrativeCursor } from '@/components/shared/NarrativeCursor';
 import { useReducedMotion } from '@/components/shared/useReducedMotion';
+import { PhoneFrame } from './PhoneFrame';
 import { spring, type Spring } from '@/lib/motion';
 import { track } from '@/lib/analytics';
 
@@ -112,6 +113,14 @@ export function DropStage() {
           receipt, and reintroduced here from muscle memory. Both states share
           one grid cell instead.
         */}
+        {/*
+          Everything before the match lands happens inside a phone, and the
+          frame is not decoration — it is the claim the page then refutes. See
+          PhoneFrame: the container's width is animated rather than its scale,
+          so the content genuinely reflows out of notification shape instead of
+          being zoomed.
+        */}
+        <PhoneFrame escaped={phase === 'landed'} reducedMotion={reduced}>
         <div className="grid">
         <AnimatePresence>
           {phase === 'waiting' && (
@@ -217,6 +226,7 @@ export function DropStage() {
           )}
         </AnimatePresence>
         </div>
+        </PhoneFrame>
 
         <PrototypeDisclosure />
       </div>
