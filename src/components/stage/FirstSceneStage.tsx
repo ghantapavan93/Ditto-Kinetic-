@@ -483,6 +483,7 @@ export function FirstSceneStage() {
               >
                 <span className="font-mono text-micro uppercase text-paper/25">also:</span>
                 {[
+                  { href: '/gravity', label: 'forces, not scores' },
                   { href: '/zoom', label: 'one camera, all of it' },
                   { href: '/network', label: 'the whole campus' },
                   { href: '/compiler', label: 'say it in one sentence' },

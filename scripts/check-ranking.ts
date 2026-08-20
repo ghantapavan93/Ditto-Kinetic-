@@ -35,6 +35,7 @@ import { compile, scaffolding } from '../src/lib/compiler';
 import { buildCampus } from '../src/lib/campus';
 import { bridgeFor, readNetwork } from '../src/lib/network';
 import { WAYPOINTS, cameraAt, distanceToPair, levelAt } from '../src/lib/zoom';
+import { coherence, fieldFor, fieldsFor, gapFor } from '../src/lib/gravity';
 import {
   LENSES,
   challengeSet,
@@ -69,6 +70,7 @@ const HEADING16 = '\nClaim 16 — the twelfth dimension did not earn its place:'
 const HEADING17 = '\nClaim 17 — the compiler reads its input, and never lowers the bar:';
 const HEADING18 = '\nClaim 18 — the missing edge is not the compatible one:';
 const HEADING19 = '\nClaim 19 — one camera, and it never jumps:';
+const HEADING20 = '\nClaim 20 — forces are the model, not a picture of it:';
 
 const HEADING7 = '\nClaim 7 — last week changes this week:';
 
@@ -1117,6 +1119,77 @@ console.log(HEADING19);
   expect('the journey passes through all three', new Set(levels).size, 3);
   expect('it starts at the campus', levels[0], 'world');
   expect('and ends on one person', levels[2], 'human');
+}
+
+
+/* ---- claim 20: forces are the model, not a picture of it ---------------- */
+
+console.log(HEADING20);
+{
+  for (const pair of PAIRS) {
+    for (const field of fieldsFor(pair)) {
+      // The forces ARE the scorer's terms. If the signed sum ever drifts from
+      // the utility, this has stopped being the model and become an illustration.
+      const summed = field.forces.reduce((t, f) => t + f.signed, 0);
+      expect(
+        `${pair.id}/${field.scene.id}: the forces sum to the score`,
+        Math.abs(summed - field.net) < 1e-9,
+        true,
+      );
+      expect(
+        `${pair.id}/${field.scene.id}: ten forces, one per weighted term`,
+        field.forces.length,
+        Object.keys(weightsFor()).length,
+      );
+      // Locking is the send bar, not a separate opinion.
+      expect(
+        `${pair.id}/${field.scene.id}: locking is the send bar`,
+        field.locked,
+        field.net >= SEND_THRESHOLD,
+      );
+    }
+  }
+
+  // The gap is a bijection with the utility. Stated plainly because it is a
+  // rescaling rather than an emergent result, and the page says so too.
+  const all = PAIRS.flatMap((p) => fieldsFor(p));
+  const sorted = [...all].sort((a, b) => b.net - a.net);
+  let monotonic = true;
+  for (let i = 1; i < sorted.length; i++) {
+    if (sorted[i].gap < sorted[i - 1].gap - 1e-9) monotonic = false;
+  }
+  expect('a better evening is always a smaller gap', monotonic, true);
+  expect('and the mapping is invertible', gapFor(0.6) < gapFor(0.3), true);
+
+  // What the physics adds that the score cannot. Two rooms can carry the same
+  // number with different compositions, so tension has to be independent of net.
+  const mj = fieldsFor(PAIRS[0]);
+  const pt = fieldsFor(PAIRS[1]);
+  const cafeA = mj.find((f) => f.scene.id === 'coffee')!;
+  const cafeB = pt.find((f) => f.scene.id === 'coffee')!;
+
+  console.log(
+    `  the same cafe -- maya-jonah net ${cafeA.net.toFixed(3)} coherence ${coherence(cafeA).toFixed(2)}; priya-theo net ${cafeB.net.toFixed(3)} coherence ${coherence(cafeB).toFixed(2)}`,
+  );
+  expect('the same room is coherent for one pair', coherence(cafeB) > 0.75, true);
+  expect('and contested for the other', coherence(cafeA) < 0.6, true);
+
+  // Coherence is bounded and meaningful at both ends.
+  expect('coherence never exceeds one', all.every((f) => coherence(f) <= 1 + 1e-9), true);
+  expect('and is always positive here', all.every((f) => coherence(f) > 0), true);
+
+  // The finding nobody wrote: across almost every room, the strongest thing
+  // pushing two people apart is the system's own ignorance.
+  const pushedBy = all.map((f) => f.forces.filter((x) => !x.pulls)[0]?.key);
+  const ignorance = pushedBy.filter((k) => k === 'uncertainty').length;
+  console.log(`  the top pushing force is uncertainty in ${ignorance} of ${all.length} rooms`);
+  expect('what we do not know is the main thing holding people apart', ignorance > all.length / 2, true);
+
+  // Breaking the week has to physically push them apart, not merely re-label.
+  const calm = fieldFor(PAIRS[0].scenes[0], NO_CONDITIONS);
+  const strained = fieldFor(PAIRS[0].scenes[0], { ...NO_CONDITIONS, week: 'strained' });
+  console.log(`  exam week moves the gap ${calm.gap.toFixed(2)} -> ${strained.gap.toFixed(2)}`);
+  expect('a strained week pushes them apart', strained.gap > calm.gap, true);
 }
 
 

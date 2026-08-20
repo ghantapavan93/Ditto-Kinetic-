@@ -135,7 +135,10 @@ export const DISRUPTION_LABELS: Record<Disruption, { label: string; effect: stri
  * enjoy it if they do. Keeping the untouched fields untouched is what lets the
  * abstention be explained honestly — the pair was never the problem.
  */
-function applyConditions(metrics: SceneEvaluation, conditions: Conditions): SceneEvaluation {
+export function applyConditions(
+  metrics: SceneEvaluation,
+  conditions: Conditions,
+): SceneEvaluation {
   let m = { ...metrics };
 
   if (conditions.week === 'strained') {

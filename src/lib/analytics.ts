@@ -53,6 +53,7 @@ export type EventName =
   | 'next_viewed'
   | 'network_viewed'
   | 'zoom_viewed'
+  | 'gravity_viewed'
   | 'compiler_run'
   | 'compiler_quieted'
   | 'ending_viewed'
