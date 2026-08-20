@@ -1,10 +1,10 @@
 # Ditto — product & implementation teardown
 
-Reverse-engineered from 26 screenshots of `app.ditto.ai/join` and `tryditto.com/social`
+Reverse-engineered from 27 screenshots of `app.ditto.ai/join` and `tryditto.com/social`
 captured 2026-08-19. Everything here is **observed from the UI**; anything that is an
 inference about the implementation is marked _(inferred)_.
 
-Source screenshots: `~/OneDrive/Pictures/Screenshots/Screenshot 2026-08-19 19*.png`
+Source screenshots: [`reference/`](../reference) — 27 captures of the live flow.
 
 ---
 
