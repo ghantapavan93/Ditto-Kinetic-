@@ -50,6 +50,7 @@ export type EventName =
   | 'held_back_viewed'
   | 'double_date_viewed'
   | 'app_shell_viewed'
+  | 'next_viewed'
   | 'ending_viewed'
   | 'ending_message_shown'
   | 'odds_viewed'
