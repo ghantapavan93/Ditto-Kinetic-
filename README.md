@@ -49,9 +49,10 @@ Full argument: [PRODUCT_THESIS.md](PRODUCT_THESIS.md)
 | **Drag the dial** (or `←` `→`) | six openings for Maya × Jonah |
 | **COFFEE** | the one Ditto currently books. it fails, and the stage shows you why before it tells you |
 | **POST SHOW WALK** | everything snaps into one composition |
+| **the first fifteen** | appears once you choose. scrub 0 → 15 and watch what the *room* is doing for them, minute by minute |
 | **why this one?** | three pieces of evidence and one thing the system admits it doesn't know |
 | **see the decision** (`D`) | the ranking with the arithmetic left in |
-| **hear me out** | stated preference vs. what the history suggests |
+| **hear me out** | a folded note against the edge, not a modal. it disagrees with you, then offers to prove it — `change the scene and see` |
 | **break it** | three ways to sabotage the plan. context is replanned; the pair is never touched |
 | **make it exam week** | capacity drops, nobody's calendar changes — and the system stops sending |
 | **other pair** | same six rooms, different people. **coffee wins**, and it's the only opening that clears the bar |

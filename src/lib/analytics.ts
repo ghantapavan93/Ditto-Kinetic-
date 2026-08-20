@@ -34,6 +34,7 @@ export type EventName =
   | 'tldr_opened'
   | 'time_shifted'
   | 'pass_captured'
+  | 'first_fifteen_scrubbed'
   | 'fragment_read'
   | 'pair_swapped'
   | 'feedback_started'

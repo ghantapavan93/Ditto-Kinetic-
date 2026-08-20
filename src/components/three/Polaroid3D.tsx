@@ -78,6 +78,8 @@ type Props = {
   reducedMotion: boolean;
   /** Warms the paper when an affectionate reason is being read. */
   blush?: boolean;
+  /** 0..1 across the first fifteen minutes. */
+  intimacy?: number;
 };
 
 /**
@@ -88,7 +90,7 @@ type Props = {
  * strong one pulls them in and squares them up. Nothing about this is decorative
  * — the geometry is the argument.
  */
-export function Polaroid3D({ person, side, magnetism, locked, exiting, reducedMotion, blush = false }: Props) {
+export function Polaroid3D({ person, side, magnetism, locked, exiting, reducedMotion, blush = false, intimacy = 0 }: Props) {
   const group = useRef<THREE.Group>(null);
   const [hovered, setHovered] = useState(false);
   const layout = useStageLayout();
@@ -106,7 +108,7 @@ export function Polaroid3D({ person, side, magnetism, locked, exiting, reducedMo
     const t = state.clock.elapsedTime;
     // Resting transform comes from a pure function so the same maths can be
     // stepped through a damped loop in `npm run check` -- see cardTransform.ts.
-    const target = cardTarget(side, magnetism, layout, t, reducedMotion);
+    const target = cardTarget(side, magnetism, layout, t, reducedMotion, intimacy);
 
     // Handoff: the cards are the last thing to leave, and they leave upward.
     const exitY = exiting * 3.4;

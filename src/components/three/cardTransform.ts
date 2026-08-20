@@ -29,10 +29,17 @@ export function cardTarget(
   /** Elapsed seconds — only affects the idle/unrest drift. */
   t = 0,
   reducedMotion = false,
+  /**
+   * 0..1 across the first fifteen minutes. A small extra settle on top of
+   * context fit — an evening that has been going a while sits closer than one
+   * that just started. Deliberately separate from magnetism so scrubbing can
+   * never move the ranking.
+   */
+  intimacy = 0,
 ): CardTarget {
   const misfit = 1 - magnetism;
 
-  const spread = lerp(layout.spreadMax, layout.spreadMin, magnetism);
+  const spread = lerp(layout.spreadMax, layout.spreadMin, magnetism) * (1 - intimacy * 0.07);
   const along = side * spread * 0.5;
 
   const x = layout.portrait ? side * 0.16 * misfit : along;
@@ -51,7 +58,7 @@ export function cardTarget(
     x: (x + driftX) * layout.scale,
     y: (baseY + driftY) * layout.scale,
     z: side * misfit * 0.55,
-    rotZ: side * misfit * 0.3 + driftRot,
+    rotZ: side * misfit * 0.3 * (1 - intimacy * 0.35) + driftRot,
     rotY: -side * lerp(0.4, -0.07, magnetism),
   };
 }

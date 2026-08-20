@@ -20,6 +20,7 @@ import { TooMuch } from './TooMuch';
 import { TimeDial } from './TimeDial';
 import { JourneyRail } from './JourneyRail';
 import { PairHeader } from './PairHeader';
+import { FirstFifteen } from './FirstFifteen';
 import { temperatureFor } from '@/lib/temperature';
 import { useReducedMotion } from '@/components/shared/useReducedMotion';
 import { play } from '@/components/shared/sound';
@@ -33,6 +34,7 @@ import {
   useIsWinner,
   useMagnetism,
   usePrototype,
+  useIntimacy,
   useSendDecision,
   useTimeShift,
 } from '@/store/prototypeStore';
@@ -59,6 +61,7 @@ export function FirstSceneStage() {
   const conditions = useConditions();
   const decision = useSendDecision();
   const timeShift = useTimeShift();
+  const intimacy = useIntimacy();
 
   const begin = usePrototype((s) => s.begin);
   const goToScene = usePrototype((s) => s.goToScene);
@@ -189,6 +192,7 @@ export function FirstSceneStage() {
           exiting={exiting}
           reducedMotion={reduced}
           timeShift={timeShift}
+          intimacy={intimacy}
           onFragment={setReading}
         />
       </div>
@@ -247,6 +251,7 @@ export function FirstSceneStage() {
                 {decision.send ? (
                   <motion.div key="headline" className="pointer-events-none">
                     <SceneHeadline scene={scene} isWinner={isWinner} timeShift={timeShift} />
+                    {locked && <FirstFifteen pairId={pair.id} sceneId={scene.id} />}
                   </motion.div>
                 ) : (
                   <NotThisWeek
@@ -401,7 +406,16 @@ export function FirstSceneStage() {
       </AnimatePresence>
 
       <WhyThisScene scene={scene} open={reasoningOpen} onClose={closeReasoning} />
-      <HearMeOut pair={pair} open={hearMeOutOpen} onClose={toggleHearMeOut} />
+      <HearMeOut
+        pair={pair}
+        open={hearMeOutOpen}
+        onClose={toggleHearMeOut}
+        canChangeScene={decision.send && decision.scene.id !== scene.id}
+        onChangeScene={() => {
+          if (decision.send) goToScene(decision.scene.id, 'list');
+          toggleHearMeOut();
+        }}
+      />
       <DecisionView
         pair={pair}
         currentSceneId={scene.id}

@@ -53,6 +53,8 @@ type State = {
    * only honest way to show that is to change the light.
    */
   timeShift: -1 | 0 | 1;
+  /** How far into the opening fifteen minutes the user has scrubbed. */
+  minute: 0 | 5 | 10 | 15;
 };
 
 type Actions = {
@@ -78,6 +80,7 @@ type Actions = {
   toggleSound: () => void;
   toggleTldr: () => void;
   setTimeShift: (shift: -1 | 0 | 1) => void;
+  setMinute: (minute: 0 | 5 | 10 | 15) => void;
   reset: () => void;
 };
 
@@ -97,6 +100,7 @@ const initial: State = {
   hasInteracted: false,
   tldrOpen: false,
   timeShift: 0,
+  minute: 0,
 };
 
 /** Move the dial onto whichever scene the engine currently ranks first. */
@@ -134,6 +138,8 @@ export const usePrototype = create<State & Actions>((set, get) => ({
       // about *this* scene, so it cannot survive changing scene.
       phase: phase === 'selected' || phase === 'reasoning' ? 'exploring' : phase,
       reasoningOpen: false,
+      // The beats belong to a room, so scrubbing resets when the room changes.
+      minute: 0,
     });
     // Magnetism is the one number the whole stage is driven by, so it belongs
     // in the event: if the physical language ever stops tracking the model,
@@ -304,6 +310,12 @@ export const usePrototype = create<State & Actions>((set, get) => ({
     track('time_shifted', { shift });
   },
 
+  setMinute: (minute) => {
+    if (get().minute === minute) return;
+    set({ minute });
+    track('first_fifteen_scrubbed', { minute, scene: get().sceneId });
+  },
+
   toggleTldr: () => {
     const next = !get().tldrOpen;
     set({ tldrOpen: next });
@@ -320,6 +332,13 @@ export const useCurrentPair = () => usePrototype((s) => pairById(s.pairId));
 export const useConditions = () => usePrototype((s) => s.conditions);
 
 export const useTimeShift = () => usePrototype((s) => s.timeShift);
+
+/**
+ * How settled the pair should read, over and above context fit — 0 at the
+ * start of the evening, 1 by minute fifteen. Kept separate from magnetism so
+ * the ranking maths is never touched by a scrub.
+ */
+export const useIntimacy = () => usePrototype((s) => s.minute / 15);
 
 export const useCurrentScene = () => {
   const pair = useCurrentPair();

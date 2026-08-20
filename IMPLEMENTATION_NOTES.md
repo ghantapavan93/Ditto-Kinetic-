@@ -324,6 +324,44 @@ a `waiting` beat in the handoff, because an introduction involves a second
 person who has not answered yet; and a shutter on the date pass, since it is the
 one screen designed to be screenshotted by someone who is not using the product.
 
+## The first fifteen
+
+`firstFifteenMinutesForecast` has been the second-heaviest term in the scorer
+since the beginning, and until now it was a number nobody could see. Choosing a
+scene now opens it: four beats across the opening fifteen minutes, scrubbable.
+
+It deliberately does **not** generate a conversation. Inventing dialogue for two
+invented people would be a worse product than saying nothing, and it would also
+be the wrong claim — the system does not know what they will say. What it can
+reason about is what the *room* is doing for them at each minute, which is
+precisely what the forecast forecasts. So the beats describe social conditions:
+"the crowd is still doing some of the work", "walking has taken the eye contact
+down to almost nothing".
+
+Scrubbing also settles the pair slightly further as the evening gets going. That
+is a separate `intimacy` term threaded through `cardTarget`, **not** a change to
+magnetism — so no amount of scrubbing can move the ranking, and the six motion
+assertions still hold because `intimacy` defaults to 0.
+
+## Hear Me Out is a note now, not a dialog
+
+It was a centred Radix modal, which was wrong twice over. It dimmed and blocked
+the stage, so the one moment that asks you to *look again* hid the thing it
+wanted you to look at. And modality is itself a claim — it says this blocks
+everything until you deal with it — which is the opposite of what a system
+gently disagreeing with you should assert.
+
+It is now a folded note against the right edge (bottom sheet when narrow). The
+stage stays lit and interactive behind it. Not a Radix Dialog, deliberately:
+focus moves to it and Escape closes it, but it never traps focus or hides the
+page from assistive tech, because it does not block — and claiming otherwise
+would be a lie told in ARIA.
+
+The addition that matters is `change the scene and see`. Ditto stops arguing and
+demonstrates: verified moving COFFEE → POST SHOW WALK straight from the note.
+Radix Dialog is retained for the decision view, which genuinely *is* a modal
+deep-dive.
+
 ## On screenshots of an animated stage
 
 Two of the "bugs" diagnosed from screenshots during this pass were not bugs.
