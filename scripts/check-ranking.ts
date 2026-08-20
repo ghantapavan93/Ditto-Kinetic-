@@ -184,5 +184,29 @@ console.log('\nClaim 4 — the physical language has enough range to be read:');
   }
 }
 
+/* ---- claim 5: the reason field is honest ---------------------------------- */
+
+console.log('\nClaim 5 — the reasons behave like reasons:');
+for (const pair of PAIRS) {
+  const tension = pair.fragments.filter((f) => f.kind === 'tension');
+  const spark = pair.fragments.filter((f) => f.kind === 'spark');
+
+  // A real tension surfaces early and stays. If the only way to see the
+  // difficult thing were to already be in the best possible room, the field
+  // would be flattery rather than evidence.
+  expect(
+    `${pair.id}: tension surfaces before the good news`,
+    tension.every((t) => pair.fragments.filter((f) => f.kind !== 'tension').every((f) => f.surfacesAt >= t.surfacesAt)),
+    true,
+  );
+  expect(`${pair.id}: has at least one tension`, tension.length >= 1, true);
+  expect(`${pair.id}: has exactly one spark`, spark.length, 1);
+  expect(
+    `${pair.id}: every fragment surfaces within reach`,
+    pair.fragments.every((f) => f.surfacesAt >= 0 && f.surfacesAt <= 0.9),
+    true,
+  );
+}
+
 console.log(failures ? `\n${failures} assertion(s) FAILED` : '\nall assertions passed');
 process.exit(failures ? 1 : 0);

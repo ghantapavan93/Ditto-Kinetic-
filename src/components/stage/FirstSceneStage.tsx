@@ -14,10 +14,13 @@ import { DISRUPTION_LABELS, type Disruption } from '@/lib/rankScenes';
 import { Handoff } from '@/components/handoff/Handoff';
 import { FeedbackReceipt } from '@/components/feedback/FeedbackReceipt';
 import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
+import { NarrativeCursor } from '@/components/shared/NarrativeCursor';
+import { TooMuch } from './TooMuch';
 import { useReducedMotion } from '@/components/shared/useReducedMotion';
 import { play } from '@/components/shared/sound';
 import { track } from '@/lib/analytics';
 import { damp } from '@/lib/motion';
+import type { Fragment } from '@/lib/types';
 import {
   useConditions,
   useCurrentPair,
@@ -72,6 +75,9 @@ export function FirstSceneStage() {
   const inHandoff = phase === 'handoff' || phase === 'quiet';
   const inFeedback = phase === 'post-date' || phase === 'memory';
   const showStageChrome = phase === 'exploring' || locked;
+
+  /** The reason fragment currently under the pointer, if any. */
+  const [reading, setReading] = useState<Fragment | null>(null);
 
   /** Handoff progress 0..1, driving the WebGL layer's exit. */
   const [exiting, setExiting] = useState(0);
@@ -173,7 +179,7 @@ export function FirstSceneStage() {
       />
 
       {/* WebGL layer */}
-      <div className="absolute inset-0 z-stage">
+      <div className="absolute inset-0 z-stage" data-cursor="come closer">
         <SpatialStage
           pair={pair}
           scene={scene}
@@ -181,6 +187,7 @@ export function FirstSceneStage() {
           locked={locked}
           exiting={exiting}
           reducedMotion={reduced}
+          onFragment={setReading}
         />
       </div>
 
@@ -306,6 +313,7 @@ export function FirstSceneStage() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 8 }}
                         onClick={makeItReal}
+                        data-cursor="make it real"
                         className="min-h-[44px] border border-acid bg-acid px-4 py-2 font-mono text-micro uppercase text-ink transition-colors hover:bg-transparent hover:text-acid"
                       >
                         make it real
@@ -409,6 +417,29 @@ export function FirstSceneStage() {
       </AnimatePresence>
 
       <AnimatePresence>{inFeedback && <FeedbackReceipt key="feedback" pair={pair} />}</AnimatePresence>
+
+      {/*
+        The blush. One line, only for the affectionate reasons, gone the moment
+        you stop reading it. It is the smallest thing in the piece and probably
+        the one people will mention.
+      */}
+      <AnimatePresence>
+        {reading?.kind === 'spark' && showStageChrome && (
+          <motion.p
+            key="blush"
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4, transition: { duration: 0.2 } }}
+            transition={{ duration: 0.28 }}
+            className="pointer-events-none absolute left-1/2 top-[14%] z-overlay -translate-x-1/2 font-hand text-[1.35rem] text-acid/80"
+          >
+            okay cute
+          </motion.p>
+        )}
+      </AnimatePresence>
+
+      <NarrativeCursor />
+      {showStageChrome && <TooMuch />}
 
       {/* Disclosure persists on the stage, quietly. */}
       {showStageChrome && (

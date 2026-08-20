@@ -19,7 +19,7 @@ import type { MatchPair, Scene } from '@/lib/types';
  * it to do is stop.
  */
 
-type Stage = 'composing' | 'sent' | 'quiet';
+type Stage = 'pass' | 'sent' | 'quiet';
 
 export function Handoff({
   pair,
@@ -34,17 +34,17 @@ export function Handoff({
   onQuiet: () => void;
   onFeedback: () => void;
 }) {
-  const [stage, setStage] = useState<Stage>('composing');
+  const [stage, setStage] = useState<Stage>('pass');
 
   useEffect(() => {
     const t1 = setTimeout(() => {
       setStage('sent');
       play('send', soundOn);
-    }, 1250);
+    }, 3200);
     const t2 = setTimeout(() => {
       setStage('quiet');
       onQuiet();
-    }, 5200);
+    }, 7600);
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);
@@ -62,8 +62,60 @@ export function Handoff({
         are stacked in one grid cell instead, so the quiet screen mounts the
         moment the state changes and the card leaves underneath it.
       */}
+      {/*
+        Beat one: the plan as a physical object.
+
+        Before anything collapses, the decision becomes a thing you could put in
+        a pocket — a ticket rather than a notification. It exists for about three
+        seconds and it is the only screen in the piece designed to be
+        screenshotted by someone who is not using the product.
+      */}
       <AnimatePresence>
-        {stage !== 'quiet' && (
+        {stage === 'pass' && (
+          <motion.div
+            key="pass"
+            initial={{ opacity: 0, y: 26, rotate: -3, scale: 0.94 }}
+            animate={{ opacity: 1, y: 0, rotate: -1.4, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.9, filter: 'blur(5px)', transition: { duration: 0.5 } }}
+            transition={{ type: 'spring', stiffness: 190, damping: 24 }}
+            className="col-start-1 row-start-1 w-[min(20rem,82vw)]"
+          >
+            <div className="u-paper u-torn-bottom relative px-6 pb-9 pt-6">
+              <p className="font-mono text-[0.6rem] uppercase tracking-[0.28em] text-ink/45">
+                Ditto · one introduction
+              </p>
+
+              <p className="mt-4 font-display text-[1.9rem] uppercase leading-none text-ink">
+                {pair.personA.name} <span className="text-acid">×</span> {pair.personB.name}
+              </p>
+
+              <div className="my-4 border-t border-dashed border-ink/25" />
+
+              <p className="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-ink/50">thursday</p>
+              <p className="font-display text-[3.2rem] leading-[0.9] text-ink">{scene.time}</p>
+
+              <p className="mt-3 font-mono text-[0.72rem] uppercase leading-relaxed tracking-[0.14em] text-ink/70">
+                {scene.location.split('→')[0].trim()}
+                <br />
+                <span className="text-acid">↓</span>
+                <br />
+                {(scene.location.split('→')[1] ?? 'and see').trim()}
+              </p>
+
+              <p className="mt-5 font-hand text-[1.15rem] leading-tight text-ink/60">
+                less pressure. more chance.
+              </p>
+
+              {/* perforation */}
+              <span aria-hidden className="absolute -left-1.5 top-[42%] h-3 w-3 rounded-full bg-ink" />
+              <span aria-hidden className="absolute -right-1.5 top-[42%] h-3 w-3 rounded-full bg-ink" />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {stage === 'sent' && (
           <motion.div
             key="message"
             initial={{ opacity: 0, y: 20, scale: 0.97 }}
@@ -88,26 +140,22 @@ export function Handoff({
                 {scene.location}
               </p>
 
-              <AnimatePresence>
-                {stage === 'sent' && (
-                  <motion.p
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    transition={{ delay: 0.25, duration: 0.45 }}
-                    className="mt-3 overflow-hidden font-editorial text-[0.95rem] leading-snug text-paper-bright/90"
-                  >
-                    you’ll have something to talk about before you have to figure out what to
-                    talk about.
-                  </motion.p>
-                )}
-              </AnimatePresence>
+              <motion.p
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                transition={{ delay: 0.35, duration: 0.45 }}
+                className="mt-3 overflow-hidden font-editorial text-[0.95rem] leading-snug text-paper-bright/90"
+              >
+                you’ll have something to talk about before you have to figure out what to talk
+                about.
+              </motion.p>
             </motion.div>
 
             <motion.p
               className="mt-2 text-right font-mono text-micro uppercase text-paper/30"
               initial={{ opacity: 0 }}
-              animate={{ opacity: stage === 'sent' ? 1 : 0 }}
-              transition={{ delay: 0.4 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.8 }}
             >
               delivered
             </motion.p>

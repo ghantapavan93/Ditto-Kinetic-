@@ -72,6 +72,7 @@ export function WhyThisScene({
                 animate={{ opacity: 1, y: 0, rotate: 0.8 }}
                 exit={{ opacity: 0, y: 10 }}
                 transition={{ ...SPRING.settle, delay: 0.36 }}
+                data-cursor="hmm..."
                 className="relative rounded-artifact border border-dashed border-paper/25 bg-paper/[0.07] px-4 py-3 backdrop-blur-sm"
               >
                 <p className="font-mono text-micro uppercase text-paper/45">what we don’t know yet</p>

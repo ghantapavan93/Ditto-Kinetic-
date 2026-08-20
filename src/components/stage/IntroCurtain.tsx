@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { DUR, EASE } from '@/lib/motion';
 import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
 
@@ -9,14 +9,24 @@ import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
  * The opening.
  *
  * No landing page, no feature list, no explanation before play. The stage is
- * already live and already lit behind this copy — the intro is three lines and
- * an instruction, and any input at all dismisses it.
+ * already live and already lit behind this copy.
  *
- * Ten seconds is the budget: the timestamp establishes *when*, the two cards
- * establish *who*, and "six ways to meet" establishes the only mechanic there
- * is. Everything after that is discovered by dragging.
+ * It opens the way the real product opens: a text arrives. One bubble, three
+ * words, and it leaves again — which is both accurate to Ditto's actual
+ * delivery mechanism and the fastest possible way to establish that something
+ * has already happened before you got here. Only then do the two photographs
+ * get named.
+ *
+ * Any input at all skips the whole thing.
  */
 export function IntroCurtain({ onBegin }: { onBegin: () => void }) {
+  const [beat, setBeat] = useState<'text' | 'people'>('text');
+
+  useEffect(() => {
+    const t = setTimeout(() => setBeat('people'), 1900);
+    return () => clearTimeout(t);
+  }, []);
+
   useEffect(() => {
     const dismiss = () => onBegin();
     window.addEventListener('pointerdown', dismiss, { once: true });
@@ -43,32 +53,67 @@ export function IntroCurtain({ onBegin }: { onBegin: () => void }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15, duration: 0.5, ease: EASE.settle }}
       >
-        WED 7:00 PM
+        WED · 7:00 PM
       </motion.p>
 
-      <div className="max-w-[min(46rem,92vw)]">
-        <h1 className="font-display text-hero uppercase leading-[0.86] text-paper">
-          {['same two', 'people.'].map((line, i) => (
-            <motion.span
-              key={line}
-              className="block"
-              initial={{ opacity: 0, y: 26 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.35 + i * 0.1, duration: 0.7, ease: EASE.settle }}
-            >
-              {line}
-            </motion.span>
-          ))}
-        </h1>
+      {/* Beat one: the text that would actually have arrived. */}
+      <AnimatePresence>
+        {beat === 'text' && (
+          <motion.div
+            key="sms"
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center"
+            initial={{ opacity: 0, y: 18, scale: 0.94 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -14, scale: 0.97, filter: 'blur(4px)' }}
+            transition={{ delay: 0.4, type: 'spring', stiffness: 260, damping: 30 }}
+          >
+            <p className="mb-2 font-mono text-micro uppercase text-paper/35">Ditto</p>
+            <p className="rounded-[1.2rem] rounded-bl-md bg-cobalt px-5 py-3 font-editorial text-lede font-medium text-paper-bright shadow-lift">
+              found someone.
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-        <motion.p
-          className="mt-5 font-editorial text-lede font-medium text-acid"
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.62, duration: 0.6, ease: EASE.settle }}
-        >
-          six ways to meet.
-        </motion.p>
+      {/* Beat two: the two people it is about. */}
+      <div className="max-w-[min(46rem,92vw)]">
+        <AnimatePresence>
+          {beat === 'people' && (
+            <motion.div key="hero" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+              <h1 className="font-display text-hero uppercase leading-[0.86] text-paper">
+                {['same two', 'people.'].map((line, i) => (
+                  <motion.span
+                    key={line}
+                    className="block"
+                    initial={{ opacity: 0, y: 26 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.1, duration: 0.7, ease: EASE.settle }}
+                  >
+                    {line}
+                  </motion.span>
+                ))}
+              </h1>
+
+              <motion.p
+                className="mt-5 font-editorial text-lede font-medium text-acid"
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.26, duration: 0.6, ease: EASE.settle }}
+              >
+                six ways to meet.
+              </motion.p>
+
+              <motion.p
+                className="mt-2 font-editorial text-[0.95rem] text-paper/40"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5, duration: 0.6 }}
+              >
+                but where changes everything.
+              </motion.p>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       <div className="flex items-end justify-between gap-6">
@@ -76,8 +121,8 @@ export function IntroCurtain({ onBegin }: { onBegin: () => void }) {
         <motion.p
           className="shrink-0 font-mono text-label uppercase text-paper/70"
           initial={{ opacity: 0 }}
-          animate={{ opacity: [0, 1, 0.55, 1] }}
-          transition={{ delay: 0.95, duration: 2.2, ease: 'easeInOut' }}
+          animate={{ opacity: beat === 'people' ? [0, 1, 0.55, 1] : 0 }}
+          transition={{ delay: 0.7, duration: 2.2, ease: 'easeInOut' }}
         >
           drag the first scene
         </motion.p>

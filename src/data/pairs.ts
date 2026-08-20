@@ -484,6 +484,14 @@ export const PAIRS: MatchPair[] = [
     personB: JONAH,
     pairSignal: MJ_PAIR_SIGNAL,
     scenes: MJ_SCENES,
+    fragments: [
+      { text: 'both ambitious. | maybe too ambitious.', kind: 'tension', pull: 0, surfacesAt: 0.12 },
+      { text: 'she plans everything. | he somehow never does. | weirdly promising.', kind: 'lopsided', pull: -1, surfacesAt: 0.3 },
+      { text: 'both get funnier | after minute ten.', kind: 'shared', pull: 0, surfacesAt: 0.45 },
+      { text: 'neither of them | fills a silence.', kind: 'shared', pull: 1, surfacesAt: 0.55 },
+      { text: 'both secretly | sentimental.', kind: 'spark', pull: 0, surfacesAt: 0.72 },
+      { text: 'same three shows. | neither posted about it.', kind: 'shared', pull: 0, surfacesAt: 0.82 },
+    ],
     hearMeOut: {
       stated: 'not too outgoing',
       reading: 'they respond well to high energy — when the room is low pressure',
@@ -496,6 +504,13 @@ export const PAIRS: MatchPair[] = [
     personB: THEO,
     pairSignal: PT_PAIR_SIGNAL,
     scenes: PT_SCENES,
+    fragments: [
+      { text: 'her week is a rota. | his is a suggestion.', kind: 'tension', pull: 0, surfacesAt: 0.12 },
+      { text: 'she skips the preamble. | he was going to anyway.', kind: 'shared', pull: 0, surfacesAt: 0.35 },
+      { text: 'he likes being | argued with.', kind: 'lopsided', pull: 1, surfacesAt: 0.5 },
+      { text: 'neither of them | wants an activity.', kind: 'shared', pull: 0, surfacesAt: 0.62 },
+      { text: 'both awful | at being looked after.', kind: 'spark', pull: 0, surfacesAt: 0.78 },
+    ],
     hearMeOut: {
       stated: 'someone spontaneous',
       reading: 'spontaneity costs her more than almost anyone — her calendar is the constraint',

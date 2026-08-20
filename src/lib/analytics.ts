@@ -23,6 +23,8 @@ export type EventName =
   | 'venue_broken'
   | 'week_condition_changed'
   | 'conditions_reset'
+  | 'tldr_opened'
+  | 'fragment_read'
   | 'pair_swapped'
   | 'feedback_started'
   | 'feedback_submitted'

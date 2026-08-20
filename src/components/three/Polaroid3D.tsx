@@ -53,12 +53,16 @@ const CARD_GEOMETRY = (() => {
   return geometry;
 })();
 
-/** Shared paper material — one instance for both cards. */
-const CARD_MATERIAL = new THREE.MeshStandardMaterial({
-  color: '#F4F1E8',
-  roughness: 0.86,
-  metalness: 0.02,
-});
+/**
+ * Paper material. One per card rather than one shared instance, because the
+ * blush tint has to be able to move independently of anything else on stage.
+ */
+function makeCardMaterial() {
+  return new THREE.MeshStandardMaterial({ color: '#F4F1E8', roughness: 0.86, metalness: 0.02 });
+}
+
+const PAPER_COLD = new THREE.Color('#F4F1E8');
+const PAPER_WARM = new THREE.Color('#FFE2E9');
 
 type Props = {
   person: Person;
@@ -71,6 +75,8 @@ type Props = {
   /** Global handoff progress 0..1 — cards leave the stage as this rises. */
   exiting: number;
   reducedMotion: boolean;
+  /** Warms the paper when an affectionate reason is being read. */
+  blush?: boolean;
 };
 
 /**
@@ -81,11 +87,12 @@ type Props = {
  * strong one pulls them in and squares them up. Nothing about this is decorative
  * — the geometry is the argument.
  */
-export function Polaroid3D({ person, side, magnetism, locked, exiting, reducedMotion }: Props) {
+export function Polaroid3D({ person, side, magnetism, locked, exiting, reducedMotion, blush = false }: Props) {
   const group = useRef<THREE.Group>(null);
   const [hovered, setHovered] = useState(false);
   const wobble = useRef({ x: 0, y: 0 });
   const layout = useStageLayout();
+  const material = useMemo(() => makeCardMaterial(), []);
 
   const texture = useMemo(
     () => portraitTexture(person.portraitSeed, person.portraitTint),
@@ -148,10 +155,13 @@ export function Polaroid3D({ person, side, magnetism, locked, exiting, reducedMo
     const s = damp(g.scale.x, exitScale * (hovered ? 1.035 : 1), 7, dt);
     g.scale.setScalar(s);
 
-    const material = (g.getObjectByName('photo') as THREE.Mesh | undefined)?.material as
+    const photo = (g.getObjectByName('photo') as THREE.Mesh | undefined)?.material as
       | THREE.MeshBasicMaterial
       | undefined;
-    if (material) material.opacity = 1 - exiting;
+    if (photo) photo.opacity = 1 - exiting;
+
+    // The blush. Barely there, and gone the moment you look away.
+    material.color.lerp(blush ? PAPER_WARM : PAPER_COLD, 1 - Math.exp(-4.5 * dt));
   });
 
   return (
@@ -164,7 +174,7 @@ export function Polaroid3D({ person, side, magnetism, locked, exiting, reducedMo
       onPointerOut={() => setHovered(false)}
     >
       {/* paper body */}
-      <mesh geometry={CARD_GEOMETRY} material={CARD_MATERIAL} castShadow receiveShadow />
+      <mesh geometry={CARD_GEOMETRY} material={material} castShadow receiveShadow />
 
       {/* the photograph sits just proud of the paper, as it does on a real polaroid */}
       <mesh name="photo" position={[0, PHOTO_Y, CARD_D / 2 + 0.001]}>

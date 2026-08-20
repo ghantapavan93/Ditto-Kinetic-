@@ -55,7 +55,9 @@ Full argument: [PRODUCT_THESIS.md](PRODUCT_THESIS.md)
 | **break it** | three ways to sabotage the plan. context is replanned; the pair is never touched |
 | **make it exam week** | capacity drops, nobody's calendar changes — and the system stops sending |
 | **other pair** | same six rooms, different people. **coffee wins**, and it's the only opening that clears the bar |
-| **make it real** | the interface removes itself |
+| **hover a reason** | the space between them fills with handwritten evidence as the context improves. hover the soft one and the paper blushes |
+| **too much?** | bottom right. the whole production collapses to four lines on white. it rebuilds when you ask |
+| **make it real** | you get a ticket you could put in a pocket — then the interface removes itself |
 
 The last one is the point. Ditto's manifesto says technology should *"make the
 introduction, then get out of the way."* The richest screen collapses into one
@@ -76,8 +78,8 @@ the plan rather than downgrading it.
 Next.js 14 · React 18 · TypeScript (strict) · Tailwind · three.js ·
 @react-three/fiber · framer-motion · zustand · zod
 
-Zero image assets — every portrait and artifact is drawn procedurally to a canvas
-and cached. Scoring is a deterministic linear model with no LLM in the main path.
+Zero image assets — every portrait, artifact and handwritten fragment is drawn
+procedurally to a canvas and cached. Scoring is a deterministic linear model with no LLM in the main path.
 
 ## Honesty
 

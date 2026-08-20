@@ -115,6 +115,33 @@ export type Scene = {
   thirdThing?: string;
 };
 
+/**
+ * A reason these two might work, as a physical object.
+ *
+ * Fragments belong to the *pair*, not the scene — "both ambitious, maybe too
+ * ambitious" is true of Maya and Jonah in every room. What the room decides is
+ * whether it ever surfaces. So the fragments are constant and their visibility
+ * is a function of magnetism, which is the thesis stated one more way.
+ */
+export type FragmentKind =
+  /** Pulls toward both people. The reasons they work. */
+  | 'shared'
+  /** Pulled toward one person only. Asymmetric, and it leans. */
+  | 'lopsided'
+  /** Real, and unresolved. It never settles — it vibrates. */
+  | 'tension'
+  /** The soft one. Hovering it makes the paper blush. */
+  | 'spark';
+
+export type Fragment = {
+  text: string;
+  kind: FragmentKind;
+  /** -1 pulled toward A, +1 toward B, 0 held between them. */
+  pull: -1 | 0 | 1;
+  /** How good the context has to be before this surfaces at all, 0..1. */
+  surfacesAt: number;
+};
+
 export type MatchPair = {
   id: string;
   personA: Person;
@@ -122,6 +149,8 @@ export type MatchPair = {
   /** Constant across all this pair's scenes. Displayed as such. */
   pairSignal: number;
   scenes: Scene[];
+  /** Reasons they might work, rendered as objects in the space between them. */
+  fragments: Fragment[];
   /** The contradiction between stated and revealed preference. */
   hearMeOut: {
     stated: string;

@@ -168,6 +168,7 @@ export function SceneDial({ scenes }: { scenes: Scene[] }) {
         role="slider"
         tabIndex={0}
         aria-label="First scene selector"
+        data-cursor="change the night"
         aria-valuemin={1}
         aria-valuemax={SCENE_ORDER.length}
         aria-valuenow={activeIndex + 1}

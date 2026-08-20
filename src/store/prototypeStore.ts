@@ -45,6 +45,8 @@ type State = {
   feedbackPending: boolean;
   soundOn: boolean;
   hasInteracted: boolean;
+  /** The plain-text escape hatch. */
+  tldrOpen: boolean;
 };
 
 type Actions = {
@@ -68,6 +70,7 @@ type Actions = {
   setFeedbackText: (t: string) => void;
   submitFeedback: () => Promise<void>;
   toggleSound: () => void;
+  toggleTldr: () => void;
   reset: () => void;
 };
 
@@ -85,6 +88,7 @@ const initial: State = {
   feedbackPending: false,
   soundOn: false,
   hasInteracted: false,
+  tldrOpen: false,
 };
 
 /** Move the dial onto whichever scene the engine currently ranks first. */
@@ -285,6 +289,12 @@ export const usePrototype = create<State & Actions>((set, get) => ({
   },
 
   toggleSound: () => set({ soundOn: !get().soundOn }),
+
+  toggleTldr: () => {
+    const next = !get().tldrOpen;
+    set({ tldrOpen: next });
+    if (next) track('tldr_opened');
+  },
 
   reset: () => set({ ...initial, soundOn: get().soundOn }),
 }));

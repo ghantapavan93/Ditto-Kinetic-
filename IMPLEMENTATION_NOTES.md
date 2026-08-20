@@ -66,6 +66,21 @@ That is not a detail — it is what lets the abstention copy make a true claim
 an assertion in `npm run check` that fails if a future edit ever lets a bad week
 reach either field.
 
+### The reason field
+
+Fragments belong to the **pair**, not the scene. "both ambitious, maybe too
+ambitious" is true of Maya and Jonah in every room; what the room decides is
+whether it ever surfaces. Each fragment carries a `surfacesAt` threshold, so a
+bad context is not just two people held apart — it is two people held apart with
+almost nothing visible between them, and the winning scene fills that space with
+evidence.
+
+`tension` fragments are the honest ones: they surface *first*, they vibrate
+rather than settle, and they do not go away when the scene improves, because
+"maybe too ambitious" is not fixed by picking a better venue. `npm run check`
+asserts that ordering — if the difficult reasons ever surfaced later than the
+flattering ones, the field would be flattery rather than evidence.
+
 ### Magnetism
 
 `magnetismFor(pair, sceneId)` normalises a scene's utility against the best and

@@ -8,9 +8,10 @@ import { ConnectionField } from './ConnectionField';
 import { Artifact3D } from './Artifact3D';
 import { SceneLighting } from './SceneLighting';
 import { StageProbe } from './StageProbe';
+import { ReasonField } from './ReasonField';
 import { damp, lerp } from '@/lib/motion';
 import { track } from '@/lib/analytics';
-import type { MatchPair, Scene } from '@/lib/types';
+import type { Fragment, MatchPair, Scene } from '@/lib/types';
 
 type StageProps = {
   pair: MatchPair;
@@ -53,7 +54,16 @@ function CameraRig({ magnetism, exiting, reducedMotion }: { magnetism: number; e
   return null;
 }
 
-function StageContents({ pair, scene, magnetism, locked, exiting, reducedMotion }: StageProps) {
+function StageContents({ pair, scene, magnetism, locked, exiting, reducedMotion, onFragment }: StageProps & { onFragment: (f: Fragment | null) => void }) {
+  // Hovering a `spark` fragment warms the paper. It is the one purely
+  // affectionate thing on the stage and it is deliberately tiny.
+  const [blush, setBlush] = useState(false);
+
+  const handleFragment = (fragment: Fragment | null) => {
+    setBlush(fragment?.kind === 'spark');
+    onFragment(fragment);
+  };
+
   return (
     <>
       <fog attach="fog" args={['#08090C', 8, 20]} />
@@ -75,6 +85,7 @@ function StageContents({ pair, scene, magnetism, locked, exiting, reducedMotion 
         locked={locked}
         exiting={exiting}
         reducedMotion={reducedMotion}
+        blush={blush}
       />
       <Polaroid3D
         person={pair.personB}
@@ -83,6 +94,16 @@ function StageContents({ pair, scene, magnetism, locked, exiting, reducedMotion 
         locked={locked}
         exiting={exiting}
         reducedMotion={reducedMotion}
+        blush={blush}
+      />
+
+      <ReasonField
+        pair={pair}
+        magnetism={magnetism}
+        locked={locked}
+        exiting={exiting}
+        reducedMotion={reducedMotion}
+        onHover={handleFragment}
       />
 
       {/*
@@ -133,7 +154,7 @@ function FlatFallback({ pair, scene }: { pair: MatchPair; scene: Scene }) {
   );
 }
 
-export function SpatialStage(props: StageProps) {
+export function SpatialStage(props: StageProps & { onFragment?: (f: Fragment | null) => void }) {
   const [failed, setFailed] = useState(false);
 
   /**
@@ -199,7 +220,7 @@ export function SpatialStage(props: StageProps) {
       frameloop="always"
     >
       <Suspense fallback={null}>
-        <StageContents {...props} />
+        <StageContents {...props} onFragment={props.onFragment ?? (() => {})} />
       </Suspense>
     </Canvas>
   );
