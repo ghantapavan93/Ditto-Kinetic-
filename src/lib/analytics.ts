@@ -54,6 +54,7 @@ export type EventName =
   | 'network_viewed'
   | 'zoom_viewed'
   | 'gravity_viewed'
+  | 'weather_viewed'
   | 'compiler_run'
   | 'compiler_quieted'
   | 'ending_viewed'

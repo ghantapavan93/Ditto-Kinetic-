@@ -36,6 +36,7 @@ import { buildCampus } from '../src/lib/campus';
 import { bridgeFor, readNetwork } from '../src/lib/network';
 import { WAYPOINTS, cameraAt, distanceToPair, levelAt } from '../src/lib/zoom';
 import { coherence, fieldFor, fieldsFor, gapFor } from '../src/lib/gravity';
+import { ALIVE, buildWeek, readWeather } from '../src/lib/weather';
 import {
   LENSES,
   challengeSet,
@@ -71,6 +72,7 @@ const HEADING17 = '\nClaim 17 — the compiler reads its input, and never lowers
 const HEADING18 = '\nClaim 18 — the missing edge is not the compatible one:';
 const HEADING19 = '\nClaim 19 — one camera, and it never jumps:';
 const HEADING20 = '\nClaim 20 — forces are the model, not a picture of it:';
+const HEADING21 = '\nClaim 21 — the weather is counted, not written:';
 
 const HEADING7 = '\nClaim 7 — last week changes this week:';
 
@@ -1190,6 +1192,64 @@ console.log(HEADING20);
   const strained = fieldFor(PAIRS[0].scenes[0], { ...NO_CONDITIONS, week: 'strained' });
   console.log(`  exam week moves the gap ${calm.gap.toFixed(2)} -> ${strained.gap.toFixed(2)}`);
   expect('a strained week pushes them apart', strained.gap > calm.gap, true);
+}
+
+
+/* ---- claim 21: the weather is counted, not written ---------------------- */
+
+console.log(HEADING21);
+{
+  const ordinary = buildWeek(false);
+  const midterms = buildWeek(true);
+
+  // Same week every time, or none of the readings below mean anything.
+  expect(
+    'the week is deterministic',
+    JSON.stringify(buildWeek(false).energy) === JSON.stringify(ordinary.energy),
+    true,
+  );
+
+  const w = readWeather(ordinary);
+  const m = readWeather(midterms);
+
+  // Counted across the whole population rather than authored per night. If a
+  // day's figures ever stop matching a fresh count of the column, this has
+  // become set dressing.
+  for (const d of w.days) {
+    const col = ordinary.energy.map((row) => row[d.day]);
+    expect(`${d.name}: the headcount is a headcount`, d.free, col.filter((e) => e > 0).length);
+    expect(`${d.name}: alive is counted`, d.alive, col.filter((e) => e >= ALIVE).length);
+    expect(`${d.name}: usable share follows from those two`, Math.abs(d.density - (d.free ? d.alive / d.free : 0)) < 1e-9, true);
+  }
+
+  // The finding, and it is not the one I went looking for. A campus can be
+  // nearly full and nearly empty at the same time, and a headcount cannot tell.
+  const wed = w.days[3];
+  const fri = w.days[5];
+  console.log(
+    `  ordinary week -- wednesday ${wed.free} out / ${wed.alive} alive / ${wed.openings} openings; friday ${fri.free} / ${fri.alive} / ${fri.openings}`,
+  );
+  expect('wednesday is nearly as full as friday', wed.free / fri.free > 0.7, true);
+  expect('and nowhere near as usable', wed.openings < fri.openings * 0.1, true);
+  expect('so the headcount is close and the reading is not', wed.density < fri.density / 2, true);
+
+  // Some nights the honest output is nothing at all.
+  console.log(`  nights not worth forcing -- ordinary: ${w.closed.map((d) => d.name).join(', ') || 'none'}`);
+  console.log(`  nights not worth forcing -- midterms: ${m.closed.map((d) => d.name).join(', ') || 'none'}`);
+  expect('some nights are not worth forcing', w.closed.length > 0, true);
+  expect('and a strained week closes more of them', m.closed.length > w.closed.length, true);
+
+  // The drop day is the night the weather closes. That is the whole argument
+  // for a system that reads a world rather than querying a table.
+  console.log(`  the drop day -- ordinary: ${w.dropDay.openings} openings; midterms: ${m.dropDay.openings}`);
+  expect('midterm week closes the drop day entirely', m.dropDay.worthForcing, false);
+  expect('while another night that same week still works', m.best.openings > 0, true);
+  expect('and it is not wednesday', m.best.day === 3, false);
+
+  // A bad night is a full campus with nothing in it, never an empty one.
+  const dead = m.days.find((d) => d.alive === 0 && d.free > 15);
+  console.log(`  ${dead ? `${dead.name}: ${dead.free} people out, ${dead.alive} with anything left` : 'no such night'}`);
+  expect('a dead night still has people standing in it', Boolean(dead), true);
 }
 
 
