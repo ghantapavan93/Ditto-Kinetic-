@@ -81,33 +81,49 @@ carries more of the conversation. Asserted as claim 17.
 the send bar. It never reaches below it. Wanting something specific does not
 entitle you to a bad evening.
 
-**The shape it cannot produce:** BRIDGE — a mutual friend saying the sentence
-for you. Nothing here models who knows whom. It is named on the surface rather
-than omitted, because leaving it out would imply six rooms are the whole space
-of ways to meet.
+**BRIDGE is now producible.** The compiler named it as the one shape it could
+not offer, because nothing modelled who knows whom. The network layer supplies
+that, and `bridgeFor()` is a lookup: who do these two already both know.
 
 ---
 
-## 4. What is not built, ranked by what it would prove
+## 4. The network layer
 
-1. **Three zoom levels** — one continuous camera from a person, to a pair, to a
-   campus. The existing R3F stage is the middle level; the other two do not
-   exist. Highest visual payoff, and it needs a network to zoom out to.
-2. **Connection gravity** — forces rather than percentages. Shared curiosity
-   pulls, scheduling friction pushes, a changed day snaps two worlds together.
-   The engine already produces every one of those numbers; only the physics is
-   missing.
-3. **The missing edge** — highlight the introduction with the highest *network*
-   consequence rather than the highest compatibility. Requires a social graph
-   this project has no data for, and it is the same gap as BRIDGE.
-4. **Social weather** — the campus as a changing environment: midterms, rain,
-   venues closed, high cancellation likelihood. The `Conditions` type already
-   models a strained week for one pair; this is that, at population scale.
-5. **Autonomy levels** — from "you browse" to "Thursday, 7:40, wear something
-   warm." The existing surfaces are roughly level 3.
-6. **Attention budget** — every pixel costs the user something, and a connection
-   going well should drive the interface toward zero. The Fading is a first
-   version of this; making it an explicit optimisation target is not built.
+Built at [`/network`](../src/app/network/page.tsx). A generated campus of 96
+people — six clusters, 143 threads, 16 of them crossing between clusters, 21
+people with one connection or fewer, and the site's own six seeded into the
+population rather than living beside it.
+
+The finding, computed rather than written and asserted as claim 18:
+
+| ranked by | pair | mutual friends | newly reachable |
+|---|---|---|---|
+| who would get on | Noor × Lux, same lab | 3 | 11 |
+| **what would change** | **Noor × Xan, lab → climbing gym** | **0** | **17** |
+
+Every "people you may know" system ranks by triadic closure. It predicts
+whether two people will get on, and it is structurally a machine for
+recommending the introduction that changes least — because the people it
+favours are the ones you are already adjacent to.
+
+And then the line that made the layer worth building. The compatible pair has a
+mutual friend who could make the introduction, so **those two never needed a
+product**. The missing edge has nobody: no friend, no party where it happens by
+itself. That is the introduction only a system can make, and it scores **zero**
+on every signal a compatibility ranker has.
+
+### Still not built
+
+1. **Three zoom levels** — one continuous camera from a person, to a pair, to
+   the campus. The stage is the middle level and the constellation is the outer
+   one; they are two cameras rather than one journey.
+2. **Connection gravity** — forces rather than percentages. The engine already
+   produces every number; only the physics is missing.
+3. **Social weather** — the campus as a changing environment, at population
+   scale. `Conditions` models a strained week for one pair; this is that for 96.
+4. **Autonomy levels** — the existing surfaces are roughly level 3.
+5. **Attention budget** — the Fading is a first version; making it an explicit
+   optimisation target is not built.
 
 ---
 
@@ -138,7 +154,7 @@ Fourteen acts, and the ones with routes already exist.
 | act | | route |
 |---|---|---|
 | I | person — what kind of life do you want more of | [`/compiler`](../src/app/compiler/page.tsx) |
-| II | possibility | — |
+| II | possibility | [`/network`](../src/app/network/page.tsx) |
 | III | intersection | [`/compiler`](../src/app/compiler/page.tsx) |
 | IV | first scene — same people, six rooms | [`/`](../src/app/page.tsx) |
 | V | failure — venue, schedule, environment | [`/`](../src/app/page.tsx) (disruptions) |
@@ -148,13 +164,13 @@ Fourteen acts, and the ones with routes already exist.
 | IX | disappear | [`/compiler`](../src/app/compiler/page.tsx) — "now get out of the way" |
 | X | memory | [`/after`](../src/app/after/page.tsx) |
 | XI | learning — I thought X, I learned Y | [`/after`](../src/app/after/page.tsx) |
-| XII | world — one relationship becomes a network | — |
+| XII | world — one relationship becomes a network | [`/network`](../src/app/network/page.tsx) |
 | XIII | beyond dating | [`/compiler`](../src/app/compiler/page.tsx) (intersection kinds) |
 | XIV | full circle | — |
 
-Two gaps, and they are the same gap: **there is no network here.** Acts II and
-XII both need a population, and every unbuilt idea in section 4 traces back to
-it. That is the next real piece of work, and it is data before it is graphics.
+Acts II and XII both needed a population, and now have one. What remains is
+Act XIV — the return to the opening question — and the single continuous camera
+that would make the zoom levels one journey rather than two pages.
 
 ---
 

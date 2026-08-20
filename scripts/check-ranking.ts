@@ -32,6 +32,8 @@ import {
 import { ODDS_CEILING, guaranteeCost, oddsFor } from '../src/lib/odds';
 import { EXIT_WEIGHT, exitVerdict, readExits } from '../src/lib/exit';
 import { compile, scaffolding } from '../src/lib/compiler';
+import { buildCampus } from '../src/lib/campus';
+import { bridgeFor, readNetwork } from '../src/lib/network';
 import {
   LENSES,
   challengeSet,
@@ -64,6 +66,7 @@ const HEADING14 = '\nClaim 14 — free is not the same as alive:';
 const HEADING15 = '\nClaim 15 — nobody is guaranteed anything:';
 const HEADING16 = '\nClaim 16 — the twelfth dimension did not earn its place:';
 const HEADING17 = '\nClaim 17 — the compiler reads its input, and never lowers the bar:';
+const HEADING18 = '\nClaim 18 — the missing edge is not the compatible one:';
 
 const HEADING7 = '\nClaim 7 — last week changes this week:';
 
@@ -977,6 +980,66 @@ console.log(HEADING17);
     const saysTop = c.stages.find((s) => s.key === 'where')!.detail.includes('highest scoring');
     expect(`"${c.sentence.slice(0, 20)}...": says top only when it is top`, saysTop, isTop);
   }
+}
+
+
+/* ---- claim 18: the missing edge is not the compatible one -------------- */
+
+console.log(HEADING18);
+{
+  const campus = buildCampus();
+  const net = readNetwork(campus);
+
+  // Same campus every time, or nothing below can be checked.
+  expect(
+    'the campus is deterministic',
+    JSON.stringify(buildCampus().edges) === JSON.stringify(campus.edges),
+    true,
+  );
+
+  // Nobody is unreachable. Lonely is the case worth modelling; a disconnected
+  // node is a bug, and it took two passes to actually hold.
+  const degree = campus.neighbours.map((n) => n.length);
+  console.log(`  ${campus.nodes.length} people, ${net.totalEdges} threads, degree ${Math.min(...degree)}-${Math.max(...degree)}`);
+  expect('everybody has at least one connection', Math.min(...degree), 1);
+
+  // Structure, not uniform noise. A uniformly random graph has no bridges, no
+  // clusters and nothing to find.
+  expect('the campus has weak ties holding it together', net.weakTies > 0, true);
+  expect('and they are rare', net.weakTies < net.totalEdges * 0.2, true);
+  expect('some people are barely connected', net.isolated.length > 0, true);
+  expect('and some hold several corners together', net.connectors.length > 0, true);
+
+  // The six the site follows live in this world rather than beside it.
+  const known = campus.nodes.filter((n) => n.known).map((n) => n.name);
+  console.log(`  the site's six are in the population: ${known.join(', ')}`);
+  expect('maya is on this campus', known.includes('Maya'), true);
+  expect('all six are', known.length, 6);
+
+  // The finding. Ranking by who would get on, and by what would change, do not
+  // agree — and the difference is not marginal.
+  const aff = net.byAffinity;
+  const con = net.byConsequence;
+  console.log(`  affinity pick   : ${campus.nodes[aff.a].name} + ${campus.nodes[aff.b].name} (mutuals ${aff.mutuals.length}, reach ${aff.consequence})`);
+  console.log(`  missing edge    : ${campus.nodes[con.a].name} + ${campus.nodes[con.b].name} (mutuals ${con.mutuals.length}, reach ${con.consequence})`);
+  expect('the two rankings disagree', net.disagree, true);
+  expect('the missing edge reaches further', con.consequence > aff.consequence, true);
+  expect('the compatible pair share friends', aff.mutuals.length > 0, true);
+  expect('the missing edge shares none', con.mutuals.length, 0);
+
+  // A compatibility ranker cannot surface it, because it scores zero on the
+  // only signal such a ranker has.
+  expect('and would score zero on affinity', con.affinity, 0);
+
+  // The line the page rests on, computed rather than written: somebody can make
+  // the compatible introduction, and nobody can make the important one.
+  const bridgeAff = bridgeFor(campus, aff.a, aff.b);
+  const bridgeCon = bridgeFor(campus, con.a, con.b);
+  console.log(
+    `  a friend could introduce the affinity pair (${bridgeAff === null ? 'none' : campus.nodes[bridgeAff].name}); the missing edge has ${bridgeCon === null ? 'nobody' : campus.nodes[bridgeCon].name}`,
+  );
+  expect('somebody could already introduce the compatible pair', bridgeAff !== null, true);
+  expect('nobody can introduce the missing edge', bridgeCon, null);
 }
 
 
