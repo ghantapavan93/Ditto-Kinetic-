@@ -1,0 +1,119 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --grain-opacity: 0.055;
+  --stage-vignette: 0.55;
+  color-scheme: dark;
+}
+
+@layer base {
+  html,
+  body {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-ink text-paper font-editorial antialiased;
+    overscroll-behavior: none;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* The stage owns the viewport. Nothing scrolls except explicit sheets. */
+  #stage-root {
+    @apply fixed inset-0 overflow-hidden;
+  }
+
+  ::selection {
+    background: theme('colors.cobalt.DEFAULT');
+    color: theme('colors.paper.bright');
+  }
+
+  :focus-visible {
+    outline: 2px solid theme('colors.mint');
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* Remove focus rings only for pointer users, never for keyboard. */
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+}
+
+@layer components {
+  .u-label {
+    @apply font-mono text-label uppercase text-paper/45;
+  }
+
+  .u-micro {
+    @apply font-mono text-micro uppercase text-paper/35;
+  }
+
+  /* Physical paper. Used by tape notes, tickets, receipts. */
+  .u-paper {
+    background:
+      linear-gradient(178deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0) 42%),
+      theme('colors.paper.DEFAULT');
+    color: theme('colors.ink.DEFAULT');
+    box-shadow: theme('boxShadow.artifact');
+  }
+
+  /* A torn bottom edge, for the receipt. */
+  .u-torn-bottom {
+    -webkit-mask-image: linear-gradient(#000 0 0),
+      repeating-conic-gradient(from -45deg at bottom, #000 0deg 90deg, transparent 90deg 180deg);
+    -webkit-mask-size: 100% calc(100% - 7px), 14px 14px;
+    -webkit-mask-position: top left, bottom left;
+    -webkit-mask-repeat: no-repeat, repeat-x;
+    mask-image: linear-gradient(#000 0 0),
+      repeating-conic-gradient(from -45deg at bottom, #000 0deg 90deg, transparent 90deg 180deg);
+    mask-size: 100% calc(100% - 7px), 14px 14px;
+    mask-position: top left, bottom left;
+    mask-repeat: no-repeat, repeat-x;
+  }
+
+  .u-hairline {
+    @apply border border-paper/10;
+  }
+}
+
+@layer utilities {
+  .u-stack-grain {
+    position: relative;
+  }
+
+  /* Film grain. One repeating SVG turbulence, GPU-cheap, no texture download. */
+  .u-stack-grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: var(--grain-opacity);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode: overlay;
+  }
+
+  .u-drag-none {
+    -webkit-user-drag: none;
+    user-select: none;
+    touch-action: none;
+  }
+}
+
+/*
+ * Reduced motion is a first-class path, not a degradation.
+ * Everything still *changes state* — it just arrives instead of travelling.
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,0 +1,168 @@
+'use client';
+
+import { Suspense, useRef, useState } from 'react';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import * as THREE from 'three';
+import { Polaroid3D } from './Polaroid3D';
+import { ConnectionField } from './ConnectionField';
+import { Artifact3D } from './Artifact3D';
+import { SceneLighting } from './SceneLighting';
+import { damp, lerp } from '@/lib/motion';
+import { track } from '@/lib/analytics';
+import type { MatchPair, Scene } from '@/lib/types';
+
+type StageProps = {
+  pair: MatchPair;
+  scene: Scene;
+  magnetism: number;
+  locked: boolean;
+  exiting: number;
+  reducedMotion: boolean;
+};
+
+/**
+ * Authored camera. No orbit controls — the user never gets to fly the scene,
+ * because a badly framed shot would break every composition in the product.
+ * All they get is a few degrees of pointer parallax, which is enough to make
+ * the stage read as a space rather than a picture.
+ */
+function CameraRig({ magnetism, exiting, reducedMotion }: { magnetism: number; exiting: number; reducedMotion: boolean }) {
+  const { camera, pointer } = useThree();
+  const shake = useRef(0);
+
+  useFrame((_, rawDelta) => {
+    const dt = Math.min(rawDelta, 1 / 30);
+    const strength = reducedMotion ? 0 : 1;
+
+    // A weak scene sits the camera slightly further back and off-axis; the
+    // winning scene squares up to it. The framing itself gets more resolved.
+    const baseZ = lerp(7.4, 6.6, magnetism) + exiting * 1.6;
+    const px = pointer.x * 0.42 * strength;
+    const py = pointer.y * 0.26 * strength;
+    const tilt = (1 - magnetism) * 0.06 * strength;
+
+    camera.position.x = damp(camera.position.x, px + tilt, 2.4, dt);
+    camera.position.y = damp(camera.position.y, py * 0.7 - tilt * 0.5, 2.4, dt);
+    camera.position.z = damp(camera.position.z, baseZ, 2.6, dt);
+
+    shake.current = damp(shake.current, 0, 4, dt);
+    camera.lookAt(0, exiting * 0.6, 0);
+  });
+
+  return null;
+}
+
+function StageContents({ pair, scene, magnetism, locked, exiting, reducedMotion }: StageProps) {
+  return (
+    <>
+      <fog attach="fog" args={['#08090C', 8, 20]} />
+      <SceneLighting mood={scene.mood} locked={locked} />
+      <CameraRig magnetism={magnetism} exiting={exiting} reducedMotion={reducedMotion} />
+
+      <ConnectionField
+        magnetism={magnetism}
+        locked={locked}
+        exiting={exiting}
+        reducedMotion={reducedMotion}
+      />
+
+      <Polaroid3D
+        person={pair.personA}
+        side={-1}
+        magnetism={magnetism}
+        locked={locked}
+        exiting={exiting}
+        reducedMotion={reducedMotion}
+      />
+      <Polaroid3D
+        person={pair.personB}
+        side={1}
+        magnetism={magnetism}
+        locked={locked}
+        exiting={exiting}
+        reducedMotion={reducedMotion}
+      />
+
+      {/*
+        Artifacts are keyed by scene so switching scenes genuinely swaps the
+        objects rather than morphing one set into another. Remounting is correct
+        here: a ticket is not a cup in a different position.
+      */}
+      {scene.artifacts.map((artifact, i) => (
+        <Artifact3D
+          key={`${scene.id}-${artifact.kind}-${i}`}
+          artifact={artifact}
+          index={i}
+          magnetism={magnetism}
+          locked={locked}
+          exiting={exiting}
+          reducedMotion={reducedMotion}
+        />
+      ))}
+    </>
+  );
+}
+
+/** Rendered instead of the canvas when WebGL is unavailable or has failed. */
+function FlatFallback({ pair, scene }: { pair: MatchPair; scene: Scene }) {
+  return (
+    <div className="absolute inset-0 flex items-center justify-center px-gutter">
+      <div className="flex w-full max-w-3xl items-center justify-center gap-6 sm:gap-12">
+        {[pair.personA, pair.personB].map((person) => (
+          <div
+            key={person.id}
+            className="u-paper w-[38%] max-w-[190px] rounded-artifact p-2 pb-8"
+            style={{ transform: `rotate(${person.id === pair.personA.id ? -2.5 : 2}deg)` }}
+          >
+            <div
+              className="aspect-[4/5] w-full"
+              style={{
+                background: `radial-gradient(120% 90% at 30% 20%, ${person.portraitTint[0]}55, #12151E 60%, #05060A)`,
+              }}
+            />
+            <p className="mt-2 text-center font-mono text-micro uppercase text-ink/60">{person.name}</p>
+          </div>
+        ))}
+      </div>
+      <p className="u-micro absolute bottom-8 left-1/2 -translate-x-1/2 text-center">
+        {scene.label} · {scene.time} · flat mode
+      </p>
+    </div>
+  );
+}
+
+export function SpatialStage(props: StageProps) {
+  const [failed, setFailed] = useState(false);
+
+  if (failed) return <FlatFallback pair={props.pair} scene={props.scene} />;
+
+  return (
+    <Canvas
+      className="u-drag-none"
+      // Capped device pixel ratio: above ~1.5 the film grain and paper texture
+      // stop reading better and start costing frames on laptop GPUs.
+      dpr={[1, 1.5]}
+      gl={{
+        antialias: true,
+        alpha: true,
+        powerPreference: 'high-performance',
+        toneMapping: THREE.ACESFilmicToneMapping,
+      }}
+      camera={{ fov: 32, position: [0, 0, 7.4], near: 0.1, far: 40 }}
+      onCreated={({ gl }) => {
+        gl.setClearColor('#08090C', 0);
+      }}
+      onError={() => {
+        track('webgl_unavailable');
+        setFailed(true);
+      }}
+      // Frameloop stays 'always' — the idle drift and settling motion are part
+      // of how a weak scene communicates that it has not resolved.
+      frameloop="always"
+    >
+      <Suspense fallback={null}>
+        <StageContents {...props} />
+      </Suspense>
+    </Canvas>
+  );
+}

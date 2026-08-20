@@ -1,37 +1,93 @@
-# Ditto Kinetic
+# DITTO // FIRST SCENE
 
-Teardown of the Ditto dating app (`app.ditto.ai`, `tryditto.com`), reconstructed from
-screenshots of the live signup flow captured 2026-08-19, as the basis for a rebuild.
+**Same two people. Different first moments. One finally feels right.**
 
-## Docs
+An unofficial interaction concept for [Ditto](https://tryditto.com). Drag a dial
+through six ways the same pair could meet and watch the interface physically
+resist the ones that don't work — then watch it delete itself once the
+introduction is made.
 
-| File | What's in it |
+> Unofficial Ditto interaction concept. Synthetic people and simulated signals.
+> No access to Ditto systems.
+
+```bash
+npm install && npm run dev
+```
+
+No environment variables required. Everything runs offline.
+
+---
+
+## The thesis, in one line
+
+**The right person can still get the wrong first date.**
+
+Ditto solved the hard half — it removed the deck and picks one person. But only
+**20% of matched pairs actually go on the date** (their number), and their own
+site says those dates happen at on-campus coffee spots.
+
+So the ranking object shouldn't be `Person A × Person B`. It should be
+`Person A × Person B × context`.
+
+In this prototype `pairSignal` is one field out of eleven, and it is **identical
+across all six candidate openings**. The same two people are exactly as
+compatible in every row. Everything separating the best opening from the worst
+is context — which you can see as a flat line in the decision view.
+
+Full argument: [PRODUCT_THESIS.md](PRODUCT_THESIS.md)
+
+## What to do with it
+
+| | |
 |---|---|
-| [docs/TEARDOWN.md](docs/TEARDOWN.md) | How the app is built — shell, state machine, chat framing, visual system, widget inventory, third-party surface, privacy posture, growth loop |
-| [docs/ONBOARDING-FLOW.md](docs/ONBOARDING-FLOW.md) | All 24 onboarding steps verbatim: prompt copy, widget, option lists, validation, plus a proposed data model |
-| [docs/COMPANY-RESEARCH.md](docs/COMPANY-RESEARCH.md) | Ditto the company — founders, funding, traction, how the founders describe the product, and the three open problems worth aiming at |
-| [docs/REFERENCES.md](docs/REFERENCES.md) | Build references — kage (three.js scroll-camera technique) and its licensing constraint |
-| [reference/](reference) | The 27 source screenshots the teardown is built from |
+| **Drag the dial** (or `←` `→`) | six openings for Maya × Jonah |
+| **COFFEE** | the one Ditto currently books. it fails, and the stage shows you why before it tells you |
+| **POST SHOW WALK** | everything snaps into one composition |
+| **why this one?** | three pieces of evidence and one thing the system admits it doesn't know |
+| **see the decision** (`D`) | the ranking with the arithmetic left in |
+| **hear me out** | stated preference vs. what the history suggests |
+| **break the plan** | invalidate the venue — the pair survives, only context is replanned |
+| **other pair** | same six rooms, different people. **coffee wins.** |
+| **make it real** | the interface removes itself |
 
-## The one-paragraph version
+The last one is the point. Ditto's manifesto says technology should *"make the
+introduction, then get out of the way."* The richest screen collapses into one
+text message, then into one line.
 
-Ditto is a college dating app with **no swipe deck**. You answer ~24 questions framed
-as a chat with an AI concierge named Ditto, then wait — matches arrive in batches on a
-"drop day" rather than through a feed. The entire signup lives at a single URL as a
-client-side state machine. Phone number is the only credential; there is no password.
-Sensitive fields (ethnicity, age, politics, religion) carry per-field privacy microcopy
-at the point of entry. Right before the payoff, at peak sunk cost, it shows you a
-computed personal match probability and offers a guaranteed match for one referral.
+## Twenty seconds
 
-## Status
+`0:00` two photographs, apart · `0:02` COFFEE — *possible. but too interview-y.*
+· `0:05` rotate, things start aligning · `0:08` POST SHOW WALK — **snap** ·
+`0:13` why this one? · `0:16` make it real · `0:20` *go have a real life.*
 
-Documentation only. No implementation yet.
+## Stack
 
-Next: scaffold the onboarding state machine and the eleven input widgets listed in
-[the widget inventory](docs/TEARDOWN.md#25-input-widget-inventory).
+Next.js 14 · React 18 · TypeScript (strict) · Tailwind · three.js ·
+@react-three/fiber · framer-motion · zustand · zod
 
-## Note on scope
+Zero image assets — every portrait and artifact is drawn procedurally to a canvas
+and cached. Scoring is a deterministic linear model with no LLM in the main path.
 
-This is an analysis of a competitor's public signup flow for design and architecture
-reference. Copy, photography, and brand marks belong to Ditto and are quoted here only
-to document the flow — none of it should ship in a derived product.
+## Honesty
+
+Everything I know about Ditto, sorted by how well I know it —
+verified / inferred / invented — is in [RESEARCH.md](RESEARCH.md). All four
+people are fictional, all portraits depict nobody, and the eleven-dimension
+scoring schema and its weights are mine, not Ditto's.
+
+Engineering decisions, the four bugs QA caught, and what I'd fix next:
+[IMPLEMENTATION_NOTES.md](IMPLEMENTATION_NOTES.md).
+
+**One caveat up front:** the browser pane was unavailable in the session that
+built this, so it was verified programmatically — DOM, state machine, winner
+detection, ARIA, WebGL context — but not looked at. Open it before you show it
+to anyone.
+
+## Prior work in this repo
+
+Built on a teardown of Ditto's live product done first:
+[docs/TEARDOWN.md](docs/TEARDOWN.md) (architecture),
+[docs/ONBOARDING-FLOW.md](docs/ONBOARDING-FLOW.md) (all 24 signup steps verbatim),
+[docs/COMPANY-RESEARCH.md](docs/COMPANY-RESEARCH.md) (founders, funding, traction),
+[docs/REFERENCES.md](docs/REFERENCES.md) (three.js technique references),
+[reference/](reference) (27 screenshots of the live flow).
