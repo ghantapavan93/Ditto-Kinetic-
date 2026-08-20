@@ -178,11 +178,16 @@ Fourteen acts, and the ones with routes already exist.
 | XI | learning — I thought X, I learned Y | [`/after`](../src/app/after/page.tsx) |
 | XII | world — one relationship becomes a network | [`/network`](../src/app/network/page.tsx) |
 | XIII | beyond dating | [`/compiler`](../src/app/compiler/page.tsx) (intersection kinds) |
-| XIV | full circle | — |
+| XIV | full circle | [`/end`](../src/app/end/page.tsx) |
 
-Acts II and XII needed a population and now have one; the camera that joins the
-scales is at [`/zoom`](../src/app/zoom/page.tsx). What remains is Act XIV — the
-return to the opening question — and everything in section 4 above.
+All fourteen acts have a route. The arc closes at
+[`/end`](../src/app/end/page.tsx), which asks the question the compiler opens
+with, runs the same nine stages, and shows none of them — 32 seconds against the
+compiler's 59, second cheapest of nineteen surfaces.
+
+Which is the site making its own argument on itself rather than describing it.
+The compiler spends a minute proving the machinery exists. The ending, having
+nothing left to prove, spends almost nothing.
 
 ---
 

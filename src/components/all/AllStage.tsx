@@ -35,6 +35,7 @@ const SAYS: Record<string, string> = {
   '/attention': 'what all of this costs you to look at',
   '/all': 'this. measured like everything else.',
   '/autonomy': 'six rungs, and the one that takes nothing and still costs you',
+  '/end': 'the same question, asked once more, with none of it shown',
 };
 
 /**

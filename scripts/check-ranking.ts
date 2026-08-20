@@ -43,6 +43,7 @@ import {
   WEEKLY_BUDGET_SECONDS,
   WORDS_PER_MINUTE,
   audit,
+  costOf,
   saidAs,
 } from '../src/lib/attention';
 import {
@@ -89,6 +90,7 @@ const HEADING20 = '\nClaim 20 — forces are the model, not a picture of it:';
 const HEADING21 = '\nClaim 21 — the weather is counted, not written:';
 const HEADING22 = '\nClaim 22 — the audit includes the auditor:';
 const HEADING23 = '\nClaim 23 — the top rung takes nothing and still costs you:';
+const HEADING24 = '\nClaim 24 — the ending runs the real thing:';
 
 const HEADING7 = '\nClaim 7 — last week changes this week:';
 
@@ -1399,6 +1401,59 @@ console.log(HEADING23);
     five.explaining < Math.max(...rungs.map((r) => r.explaining)),
     true,
   );
+}
+
+
+/* ---- claim 24: the ending runs the real thing and shows none of it ------ */
+
+console.log(HEADING24);
+{
+  const ANSWERS = [
+    'one with more people I actually care about.',
+    'one with someone to build something with.',
+    'one where I am actually dating someone.',
+  ];
+
+  const compiled = ANSWERS.map((a) => compile(a));
+
+  // It has to actually run. An ending that shows a written line instead of a
+  // computed one would be the one place on this site where the machinery was
+  // theatre, which is the last place it could afford to be.
+  for (const c of compiled) {
+    expect(`"${c.sentence.slice(0, 22)}...": produces a real evening`, c.withheld, false);
+    expect(
+      `"${c.sentence.slice(0, 22)}...": and a line with a room in it`,
+      c.action.includes(c.scene.location),
+      true,
+    );
+  }
+
+  // The answer has to matter. Two presets landing identically looks exactly
+  // like an answer nobody read — which the first draft did, and this catches.
+  const outcomes = compiled.map((c) => `${c.pair.id}/${c.scene.id}`);
+  const kinds = compiled.map((c) => c.reading.kind);
+  console.log(`  three answers -> ${kinds.join(', ')}`);
+  for (const c of compiled) console.log(`    ${c.reading.kind.padEnd(13)} ${c.scene.label}`);
+  expect('every answer lands somewhere different', new Set(outcomes).size, ANSWERS.length);
+  expect('and covers three kinds of intersection', new Set(kinds).size, 3);
+
+  // The thesis, one last time, from the last three clicks on the site.
+  const romantic = compiled.find((c) => c.reading.kind === 'romantic')!;
+  expect('asking for a date is still what produces the cafe', romantic.scene.id, 'coffee');
+
+  // And the ending must cost less than the surface that had to prove the
+  // machinery exists. Same engine, none of it shown.
+  const end = SURFACES.find((s) => s.path === '/end')!;
+  const compilerSurface = SURFACES.find((s) => s.path === '/compiler')!;
+  const endCost = costOf(end).seconds;
+  const compilerCost = costOf(compilerSurface).seconds;
+  console.log(`  /end costs ${saidAs(endCost)} against /compiler's ${saidAs(compilerCost)}`);
+  expect('the ending is cheaper than the explanation', endCost < compilerCost, true);
+
+  const ranked = [...audit(SURFACES).costs].sort((x, y) => x.seconds - y.seconds);
+  const rank = ranked.findIndex((c) => c.surface.path === '/end') + 1;
+  console.log(`  and ranks ${rank} cheapest of ${ranked.length}`);
+  expect('and is among the cheapest surfaces here', rank <= 3, true);
 }
 
 

@@ -504,6 +504,7 @@ export function FirstSceneStage() {
                   { href: '/autonomy', label: 'how much to hand over' },
                   { href: '/attention', label: 'what this costs you' },
                   { href: '/next', label: 'what would have to be true' },
+                  { href: '/end', label: 'the last one' },
                   { href: '/after', label: 'after the date' },
                 ].map((link) => (
                   <Link

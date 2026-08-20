@@ -58,6 +58,7 @@ export type EventName =
   | 'attention_viewed'
   | 'index_viewed'
   | 'autonomy_viewed'
+  | 'end_answered'
   | 'compiler_run'
   | 'compiler_quieted'
   | 'ending_viewed'
