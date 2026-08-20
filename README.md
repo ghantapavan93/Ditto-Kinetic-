@@ -74,18 +74,31 @@ For the systems version, press **break it** three times: the venue falls through
 and it replans, the shift moves and it holds, the walk doubles and it withdraws
 the plan rather than downgrading it.
 
-## Two surfaces
+## Three surfaces, one loop
 
 | | |
 |---|---|
-| **`/`** | FIRST SCENE — the same two people through six openings |
 | **`/wednesday`** | THE DROP — the hour before the match lands |
+| **`/`** | FIRST SCENE — the same two people through six openings |
+| **`/after`** | AFTER — 12:14 AM, and the only place the system changes its mind |
+
+```
+match arrives  →  choose the room  →  the date  →  what it revised  →  next wednesday
+  /wednesday          /                              /after                ↺
+```
 
 Ditto's product has one ritual and it is unusually strong: preferences close
-Tuesday at 11:59, and at 7pm on Wednesday exactly one match arrives. A weekly
-appointment a whole campus keeps is a rare thing to own, and right now it has no
-visual form — it happens in a text message. `/wednesday` is that hour, and it
-hands off to `/`, because the match is the easy half.
+Tuesday at 11:59, and at 7pm Wednesday exactly one match arrives. A weekly
+appointment a whole campus keeps is rare to own, and it currently has no visual
+form — it happens in a text message.
+
+`/after` closes the loop, and it refuses three things on purpose. **No rating** —
+a star compresses the one high-information thing a person produces after a date,
+a messy sentence, into a number nobody can reason about. **No "profile
+updated"** — that is a claim of certainty about a person from one evening.
+**No deletion** — the belief that turned out to be wrong stays on the board,
+crossed out, because a system that quietly overwrites what it used to think
+cannot be audited.
 
 ## Stack
 

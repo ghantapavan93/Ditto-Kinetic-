@@ -302,7 +302,7 @@ export function Handoff({
               data-cursor="later"
               className="mt-14 border-b border-paper/20 pb-0.5 font-voice text-[1.05rem] italic text-paper/35 transition-colors hover:border-paper/60 hover:text-paper/80"
             >
-              — later that week —
+              — later that night —
             </motion.button>
 
             <PrototypeDisclosure className="mt-16 text-center" />

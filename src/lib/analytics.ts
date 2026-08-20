@@ -38,6 +38,8 @@ export type EventName =
   | 'drop_page_viewed'
   | 'drop_opened_early'
   | 'drop_handoff_clicked'
+  | 'after_page_viewed'
+  | 'after_feedback_submitted'
   | 'fragment_read'
   | 'pair_swapped'
   | 'feedback_started'

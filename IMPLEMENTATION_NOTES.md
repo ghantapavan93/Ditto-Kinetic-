@@ -285,6 +285,41 @@ The general lesson: when motion carries the meaning, "does it render", "does it
 move enough to be read" and "does it come to rest" are correctness properties.
 They need instrumentation and simulation, not screenshots.
 
+## /after — the loop closing
+
+The learning loop existed as a phase inside the stage. As its own surface it can
+do the thing a phase could not: hold two states of the same board and let you
+watch one become the other.
+
+`MemoryBoard` renders the standing hypotheses with `layoutId` per card, so when
+the set changes React *moves* them rather than replacing them — a belief slides
+down the board and gets crossed out in front of you instead of being reported as
+changed. The strike is drawn as a scaling element rather than `line-through`,
+because formatting reads as styling and a stroke reads as somebody crossing
+something out.
+
+Three refusals define the page:
+
+- **No rating.** A star compresses the one genuinely high-information thing a
+  person produces after a date — a messy sentence — into a number nobody can
+  reason about.
+- **No "profile updated".** That is a claim of certainty about a person from a
+  single evening. Everything is labelled a working hypothesis, with its source.
+- **No deletion.** The contradicted belief stays on the board, struck through,
+  at reduced weight. A learning system that quietly overwrites what it used to
+  think cannot be audited, and the strike is the only honest record that it was
+  ever wrong.
+
+Every card also carries provenance (`three cancellations on open-ended nights`,
+`they wrote it, week one`). A belief the system cannot say where it got is a
+belief it should not be acting on.
+
+The develop on the photograph uses `filter: brightness/contrast/saturate` rather
+than opacity — a fade means the image was never there and is being mixed in,
+where brightness rising from nothing means it was always there and is becoming
+visible. It also carries a timer failsafe, because rAF is suspended in a
+background tab and the page would otherwise sit blank forever.
+
 ## The warm pass
 
 The first build was correct and cold. It read as a technical interface — one
