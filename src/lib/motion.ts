@@ -33,6 +33,33 @@ export function damp(current: number, target: number, lambda: number, dt: number
   return current + (target - current) * (1 - Math.exp(-lambda * dt));
 }
 
+export type Spring = { x: number; v: number };
+
+/**
+ * Critically damped spring, integrated in place.
+ *
+ * `damp()` is exponential smoothing: it has no velocity, so it decelerates into
+ * every target from the first frame and can never carry momentum. That is right
+ * for something arriving at a resting position, and wrong for anything that
+ * should feel like it has mass.
+ *
+ * This is the technique kage uses for pointer follow, and it is most of why
+ * that site feels expensive: the parallax has weight, overshoots nothing, and
+ * settles rather than tracking. Critically damped means the fastest approach
+ * with no oscillation — `omega` is the angular frequency, so a higher number is
+ * a stiffer, lighter object.
+ *
+ * `dt` is clamped because a single long frame (a tab regaining focus, a GC
+ * pause) would otherwise integrate to a large velocity and throw the object
+ * across the screen.
+ */
+export function spring(s: Spring, target: number, omega: number, dt: number): number {
+  const step = Math.min(dt, 1 / 30);
+  s.v += ((target - s.x) * omega * omega - 2 * omega * s.v) * step;
+  s.x += s.v * step;
+  return s.x;
+}
+
 export function clamp(v: number, min = 0, max = 1): number {
   return Math.min(max, Math.max(min, v));
 }

@@ -43,6 +43,37 @@ From the project's `PROMPT.md`, which is effectively the brief that generated it
 That last rule is the one that separates this from every other WebGL landing page.
 Every motion has to be carrying a story beat or it gets cut.
 
+### What was actually taken, after reading the source
+
+Cloned and read (`4,821` lines, one file). The transferable finding is not a
+shader or a layout — it is one line at 3786:
+
+```js
+touch.vx += ((ptr.x - touch.x) * om * om - 2 * om * touch.vx) * delta;
+```
+
+That is a **critically damped spring**, integrated per frame, driving pointer
+follow. Exponential smoothing — `x += (target - x) * k` — has no velocity, so it
+decelerates into every target from the first frame and can never carry momentum.
+The spring gives the move mass: it lags into motion, carries through, and
+settles without overshooting. On a still frame the difference is invisible; in
+motion it is most of what separates a stage that feels authored from one that
+feels wired up.
+
+Reimplemented as `spring()` in `src/lib/motion.ts` and used for the camera's
+pointer parallax and the countdown's seconds. No kage code was copied.
+
+Two other structural notes from the clone:
+
+- The asset tree is the real architecture: `generated/*.webp` are pre-rendered
+  scene plates and `foreground/png/*.webp` are alpha cutouts (temple wall, pine,
+  tall grass, stone lantern). The live WebGL is a middle layer between painted
+  backgrounds and painted foregrounds. That is how it affords so much apparent
+  depth so cheaply.
+- Every transition uses one of three shared cubic-beziers declared as CSS custom
+  properties. A single easing vocabulary across an entire 4,800-line file is
+  itself a large part of the coherence.
+
 ### Licensing
 
 **The Kage code and artwork carry no reuse license.** Only the bundled Three.js keeps

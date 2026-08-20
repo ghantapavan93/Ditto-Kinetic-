@@ -18,7 +18,7 @@ import { Artifact3D } from './Artifact3D';
 import { SceneLighting } from './SceneLighting';
 import { StageProbe } from './StageProbe';
 import { ReasonField } from './ReasonField';
-import { damp, lerp } from '@/lib/motion';
+import { damp, lerp, spring, type Spring } from '@/lib/motion';
 import { track } from '@/lib/analytics';
 import type { Fragment, MatchPair, Scene } from '@/lib/types';
 
@@ -45,7 +45,22 @@ type StageProps = {
  */
 function CameraRig({ magnetism, exiting, reducedMotion }: { magnetism: number; exiting: number; reducedMotion: boolean }) {
   const { camera, pointer } = useThree();
-  const shake = useRef(0);
+
+  /**
+   * Pointer parallax runs on springs rather than exponential damping.
+   *
+   * `damp()` has no velocity — it decelerates into the target from the first
+   * frame, so a camera driven by it tracks the mouse instead of being carried
+   * by it. A critically damped spring gives the move mass: it lags into motion,
+   * carries through, and settles. That difference is small on a still frame and
+   * is most of what separates a stage that feels authored from one that feels
+   * wired up.
+   *
+   * Depth stays on `damp` deliberately — the dolly is a framing decision, not a
+   * physical object, and it should not overshoot or coast.
+   */
+  const px = useRef<Spring>({ x: 0, v: 0 });
+  const py = useRef<Spring>({ x: 0, v: 0 });
 
   useFrame((_, rawDelta) => {
     const dt = Math.min(rawDelta, 1 / 30);
@@ -54,15 +69,12 @@ function CameraRig({ magnetism, exiting, reducedMotion }: { magnetism: number; e
     // A weak scene sits the camera slightly further back and off-axis; the
     // winning scene squares up to it. The framing itself gets more resolved.
     const baseZ = lerp(7.4, 6.6, magnetism) + exiting * 1.6;
-    const px = pointer.x * 0.42 * strength;
-    const py = pointer.y * 0.26 * strength;
     const tilt = (1 - magnetism) * 0.06 * strength;
 
-    camera.position.x = damp(camera.position.x, px + tilt, 2.4, dt);
-    camera.position.y = damp(camera.position.y, py * 0.7 - tilt * 0.5, 2.4, dt);
+    camera.position.x = spring(px.current, pointer.x * 0.42 * strength + tilt, 3.6, dt);
+    camera.position.y = spring(py.current, pointer.y * 0.18 * strength - tilt * 0.5, 3.6, dt);
     camera.position.z = damp(camera.position.z, baseZ, 2.6, dt);
 
-    shake.current = damp(shake.current, 0, 4, dt);
     camera.lookAt(0, exiting * 0.6, 0);
   });
 

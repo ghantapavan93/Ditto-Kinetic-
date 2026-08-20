@@ -74,6 +74,19 @@ For the systems version, press **break it** three times: the venue falls through
 and it replans, the shift moves and it holds, the walk doubles and it withdraws
 the plan rather than downgrading it.
 
+## Two surfaces
+
+| | |
+|---|---|
+| **`/`** | FIRST SCENE — the same two people through six openings |
+| **`/wednesday`** | THE DROP — the hour before the match lands |
+
+Ditto's product has one ritual and it is unusually strong: preferences close
+Tuesday at 11:59, and at 7pm on Wednesday exactly one match arrives. A weekly
+appointment a whole campus keeps is a rare thing to own, and right now it has no
+visual form — it happens in a text message. `/wednesday` is that hour, and it
+hands off to `/`, because the match is the easy half.
+
 ## Stack
 
 Next.js 14 · React 18 · TypeScript (strict) · Tailwind · three.js ·
