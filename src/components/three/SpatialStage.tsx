@@ -29,6 +29,8 @@ type StageProps = {
   locked: boolean;
   exiting: number;
   reducedMotion: boolean;
+  /** Earlier / as planned / later. Changes the light, not the room. */
+  timeShift?: -1 | 0 | 1;
 };
 
 /**
@@ -63,7 +65,7 @@ function CameraRig({ magnetism, exiting, reducedMotion }: { magnetism: number; e
   return null;
 }
 
-function StageContents({ pair, scene, magnetism, locked, exiting, reducedMotion, onFragment }: StageProps & { onFragment: (f: Fragment | null) => void }) {
+function StageContents({ pair, scene, magnetism, locked, exiting, reducedMotion, timeShift = 0, onFragment }: StageProps & { onFragment: (f: Fragment | null) => void }) {
   // Hovering a `spark` fragment warms the paper. It is the one purely
   // affectionate thing on the stage and it is deliberately tiny.
   const [blush, setBlush] = useState(false);
@@ -75,8 +77,8 @@ function StageContents({ pair, scene, magnetism, locked, exiting, reducedMotion,
 
   return (
     <>
-      <fog attach="fog" args={['#08090C', 8, 20]} />
-      <SceneLighting mood={scene.mood} locked={locked} />
+      <fog attach="fog" args={['#120C0A', 8, 20]} />
+      <SceneLighting mood={scene.mood} locked={locked} timeShift={timeShift} />
       {process.env.NODE_ENV !== 'production' && <StageProbe magnetism={magnetism} />}
       <CameraRig magnetism={magnetism} exiting={exiting} reducedMotion={reducedMotion} />
 
@@ -218,7 +220,7 @@ export function SpatialStage(props: StageProps & { onFragment?: (f: Fragment | n
       // paying that on first paint is not worth it.
       resize={{ scroll: false, debounce: { scroll: 0, resize: 0 } }}
       onCreated={({ gl }) => {
-        gl.setClearColor('#08090C', 0);
+        gl.setClearColor('#0B0907', 0);
       }}
       onError={() => {
         track('webgl_unavailable');

@@ -32,7 +32,17 @@ export function StageProbe({ magnetism }: { magnetism: number }) {
         scale: +o.scale.x.toFixed(3),
       }));
 
+    const notes = scene.children
+      .filter((o) => o.type === 'Mesh' && (o as { geometry?: { type?: string } }).geometry?.type === 'PlaneGeometry')
+      .map((o) => ({
+        x: +o.position.x.toFixed(2),
+        y: +o.position.y.toFixed(2),
+        w: +(o.scale.x).toFixed(2),
+        h: +(o.scale.y).toFixed(2),
+      }));
+
     (window as unknown as { __fsStage?: unknown }).__fsStage = {
+      notes,
       magnetism: +magnetism.toFixed(3),
       layout,
       viewport: { w: +viewport.width.toFixed(2), h: +viewport.height.toFixed(2) },

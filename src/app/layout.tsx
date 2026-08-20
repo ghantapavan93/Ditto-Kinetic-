@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Anton, Archivo, Caveat, JetBrains_Mono } from 'next/font/google';
+import { Anton, Archivo, Caveat, Instrument_Serif, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 
 /**
@@ -15,6 +15,13 @@ const display = Anton({ subsets: ['latin'], weight: '400', variable: '--font-dis
 const editorial = Archivo({ subsets: ['latin'], variable: '--font-editorial', display: 'swap' });
 const mono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono', display: 'swap' });
 const hand = Caveat({ subsets: ['latin'], variable: '--font-hand', display: 'swap' });
+const voice = Instrument_Serif({
+  subsets: ['latin'],
+  weight: '400',
+  style: ['normal', 'italic'],
+  variable: '--font-voice',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'),
@@ -33,7 +40,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#08090C',
+  themeColor: '#0B0907',
   width: 'device-width',
   initialScale: 1,
   // The stage is a fixed viewport experience; pinch-zooming it produces a
@@ -45,7 +52,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${display.variable} ${editorial.variable} ${mono.variable} ${hand.variable}`}
+      className={`${display.variable} ${editorial.variable} ${voice.variable} ${mono.variable} ${hand.variable}`}
     >
       <body>{children}</body>
     </html>

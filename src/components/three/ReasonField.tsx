@@ -3,7 +3,7 @@
 import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
-import { FRAGMENT_SCALE, fragmentSlot, fragmentTexture } from '@/lib/fragments';
+import { FRAGMENT_MAX_WIDTH, FRAGMENT_SCALE, fragmentSlot, fragmentTexture } from '@/lib/fragments';
 import { damp, lerp, seeded, smoothstep } from '@/lib/motion';
 import { useStageLayout } from './useStageLayout';
 import type { Fragment, MatchPair } from '@/lib/types';
@@ -35,8 +35,6 @@ type Props = {
   onHover: (fragment: Fragment | null) => void;
 };
 
-const BASE_SCALE = FRAGMENT_SCALE;
-
 function FragmentNote({
   fragment,
   index,
@@ -63,6 +61,15 @@ function FragmentNote({
   const { texture, aspect } = useMemo(
     () => fragmentTexture(fragment.text, fragment.kind),
     [fragment.text, fragment.kind],
+  );
+
+  /**
+   * Long notes get scaled down rather than allowed to run into their
+   * neighbours. Height is what varies; width is capped.
+   */
+  const scale = useMemo(
+    () => Math.min(FRAGMENT_SCALE, FRAGMENT_MAX_WIDTH / aspect),
+    [aspect],
   );
 
   const place = useMemo(() => {
@@ -113,7 +120,7 @@ function FragmentNote({
     const mat = m.material as THREE.MeshBasicMaterial;
     mat.opacity = damp(mat.opacity, risen * (1 - exiting) * (hovered.current ? 1 : 0.9), 6, dt);
 
-    const s = BASE_SCALE * layout.scale * lerp(0.86, 1, risen) * (hovered.current ? 1.07 : 1);
+    const s = scale * layout.scale * lerp(0.86, 1, risen) * (hovered.current ? 1.07 : 1);
     const cur = damp(m.scale.y, s, 8, dt);
     m.scale.set(cur * aspect, cur, 1);
   });
@@ -121,7 +128,7 @@ function FragmentNote({
   return (
     <mesh
       ref={mesh}
-      scale={[BASE_SCALE * aspect, BASE_SCALE, 1]}
+      scale={[scale * aspect, scale, 1]}
       onPointerOver={(e) => {
         e.stopPropagation();
         hovered.current = true;

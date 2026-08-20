@@ -47,6 +47,12 @@ type State = {
   hasInteracted: boolean;
   /** The plain-text escape hatch. */
   tldrOpen: boolean;
+  /**
+   * Earlier / as planned / later. Not a scheduler — a dimmer. The same two
+   * people in the same room at a different hour is a different night, and the
+   * only honest way to show that is to change the light.
+   */
+  timeShift: -1 | 0 | 1;
 };
 
 type Actions = {
@@ -71,6 +77,7 @@ type Actions = {
   submitFeedback: () => Promise<void>;
   toggleSound: () => void;
   toggleTldr: () => void;
+  setTimeShift: (shift: -1 | 0 | 1) => void;
   reset: () => void;
 };
 
@@ -89,6 +96,7 @@ const initial: State = {
   soundOn: false,
   hasInteracted: false,
   tldrOpen: false,
+  timeShift: 0,
 };
 
 /** Move the dial onto whichever scene the engine currently ranks first. */
@@ -290,6 +298,12 @@ export const usePrototype = create<State & Actions>((set, get) => ({
 
   toggleSound: () => set({ soundOn: !get().soundOn }),
 
+  setTimeShift: (shift) => {
+    if (get().timeShift === shift) return;
+    set({ timeShift: shift });
+    track('time_shifted', { shift });
+  },
+
   toggleTldr: () => {
     const next = !get().tldrOpen;
     set({ tldrOpen: next });
@@ -304,6 +318,8 @@ export const usePrototype = create<State & Actions>((set, get) => ({
 export const useCurrentPair = () => usePrototype((s) => pairById(s.pairId));
 
 export const useConditions = () => usePrototype((s) => s.conditions);
+
+export const useTimeShift = () => usePrototype((s) => s.timeShift);
 
 export const useCurrentScene = () => {
   const pair = useCurrentPair();

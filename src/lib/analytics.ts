@@ -32,6 +32,8 @@ export type EventName =
   | 'week_condition_changed'
   | 'conditions_reset'
   | 'tldr_opened'
+  | 'time_shifted'
+  | 'pass_captured'
   | 'fragment_read'
   | 'pair_swapped'
   | 'feedback_started'

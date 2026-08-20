@@ -26,6 +26,9 @@ export const MAYA: Person = {
     'reads "getting to know you" questions as an interview and goes formal',
     'likes ambition — dislikes when it is the entire conversation',
   ],
+  surface: 'plans everything three days ahead',
+  contradiction: 'gets funnier the moment the plan stops feeling like a plan',
+  tinyDetail: 'keeps a ranked spreadsheet of every iced latte on campus',
   conversationStyle: ['dry', 'observational', 'slow to open, then fast'],
   socialEnergy: ['steady', 'needs a warm-up object', 'fades after 90 minutes'],
   availability: [
@@ -50,6 +53,9 @@ export const JONAH: Person = {
     'settles once he is walking, building, or reacting to something',
     'does not want to carry the first ten minutes by himself',
   ],
+  surface: 'looks like the spontaneous one',
+  contradiction: 'actually relaxes when somebody else gives the night a shape',
+  tinyDetail: 'has started five playlists and finished none of them',
   conversationStyle: ['fast', 'associative', 'funnier when not being watched'],
   socialEnergy: ['spiky', 'peaks late evening', 'needs a side activity'],
   availability: [
@@ -74,6 +80,9 @@ export const PRIYA: Person = {
     'socially confident: does not need an activity to open up',
     'anything starting after 8pm has a real chance of not happening at all',
   ],
+  surface: 'says yes to everything',
+  contradiction: 'the rota decides, and the rota has never once been asked',
+  tinyDetail: 'can tell you the exact minute any campus coffee place stops serving',
   conversationStyle: ['direct', 'fast', 'skips the preamble'],
   socialEnergy: ['high but narrow', 'flat after a shift', 'best in daylight'],
   availability: [
@@ -98,6 +107,9 @@ export const THEO: Person = {
     'over-plans anything unstructured and arrives already tired',
     'the "low pressure" he asked for is not the low pressure he responds to',
   ],
+  surface: 'reads as the serious one',
+  contradiction: 'is only serious until somebody disagrees with him properly',
+  tinyDetail: 'owns three identical jumpers and denies that they are identical',
   conversationStyle: ['formal then loose', 'likes being challenged', 'long-form'],
   socialEnergy: ['even', 'daylight-stable', 'unbothered by silence'],
   availability: [

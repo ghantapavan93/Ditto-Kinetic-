@@ -285,8 +285,70 @@ The general lesson: when motion carries the meaning, "does it render", "does it
 move enough to be read" and "does it come to rest" are correctness properties.
 They need instrumentation and simulation, not screenshots.
 
+## The warm pass
+
+The first build was correct and cold. It read as a technical interface — one
+dark screen with sophisticated logic behind it — rather than as an evening
+between two people. This pass changed the register without touching the engine.
+
+**Temperature is now a single source of truth.** `src/lib/temperature.ts` owns
+what each room feels like, and both the DOM wash and the WebGL lights read from
+it, so the page and the stage can no longer disagree. The near-black went from
+blue-shifted (`#08090C`) to brown (`#0B0907`) — the colour of a room with a lamp
+on — and the palette gained the warm end it never had: tungsten, amber, rust.
+Only the two scenes that should feel *wrong* stay cold, and `inevitable` is the
+one scene with a warm key **and** a cobalt rim, which is why it is the only one
+that looks photographed.
+
+**Time became physical.** Three detents — earlier, as planned, later — shift the
+key hotter and lower, the ambient colder and deeper, and pull the fog in.
+Deliberately not a scheduler: the plan already has a time. It exists so you can
+see that the same two people in the same room at a different hour is a different
+night, which is the intuition behind `scheduleFit` and `attendanceLikelihood`
+being separate fields.
+
+**The humans stopped being parameters.** The header used to read
+`MAYA × JONAH · WESTBROOK` in 10px uppercase mono, which told you their names
+were strings. Each of them now carries a surface read, the contradiction that
+cuts against it, and one specific useless fact. The contradiction is the
+load-bearing one — it is what the engine is reasoning about, so reading it first
+makes the verdict land as recognition rather than as output.
+
+**Monospace stopped being the voice.** There were 84 mono usages in the primary
+UI; that is why observant copy still read as machine output. A serif
+(`--font-voice`) now carries everything the product actually *says* about two
+people, and mono is reserved for clocks and metadata.
+
+Also added: a four-stop journey rail so the piece stops looking like one screen;
+a `waiting` beat in the handoff, because an introduction involves a second
+person who has not answered yet; and a shutter on the date pass, since it is the
+one screen designed to be screenshotted by someone who is not using the product.
+
+## On screenshots of an animated stage
+
+Two of the "bugs" diagnosed from screenshots during this pass were not bugs.
+
+The browser tab reports `document.hidden` permanently, which suspends
+`requestAnimationFrame`. Every screenshot therefore captures objects **still
+travelling from their origin**, not at rest. Measured mid-capture: card
+separation `0.296` against a target of `1.56`, and notes at `x = ±0.36` against
+slots at `±1.98` — everything uniformly ~5.7x short, which is the signature of a
+damped follower that has run for about three frames.
+
+Read as a picture, that looks exactly like "the notes are piled in the middle".
+It is not. The lesson is the same one as before, one level up: on an animated
+stage, a screenshot is not evidence of layout unless you have first confirmed
+the animation ran.
+
+The note-overlap fix was still warranted — the screenshots taken in a *visible*
+browser did show real collisions — but it was confirmed by arithmetic and by
+`npm run check`, not by looking.
+
 ## Known issues
 
+- **`next build` while the dev server is running will break it.** The build
+  wipes `.next` underneath the running server and every route 500s until it is
+  restarted. Stop the dev server first. (Learned twice.)
 - **The 3D stage still has not been watched in motion by a human.** It has been
   *seen* — rendered in a real Chrome window, which is how four of the bugs above
   surfaced — and the motion is now simulated and asserted numerically. But the

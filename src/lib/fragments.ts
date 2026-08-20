@@ -104,8 +104,18 @@ function draw(canvas: HTMLCanvasElement, text: string, kind: FragmentKind) {
 /** On-stage size of a note, in world units of height. */
 export const FRAGMENT_SCALE = 0.46;
 
-/** Widest a note gets, in world units, at FRAGMENT_SCALE. */
-export const FRAGMENT_MAX_WIDTH = 1.35;
+/**
+ * Hard cap on a note's world width.
+ *
+ * This used to be an *estimate* of how wide notes got, which meant the overlap
+ * assertion was checking a guess rather than the geometry: a long line like
+ * "neither posted about it." renders past 1.5 units at full scale, so notes
+ * collided while the check happily passed.
+ *
+ * It is now a cap that is actually enforced — a note wider than this is scaled
+ * down until it fits, so no wording can ever push two of them into each other.
+ */
+export const FRAGMENT_MAX_WIDTH = 1.55;
 
 /**
  * Where a note sits, as a pure function.

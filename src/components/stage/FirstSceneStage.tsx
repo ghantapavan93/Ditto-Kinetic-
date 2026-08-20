@@ -17,6 +17,10 @@ import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
 import { NarrativeCursor } from '@/components/shared/NarrativeCursor';
 import { Volume2, VolumeX } from 'lucide-react';
 import { TooMuch } from './TooMuch';
+import { TimeDial } from './TimeDial';
+import { JourneyRail } from './JourneyRail';
+import { PairHeader } from './PairHeader';
+import { temperatureFor } from '@/lib/temperature';
 import { useReducedMotion } from '@/components/shared/useReducedMotion';
 import { play } from '@/components/shared/sound';
 import { track } from '@/lib/analytics';
@@ -30,6 +34,7 @@ import {
   useMagnetism,
   usePrototype,
   useSendDecision,
+  useTimeShift,
 } from '@/store/prototypeStore';
 
 /**
@@ -53,6 +58,7 @@ export function FirstSceneStage() {
   const soundOn = usePrototype((s) => s.soundOn);
   const conditions = useConditions();
   const decision = useSendDecision();
+  const timeShift = useTimeShift();
 
   const begin = usePrototype((s) => s.begin);
   const goToScene = usePrototype((s) => s.goToScene);
@@ -163,20 +169,14 @@ export function FirstSceneStage() {
 
   return (
     <div id="stage-root" className="u-stack-grain bg-ink">
-      {/* Ambient wash — shifts with the scene's mood without being a gradient soup. */}
+      {/*
+        Ambient wash. Reads from the same `temperature.ts` the lights do, so the
+        page and the stage can never disagree about what a room feels like.
+      */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 transition-[background] duration-scene ease-settle"
-        style={{
-          background:
-            scene.mood === 'inevitable'
-              ? 'radial-gradient(120% 90% at 22% 28%, rgba(255,120,60,0.16), transparent 55%), radial-gradient(100% 80% at 82% 76%, rgba(43,68,255,0.20), transparent 60%)'
-              : scene.mood === 'depleted'
-                ? 'radial-gradient(120% 90% at 50% 40%, rgba(120,130,150,0.08), transparent 60%)'
-                : scene.mood === 'busy'
-                  ? 'radial-gradient(90% 70% at 78% 30%, rgba(255,46,136,0.14), transparent 58%), radial-gradient(90% 70% at 20% 70%, rgba(43,68,255,0.12), transparent 60%)'
-                  : 'radial-gradient(110% 85% at 32% 26%, rgba(43,68,255,0.14), transparent 58%)',
-        }}
+        style={{ background: temperatureFor(scene.mood).wash }}
       />
 
       {/* WebGL layer */}
@@ -188,6 +188,7 @@ export function FirstSceneStage() {
           locked={locked}
           exiting={exiting}
           reducedMotion={reduced}
+          timeShift={timeShift}
           onFragment={setReading}
         />
       </div>
@@ -209,15 +210,11 @@ export function FirstSceneStage() {
             className="pointer-events-none absolute inset-0 z-artifacts flex flex-col justify-between px-gutter py-[clamp(1rem,3.5vh,2rem)]"
           >
             {/* top bar */}
-            <div className="pointer-events-auto flex items-start justify-between gap-4">
-              <div>
-                <p className="font-mono text-label uppercase text-paper/55">WED 7:00 PM</p>
-                <p className="mt-1 font-mono text-micro uppercase text-paper/30">
-                  {pair.personA.name} × {pair.personB.name} · {pair.personA.fictionalCampus}
+            <div className="pointer-events-auto flex flex-col gap-4">
+              <div className="flex items-start justify-end gap-2">
+                <p className="mr-auto font-mono text-[0.62rem] uppercase tracking-[0.3em] text-paper/40 md:hidden">
+                  wed 7:00 pm · {pair.personA.name} × {pair.personB.name}
                 </p>
-              </div>
-
-              <div className="flex items-center gap-2">
                 <button
                   onClick={swapPair}
                   className="border border-paper/15 px-2.5 py-1.5 font-mono text-micro uppercase text-paper/60 transition-colors hover:border-paper/45 hover:text-paper"
@@ -240,6 +237,8 @@ export function FirstSceneStage() {
                   {soundOn ? 'sound on' : 'sound off'}
                 </button>
               </div>
+
+              <PairHeader pair={pair} />
             </div>
 
             {/* headline block — or the abstention, when there is nothing to send */}
@@ -247,7 +246,7 @@ export function FirstSceneStage() {
               <AnimatePresence mode="popLayout" initial={false}>
                 {decision.send ? (
                   <motion.div key="headline" className="pointer-events-none">
-                    <SceneHeadline scene={scene} isWinner={isWinner} />
+                    <SceneHeadline scene={scene} isWinner={isWinner} timeShift={timeShift} />
                   </motion.div>
                 ) : (
                   <NotThisWeek
@@ -392,7 +391,8 @@ export function FirstSceneStage() {
                 )}
               </div>
 
-              <div className="order-1 self-center sm:order-2 sm:self-end">
+              <div className="order-1 flex flex-col items-center gap-3 self-center sm:order-2 sm:self-end">
+                <TimeDial />
                 <SceneDial scenes={pair.scenes} />
               </div>
             </div>
@@ -446,6 +446,7 @@ export function FirstSceneStage() {
         )}
       </AnimatePresence>
 
+      {showStageChrome && <JourneyRail phase={phase} />}
       <NarrativeCursor />
       {showStageChrome && <TooMuch />}
 

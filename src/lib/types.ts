@@ -35,6 +35,12 @@ export type Person = {
    * `statedPreferences` — that gap is the "hear me out" moment.
    */
   revealedHypotheses: string[];
+  /** The surface read. What you would say about them after ten minutes. */
+  surface: string;
+  /** The turn. What is actually true, and cuts against the surface. */
+  contradiction: string;
+  /** One specific, useless, human fact. The thing that makes them a person. */
+  tinyDetail: string;
   conversationStyle: string[];
   socialEnergy: string[];
   availability: AvailabilitySlot[];
