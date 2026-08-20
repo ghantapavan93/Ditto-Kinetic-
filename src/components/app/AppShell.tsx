@@ -140,9 +140,9 @@ function TabDitto({ pair }: { pair: (typeof PAIRS)[number] }) {
         found someone.
       </div>
 
-      <p className="mt-5 font-display text-[1.9rem] uppercase leading-[0.95] text-paper">
+      <h1 className="mt-5 font-display text-[1.9rem] uppercase leading-[0.95] text-paper">
         {pair.personA.name} <span className="text-acid">×</span> {pair.personB.name}
-      </p>
+      </h1>
       <p className="mt-2 font-voice text-[1rem] leading-snug text-paper/65">
         {pair.personB.contradiction}
       </p>
@@ -196,9 +196,9 @@ function TabWhere({ pair }: { pair: (typeof PAIRS)[number] }) {
         where · six rooms
       </p>
 
-      <p className="mt-3 font-voice text-[1.05rem] leading-snug text-paper/75">
+      <h1 className="mt-3 font-voice text-[1.05rem] leading-snug text-paper/75">
         same two people. the room is the variable nobody moves.
-      </p>
+      </h1>
 
       <ul className="mt-4 grid gap-1.5">
         {ranked.map((r, i) => {
@@ -281,9 +281,9 @@ function TabYou() {
         you · three questions in
       </p>
 
-      <p className="mt-3 font-voice text-[1.05rem] leading-snug text-paper/75">
+      <h1 className="mt-3 font-voice text-[1.05rem] leading-snug text-paper/75">
         not a finished person. the version that showed you one would be making it up.
-      </p>
+      </h1>
 
       <ul className="mt-4 grid gap-2">
         {known.map((t) => (

@@ -201,7 +201,10 @@ export function AutonomyStage() {
                 const gone = taken.has(d);
                 const locked = d === INALIENABLE;
                 return (
-                  <li key={d} className="relative h-[26px]">
+                  /* Row height grows on narrow screens. At 375px the half-width
+                     token wraps to two lines, and a fixed 26px row let the
+                     rows collide. */
+                  <li key={d} className="relative min-h-[40px] sm:min-h-[26px]">
                     {/*
                       The token slides across rather than changing colour in
                       place, so handing something over reads as a movement you
@@ -210,7 +213,7 @@ export function AutonomyStage() {
                     <motion.span
                       animate={{ x: gone ? '100%' : '0%', opacity: gone ? 0.45 : 1 }}
                       transition={{ type: 'spring', stiffness: 190, damping: 24 }}
-                      className={`absolute inset-y-0 flex w-1/2 items-center px-2 font-editorial text-[0.72rem] lowercase leading-none tracking-wide ${
+                      className={`absolute inset-y-0 flex w-1/2 items-center px-2 font-editorial text-[0.66rem] lowercase leading-tight tracking-wide sm:text-[0.72rem] sm:leading-none ${
                         locked
                           ? 'justify-start border-l-2 border-mint/60 text-mint/80'
                           : gone

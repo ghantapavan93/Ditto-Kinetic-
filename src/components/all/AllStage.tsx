@@ -114,13 +114,18 @@ export function AllStage() {
                 {saidAs(current.seconds)}
               </p>
 
-              <Link
-                href={current.surface.path}
-                data-cursor="go there"
-                className="mt-2 block font-display text-[clamp(1.7rem,4.6vw,2.8rem)] uppercase leading-[0.95] text-paper transition-colors hover:text-tungsten"
-              >
-                {current.surface.path}
-              </Link>
+              {/* The page had no heading at all, so a screen reader got no
+                  structure for it. The surface under the cursor is the subject
+                  of the page and is the right thing to carry it. */}
+              <h1 className="mt-2">
+                <Link
+                  href={current.surface.path}
+                  data-cursor="go there"
+                  className="block font-display text-[clamp(1.7rem,4.6vw,2.8rem)] uppercase leading-[0.95] text-paper transition-colors hover:text-tungsten"
+                >
+                  {current.surface.path}
+                </Link>
+              </h1>
 
               <p className="mt-3 max-w-[34ch] font-voice text-[1.05rem] leading-snug text-paper/70">
                 {SAYS[current.surface.path] ?? 'a surface.'}
