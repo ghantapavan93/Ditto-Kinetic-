@@ -129,16 +129,34 @@ whole demo is offline.
 4. **OG image failed to build.** `@vercel/og` under the Node runtime resolves its
    fonts via `fileURLToPath`, which throws on any project path containing a space
    — and this one has two. Pinned back to the edge runtime.
+5. **The ending could never arrive.** `AnimatePresence mode="wait"` in the handoff
+   gated the final screen — *"go have a real life."* — behind the message card's
+   exit animation completing. Any stall in that animation and the last beat of the
+   entire piece simply never renders. Found because a backgrounded tab pauses
+   `requestAnimationFrame`, but the fragility is real regardless: the closing
+   state of a product should not depend on an animation finishing. Both stages now
+   share one grid cell and the quiet screen mounts the instant state changes. The
+   post-date receipt had the same flaw and got the same fix.
 
 ## Known issues
 
-- **I could not visually verify the rendered output in this session.** The
-  browser pane was not displayed, so `document.hidden` was `true`, `requestAnimationFrame`
-  was fully paused (0 frames in 2s), and screenshots timed out. I verified the
-  DOM, the store transitions, winner detection, the dial's ARIA state, WebGL
-  context creation and canvas sizing programmatically — but **nobody has looked at
-  this running.** First thing to do is open it and check the composition, the
-  snap, and the mood lighting with human eyes.
+- **Nobody has looked at this running.** The browser pane was not displayed in the
+  session that built it, so `document.hidden` was `true`, `requestAnimationFrame`
+  was fully paused (0 frames in 2s), and every screenshot timed out.
+
+  What *was* verified programmatically, end to end: WebGL context creation and
+  canvas sizing at capped DPR; the full phase machine (intro → exploring →
+  selected → reasoning → decision → handoff → quiet → post-date → memory); the
+  dial's `aria-valuetext` tracking through all six scenes; winner detection
+  following the pair; the decision view's ranking and utilities matching the
+  scorer exactly; the handoff message, the quiet ending, the feedback prompt,
+  fragment highlighting, and the hypothesis rewrite; and the pair-swap inversion
+  (COFFEE 0.633 first, POST SHOW WALK 0.328 last).
+
+  What was *not* verified: anything visual. Composition, framing, the mood
+  lighting, whether the snap actually reads as a snap, type sizing at real
+  breakpoints, and whether the procedural portraits look like photographs or like
+  smudges. Open it before showing it to anyone.
 - **First Load JS is 373 kB**, almost entirely three.js. Acceptable for a WebGL
   piece, but a lazy `<Suspense>` boundary around the canvas with a DOM-only first
   paint would improve time-to-interactive on a phone.

@@ -52,16 +52,25 @@ export function Handoff({
   }, [onQuiet, soundOn]);
 
   return (
-    <div className="absolute inset-0 z-overlay flex flex-col items-center justify-center px-gutter">
-      <AnimatePresence mode="wait">
-        {stage !== 'quiet' ? (
+    <div className="absolute inset-0 z-overlay grid place-items-center px-gutter">
+      {/*
+        No `mode="wait"` here, deliberately.
+        This is the last beat of the whole piece — "go have a real life" — and
+        `wait` would gate it behind the message card's exit animation
+        completing. Any stall in that animation (a backgrounded tab pausing
+        rAF, for instance) means the ending simply never arrives. Both stages
+        are stacked in one grid cell instead, so the quiet screen mounts the
+        moment the state changes and the card leaves underneath it.
+      */}
+      <AnimatePresence>
+        {stage !== 'quiet' && (
           <motion.div
             key="message"
             initial={{ opacity: 0, y: 20, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -14, filter: 'blur(6px)' }}
+            exit={{ opacity: 0, y: -14, filter: 'blur(6px)', transition: { duration: 0.4 } }}
             transition={SPRING.copy}
-            className="w-full max-w-[23rem]"
+            className="col-start-1 row-start-1 w-full max-w-[23rem]"
           >
             <p className="mb-2.5 text-center font-mono text-micro uppercase text-paper/35">Ditto</p>
 
@@ -103,13 +112,15 @@ export function Handoff({
               delivered
             </motion.p>
           </motion.div>
-        ) : (
+        )}
+
+        {stage === 'quiet' && (
           <motion.div
             key="quiet"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
-            className="flex flex-col items-center text-center"
+            className="col-start-1 row-start-1 flex flex-col items-center text-center"
           >
             <h2 className="font-display text-[clamp(2rem,7vw,4.5rem)] uppercase leading-none text-paper">
               go have a real life.

@@ -51,15 +51,18 @@ export function FeedbackReceipt({ pair }: { pair: MatchPair }) {
 
   return (
     <div className="absolute inset-0 z-overlay flex items-center justify-center overflow-y-auto px-gutter py-12">
-      <div className="w-full max-w-md">
-        <AnimatePresence mode="wait">
-          {!showReceipt ? (
+      {/* Same reasoning as the handoff: the receipt must not be gated behind
+          the prompt's exit animation. Both stages share one grid cell. */}
+      <div className="grid w-full max-w-md">
+        <AnimatePresence>
+          {!showReceipt && (
             <motion.div
               key="prompt"
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
+              exit={{ opacity: 0, y: -12, transition: { duration: 0.28 } }}
               transition={SPRING.copy}
+              className="col-start-1 row-start-1"
             >
               <p className="font-mono text-micro uppercase text-paper/35">the date happened</p>
               <h2 className="mt-2 font-display text-[clamp(1.7rem,5vw,2.8rem)] uppercase leading-none text-paper">
@@ -96,12 +99,15 @@ export function FeedbackReceipt({ pair }: { pair: MatchPair }) {
                 )}
               </div>
             </motion.div>
-          ) : (
+          )}
+
+          {showReceipt && (
             <motion.div
               key="receipt"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.3 }}
+              className="col-start-1 row-start-1"
             >
               {/* the printed sentence */}
               <motion.div
