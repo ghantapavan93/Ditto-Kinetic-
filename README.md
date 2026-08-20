@@ -81,10 +81,11 @@ the plan rather than downgrading it.
 | **`/wednesday`** | THE DROP — the hour before the match lands |
 | **`/`** | FIRST SCENE — the same two people through six openings |
 | **`/after`** | AFTER — 12:14 AM, and the only place the system changes its mind |
+| **`/next-wednesday`** | +7 DAYS — the same six rooms, one term weighted differently |
 
 ```
-match arrives  →  choose the room  →  the date  →  what it revised  →  next wednesday
-  /wednesday          /                              /after                ↺
+match arrives  →  choose the room  →  the date  →  what it revised  →  and what that cost
+  /wednesday          /                              /after            /next-wednesday  ↺
 ```
 
 Ditto's product has one ritual and it is unusually strong: preferences close
@@ -99,6 +100,20 @@ updated"** — that is a claim of certainty about a person from one evening.
 **No deletion** — the belief that turned out to be wrong stays on the board,
 crossed out, because a system that quietly overwrites what it used to think
 cannot be audited.
+
+`/next-wednesday` is what makes that mean anything. A learning loop that never
+changes an outcome is a claim, not a loop — so it runs the same six rooms for a
+new pair on *last week's* weights and *this week's*, and shows both:
+
+| | last week's weights | this week's |
+|---|---|---|
+| coffee | **0.5190 — sent** | 0.4722 — under the bar |
+| gallery drift | 0.5116 | **0.4972 — sent** |
+
+One term moved: social pressure, 0.10 → 0.16. No dimension invented, no room
+changed. The café is still the easiest thing to organise — it just costs more
+than it used to. `npm run check` asserts the flip, and asserts that the race it
+had to overturn was genuinely close (a margin of 0.0026) rather than rigged.
 
 ## Stack
 

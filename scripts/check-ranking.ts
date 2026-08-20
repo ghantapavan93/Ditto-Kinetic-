@@ -14,6 +14,7 @@
  */
 
 import { PAIRS } from '../src/data/pairs';
+import { WEEK_TWO } from '../src/data/weekTwo';
 import { CARD_H, CARD_W, computeStageLayout } from '../src/components/three/useStageLayout';
 import { cardTarget } from '../src/components/three/cardTransform';
 import { FRAGMENT_MAX_WIDTH, FRAGMENT_SCALE, fragmentSlot } from '../src/lib/fragments';
@@ -24,8 +25,12 @@ import {
   rankScenes,
   scoreScene,
   sendDecision,
+  weightsFor,
   type Conditions,
+  type Learned,
 } from '../src/lib/rankScenes';
+
+const HEADING7 = '\nClaim 7 — last week changes this week:';
 
 const HEADING6 = '\nClaim 6 — the motion resolves from a cold start:';
 
@@ -297,6 +302,54 @@ console.log(HEADING6);
   expect('wrong context never stops moving', worst.wander > 0.01, true);
   expect('right context is at least 4x calmer', worst.wander / best.wander > 4, true);
   expect('right context is nearly still', best.wander < 0.008, true);
+}
+
+/* ---- claim 7: the learning has consequences ------------------------------ */
+
+console.log(HEADING7);
+{
+  const LEARNED: readonly Learned[] = ['pressure-over-extroversion'];
+  const before = sendDecision(WEEK_TWO, NO_CONDITIONS);
+  const after = sendDecision(WEEK_TWO, { ...NO_CONDITIONS, learned: LEARNED });
+
+  const rankBefore = rankScenes(WEEK_TWO, NO_CONDITIONS);
+  const rankAfter = rankScenes(WEEK_TWO, { ...NO_CONDITIONS, learned: LEARNED });
+  const coffeeBefore = rankBefore.find((r) => r.scene.id === 'coffee');
+  const coffeeAfter = rankAfter.find((r) => r.scene.id === 'coffee');
+
+  console.log(
+    `  would have sent ${before.send ? before.scene.label : 'nothing'} ` +
+      `-> now sends ${after.send ? after.scene.label : 'nothing'}`,
+  );
+  console.log(
+    `  coffee ${coffeeBefore?.utility.toFixed(4)} (rank ${coffeeBefore?.rank}) ` +
+      `-> ${coffeeAfter?.utility.toFixed(4)} (rank ${coffeeAfter?.rank})`,
+  );
+
+  // A learning loop that never changes an outcome is a claim, not a loop.
+  expect('both weeks produce a sendable plan', before.send && after.send, true);
+  expect(
+    'the learning changes which opening is sent',
+    before.send && after.send && before.scene.id !== after.scene.id,
+    true,
+  );
+  expect('last week would have sent coffee', before.send && before.scene.id, 'coffee');
+  expect('this week does not', after.send && after.scene.id !== 'coffee', true);
+
+  // And it should be a near-tie that tips, not a landslide. One evening of
+  // evidence earns a nudge; anything more would be a system that believes a
+  // single data point.
+  const margin = Math.abs((rankBefore[0]?.utility ?? 0) - (rankBefore[1]?.utility ?? 0));
+  console.log(`  margin it had to overcome: ${margin.toFixed(4)}`);
+  expect('the pre-learning race was genuinely close', margin < 0.02, true);
+
+  // Exactly one weight may move, and only an existing one.
+  const w0 = weightsFor();
+  const w1 = weightsFor(LEARNED);
+  const moved = (Object.keys(w0) as (keyof typeof w0)[]).filter((k) => w0[k] !== w1[k]);
+  expect('learning re-weights exactly one existing term', moved.length, 1);
+  expect('and that term is social pressure', moved[0], 'socialPressure');
+  expect('no dimension is invented', Object.keys(w1).length, Object.keys(w0).length);
 }
 
 console.log(failures ? `\n${failures} assertion(s) FAILED` : '\nall assertions passed');

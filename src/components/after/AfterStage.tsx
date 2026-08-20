@@ -271,8 +271,8 @@ export function AfterStage() {
                   board, crossed out, so you can see it was ever there.
                 </p>
                 <Link
-                  href="/wednesday"
-                  data-cursor="next week"
+                  href="/next-wednesday"
+                  data-cursor="see if it mattered"
                   className="mt-6 inline-block border border-tungsten/50 px-5 py-2.5 font-editorial text-[0.76rem] lowercase tracking-wide text-tungsten transition-colors hover:bg-tungsten hover:text-ink"
                 >
                   next wednesday →

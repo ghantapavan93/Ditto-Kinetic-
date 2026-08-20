@@ -298,6 +298,12 @@ changed. The strike is drawn as a scaling element rather than `line-through`,
 because formatting reads as styling and a stroke reads as somebody crossing
 something out.
 
+The board is a *space* rather than a list — it has perspective, and each card's
+`weight` drives its depth, so a contradicted belief recedes and tips away while a
+new one comes forward. Held in DOM rather than WebGL on purpose: these cards are
+entirely text, and text in a canvas is unselectable, untranslatable and invisible
+to a screen reader. Depth is worth having; depth at the cost of the words is not.
+
 Three refusals define the page:
 
 - **No rating.** A star compresses the one genuinely high-information thing a
@@ -319,6 +325,41 @@ than opacity — a fade means the image was never there and is being mixed in,
 where brightness rising from nothing means it was always there and is becoming
 visible. It also carries a timer failsafe, because rAF is suspended in a
 background tab and the page would otherwise sit blank forever.
+
+## /next-wednesday — making the loop falsifiable
+
+A learning loop that never visibly changes an outcome is a claim, not a loop, and
+"the system learned from your feedback" is the easiest sentence in the world to
+write and the hardest to check. So the page shows the counterfactual: the same
+six rooms, a new pair, ranked twice — once on last week's weights and once on
+this week's.
+
+The mechanism is deliberately narrow. A learned hypothesis may **re-weight an
+existing term** and nothing else: it cannot add a dimension, invent a signal, or
+touch the data. One evening should be able to change how much something counts,
+never what the system is looking at. `weightsFor(learned)` is the whole surface,
+and there is an assertion that exactly one weight moves and the dimension count
+is unchanged.
+
+The size of the change is also a position. Social pressure goes from 0.10 to
+0.16 — not doubled. A system that doubles a weight off one date is a system that
+believes a single data point.
+
+What that buys, verified:
+
+| | last week | this week |
+|---|---|---|
+| coffee | 0.5190, rank 1, **sent** | 0.4722, rank 3, **under the bar** |
+| gallery drift | 0.5116, rank 3 | 0.4972, rank 1, **sent** |
+
+The margin it had to overturn was **0.0026**. That number matters: `npm run
+check` asserts it is under 0.02, so the flip can never quietly become a
+landslide engineered to look like learning. It has to stay a near-tie that a
+modest re-weighting tips — which is the only honest thing one evening's evidence
+can do.
+
+There is no success toast. The system does not announce that it learned; it
+returns a different answer and shows you the one it would have given a week ago.
 
 ## The warm pass
 

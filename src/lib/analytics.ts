@@ -40,6 +40,8 @@ export type EventName =
   | 'drop_handoff_clicked'
   | 'after_page_viewed'
   | 'after_feedback_submitted'
+  | 'next_wednesday_viewed'
+  | 'next_wednesday_counterfactual_opened'
   | 'fragment_read'
   | 'pair_swapped'
   | 'feedback_started'

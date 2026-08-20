@@ -16,12 +16,22 @@ import { MEMORY_AFTER, MEMORY_BEFORE, type MemoryCard } from '@/data/memory';
  * it used to think cannot be audited, and the strike is the only honest record
  * that it was ever wrong. Every card also carries its provenance, because a
  * belief the system cannot source is one it should not be acting on.
+ *
+ * It is a *space*, not a list: the board has perspective, and `weight` drives
+ * depth. A contradicted belief recedes and tips away from you; a new one comes
+ * forward. Held in DOM rather than WebGL on purpose — these cards are entirely
+ * text, and text in a canvas is unselectable, untranslatable and invisible to a
+ * screen reader. Depth here is worth having; depth at the cost of the words is
+ * not.
  */
 export function MemoryBoard({ learned }: { learned: boolean }) {
   const cards = learned ? MEMORY_AFTER : MEMORY_BEFORE;
 
   return (
-    <ul className="grid gap-2.5">
+    <ul
+      className="grid gap-2.5"
+      style={{ perspective: '900px', perspectiveOrigin: '30% 50%' }}
+    >
       {cards.map((card, i) => (
         <MemoryRow key={card.id} card={card} index={i} learned={learned} />
       ))}
@@ -53,6 +63,12 @@ function MemoryRow({
       layout
       layoutId={card.id}
       transition={{ type: 'spring', stiffness: 210, damping: 26, delay: index * 0.06 }}
+      animate={{
+        // Depth carries standing: what the system believes most sits closest.
+        z: -70 + card.weight * 90,
+        rotateX: struck ? 5 : 0,
+        opacity: struck ? 0.48 : 1,
+      }}
       className={`relative rounded-artifact border px-4 py-3 ${
         fresh
           ? 'border-tungsten/45 bg-tungsten/[0.07]'
@@ -60,7 +76,7 @@ function MemoryRow({
             ? 'border-paper/10 bg-transparent'
             : 'border-paper/14 bg-paper/[0.03]'
       }`}
-      style={{ opacity: struck ? 0.5 : 1 }}
+      style={{ transformStyle: 'preserve-3d' }}
     >
       <div className="flex items-baseline justify-between gap-4">
         <p

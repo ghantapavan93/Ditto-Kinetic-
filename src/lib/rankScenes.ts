@@ -32,6 +32,37 @@ export const WEIGHTS = {
 export type WeightKey = keyof typeof WEIGHTS;
 
 /**
+ * A hypothesis the system has adopted from feedback.
+ *
+ * This is the only mechanism by which last week can change this week, and it is
+ * deliberately narrow: a learned hypothesis may re-weight an existing term. It
+ * may not add a term, invent a dimension, or touch the data. One date should be
+ * able to change how much something counts — never what the system is looking
+ * at.
+ */
+export type Learned = 'pressure-over-extroversion';
+
+export const LEARNED_LABEL: Record<Learned, string> = {
+  'pressure-over-extroversion': 'unstructured pressure may matter more than extroversion',
+};
+
+/**
+ * Weights, after whatever the system has learned.
+ *
+ * The adjustment is modest on purpose. Doubling a weight off a single evening
+ * would be the behaviour of a system that believes one data point; raising the
+ * cost of social pressure from 0.10 to 0.16 is a system that has *noticed*
+ * something and is willing to act slightly differently while it finds out.
+ */
+export function weightsFor(learned: readonly Learned[] = []): Record<WeightKey, number> {
+  const w: Record<WeightKey, number> = { ...WEIGHTS };
+  if (learned.includes('pressure-over-extroversion')) {
+    w.socialPressure = -0.16;
+  }
+  return w;
+}
+
+/**
  * The send bar.
  *
  * A scene that scores below this is not sent, even if it is the best of the
@@ -81,6 +112,8 @@ export type Conditions = {
   disruptions: Disruption[];
   /** Scene ids removed from the candidate set entirely (the venue fell through). */
   excluded: string[];
+  /** Hypotheses adopted from past feedback. Empty in week one. */
+  learned?: readonly Learned[];
 };
 
 export const NO_CONDITIONS: Conditions = { week: 'normal', disruptions: [], excluded: [] };
@@ -137,20 +170,19 @@ function applyConditions(metrics: SceneEvaluation, conditions: Conditions): Scen
   return m;
 }
 
-export function scoreScene(metrics: SceneEvaluation): number {
-  return (Object.keys(WEIGHTS) as WeightKey[]).reduce(
-    (total, key) => total + WEIGHTS[key] * metrics[key],
-    0,
-  );
+export function scoreScene(metrics: SceneEvaluation, learned: readonly Learned[] = []): number {
+  const w = weightsFor(learned);
+  return (Object.keys(w) as WeightKey[]).reduce((total, key) => total + w[key] * metrics[key], 0);
 }
 
-function contributionsFor(metrics: SceneEvaluation) {
-  return (Object.keys(WEIGHTS) as WeightKey[]).map((key) => ({
+function contributionsFor(metrics: SceneEvaluation, learned: readonly Learned[] = []) {
+  const w = weightsFor(learned);
+  return (Object.keys(w) as WeightKey[]).map((key) => ({
     key,
     label: TERM_LABELS[key],
     value: metrics[key],
-    weight: WEIGHTS[key],
-    signed: WEIGHTS[key] * metrics[key],
+    weight: w[key],
+    signed: w[key] * metrics[key],
   }));
 }
 
@@ -168,8 +200,8 @@ export function rankScenes(pair: MatchPair, conditions: Conditions = NO_CONDITIO
       const metrics = applyConditions(scene.metrics, conditions);
       return {
         scene,
-        utility: scoreScene(metrics),
-        contributions: contributionsFor(metrics),
+        utility: scoreScene(metrics, conditions.learned),
+        contributions: contributionsFor(metrics, conditions.learned),
         rank: 0,
       };
     })
