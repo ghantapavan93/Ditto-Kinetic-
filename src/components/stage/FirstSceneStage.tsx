@@ -482,6 +482,13 @@ export function FirstSceneStage() {
                 className="order-4 flex flex-wrap items-center gap-x-3 gap-y-1.5 sm:w-full"
               >
                 <span className="font-mono text-micro uppercase text-paper/25">also:</span>
+                <Link
+                  href="/all"
+                  data-cursor="see all of it"
+                  className="min-h-[44px] px-1 py-2 font-mono text-micro uppercase text-tungsten/70 underline-offset-4 transition-colors hover:text-tungsten hover:underline"
+                >
+                  everything
+                </Link>
                 {[
                   { href: '/gravity', label: 'forces, not scores' },
                   { href: '/zoom', label: 'one camera, all of it' },
@@ -494,6 +501,7 @@ export function FirstSceneStage() {
                   { href: '/double', label: 'four people' },
                   { href: '/odds', label: 'your odds' },
                   { href: '/ending', label: 'how it ends' },
+                  { href: '/attention', label: 'what this costs you' },
                   { href: '/next', label: 'what would have to be true' },
                   { href: '/after', label: 'after the date' },
                 ].map((link) => (

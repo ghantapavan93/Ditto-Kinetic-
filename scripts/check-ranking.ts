@@ -37,6 +37,14 @@ import { bridgeFor, readNetwork } from '../src/lib/network';
 import { WAYPOINTS, cameraAt, distanceToPair, levelAt } from '../src/lib/zoom';
 import { coherence, fieldFor, fieldsFor, gapFor } from '../src/lib/gravity';
 import { ALIVE, buildWeek, readWeather } from '../src/lib/weather';
+import { SURFACES } from '../src/data/attentionInventory';
+import {
+  SECONDS_PER_DECISION,
+  WEEKLY_BUDGET_SECONDS,
+  WORDS_PER_MINUTE,
+  audit,
+  saidAs,
+} from '../src/lib/attention';
 import {
   LENSES,
   challengeSet,
@@ -73,6 +81,7 @@ const HEADING18 = '\nClaim 18 — the missing edge is not the compatible one:';
 const HEADING19 = '\nClaim 19 — one camera, and it never jumps:';
 const HEADING20 = '\nClaim 20 — forces are the model, not a picture of it:';
 const HEADING21 = '\nClaim 21 — the weather is counted, not written:';
+const HEADING22 = '\nClaim 22 — the audit includes the auditor:';
 
 const HEADING7 = '\nClaim 7 — last week changes this week:';
 
@@ -1250,6 +1259,70 @@ console.log(HEADING21);
   const dead = m.days.find((d) => d.alive === 0 && d.free > 15);
   console.log(`  ${dead ? `${dead.name}: ${dead.free} people out, ${dead.alive} with anything left` : 'no such night'}`);
   expect('a dead night still has people standing in it', Boolean(dead), true);
+}
+
+
+/* ---- claim 22: the audit includes the auditor -------------------------- */
+
+console.log(HEADING22);
+{
+  const a = audit(SURFACES);
+
+  // Every route this project ships has to be in the bill, including the bill.
+  expect('every surface is measured', SURFACES.length >= 16, true);
+  expect(
+    'including the page that does the measuring',
+    SURFACES.some((s) => s.path === '/attention'),
+    true,
+  );
+
+  // Counted, not authored. Nothing may be zero — a surface with no words and no
+  // controls is a surface the scanner failed to find.
+  for (const s of SURFACES) {
+    expect(`${s.path}: has measurable content`, s.words > 0 && s.decisions >= 0, true);
+  }
+
+  // Cost is a pure function of the counts and the two stated rates.
+  for (const c of a.costs) {
+    const expected =
+      (c.surface.words / WORDS_PER_MINUTE) * 60 + c.surface.decisions * SECONDS_PER_DECISION;
+    expect(`${c.surface.path}: cost follows from the counts`, Math.abs(c.seconds - expected) < 1e-9, true);
+  }
+
+  console.log(`  ${SURFACES.length} surfaces cost ${saidAs(a.total)} -- ${a.weeksOfProduct.toFixed(0)} weeks of the real product`);
+  console.log(`  dearest ${a.dearest.surface.path} ${saidAs(a.dearest.seconds)}; cheapest ${a.cheapest.surface.path} ${saidAs(a.cheapest.seconds)}`);
+
+  // The concession this page is built to make, asserted so it stays true: this
+  // site costs far more than the product it argues about.
+  expect('the site costs more than a week of the product', a.total > WEEKLY_BUDGET_SECONDS, true);
+  expect('by more than an order of magnitude', a.weeksOfProduct > 10, true);
+
+  // The findings worth keeping. Asserted as properties rather than as specific
+  // paths, because the first version pinned "/zoom is cheapest" and that was
+  // true only because the scanner could not see copy declared in a const
+  // object. A claim that depends on a measurement bug is worse than no claim.
+  expect('the dearest surface is the one that talks most', a.dearest.surface.path, '/');
+  expect(
+    'the cheapest surface is one that could ship',
+    a.cheapest.surface.kind,
+    'product',
+  );
+
+  // Spectacle and attention cost are not the same axis: the camera flies
+  // through ninety-six people and sits in the cheaper half regardless.
+  const ranked = [...a.costs].sort((x, y) => x.seconds - y.seconds);
+  const zoomRank = ranked.findIndex((c) => c.surface.path === '/zoom');
+  console.log(`  /zoom ranks ${zoomRank + 1} cheapest of ${ranked.length} despite being the most ambitious`);
+  expect('the camera is in the cheaper half', zoomRank < ranked.length / 2, true);
+
+  // Surfaces that could actually ship should be cheaper on average than the
+  // ones that exist to argue, or the product half has learned nothing.
+  const mean = (kind: 'product' | 'argument') => {
+    const list = a.costs.filter((c) => c.surface.kind === kind);
+    return list.reduce((t, c) => t + c.seconds, 0) / list.length;
+  };
+  console.log(`  mean cost -- product ${saidAs(mean('product'))}, argument ${saidAs(mean('argument'))}`);
+  expect('shippable surfaces are cheaper than arguments', mean('product') < mean('argument'), true);
 }
 
 
