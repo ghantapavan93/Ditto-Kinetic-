@@ -16,6 +16,10 @@
 import { PAIRS } from '../src/data/pairs';
 import { WEEK_TWO } from '../src/data/weekTwo';
 import { CLOUD_COUNT, possibilityCloud } from '../src/lib/possibility';
+import { HELD_BACK } from '../src/data/heldBack';
+import { heldBack } from '../src/lib/restraint';
+import { QUESTIONS, STARTING_TRAITS } from '../src/data/livingProfile';
+import { ACTIONABLE, CONFIDENCE_CEILING, applyAnswer, unknowns } from '../src/lib/profile';
 import {
   LENSES,
   challengeSet,
@@ -40,6 +44,8 @@ import {
 
 const HEADING8 = '\nClaim 8 — the lenses are a partition, not a cast:';
 const HEADING9 = '\nClaim 9 — the possibility cloud is uncertainty made physical:';
+const HEADING10 = '\nClaim 10 — restraint names what it is waiting for:';
+const HEADING11 = '\nClaim 11 — the profile never claims to know a person:';
 
 const HEADING7 = '\nClaim 7 — last week changes this week:';
 
@@ -471,6 +477,101 @@ console.log(HEADING9);
   console.log(`  cafe: ${cafe.agreeing}/${CLOUD_COUNT} agree — "${cafe.likeliestDrift}"`);
   expect('the cafe is the most predictable room', cafe.spread <= Math.min(...others), true);
   expect('and what it predicts is forgettable', cafe.likeliestDrift?.includes('forgotten'), true);
+}
+
+
+/* ---- claim 10: restraint names what it is waiting for -------------------- */
+
+console.log(HEADING10);
+{
+  const held = heldBack(HELD_BACK);
+  expect('three pairs were held back', held.length, 3);
+
+  for (const r of held) {
+    console.log(
+      `  ${r.pair.id}: ${r.utility.toFixed(3)} vs ${SEND_THRESHOLD} -- ` +
+        (r.waitingFor ? `waiting on ${r.waitingFor.key}` : 'no single fix'),
+    );
+    expect(`${r.pair.id}: is genuinely below the bar`, r.utility < SEND_THRESHOLD, true);
+
+    // The load-bearing property: a proposed lift must be EXACTLY enough. Too
+    // little and the surface is lying; too much and it is asking for more than
+    // it needs, which is a different kind of lying.
+    if (r.waitingFor && r.best) {
+      const lifted = { ...r.best.metrics, [r.waitingFor.key]: r.waitingFor.to };
+      const after = scoreScene(lifted);
+      expect(
+        `${r.pair.id}: the named lift lands exactly on the bar`,
+        Math.abs(after - SEND_THRESHOLD) < 1e-9,
+        true,
+      );
+      expect(
+        `${r.pair.id}: and it is actually reachable`,
+        r.waitingFor.effort <= 1 + 1e-9,
+        true,
+      );
+    }
+
+    // Two different people is never the plan.
+    expect(`${r.pair.id}: pair signal is not the answer`, r.waitingFor?.key === 'pairSignal', false);
+  }
+
+  // Each of the three has to fail differently, or "not this week" is a UI state.
+  const [near, waiting, compound] = held;
+  expect('the near miss is waiting on the room', near.waitingFor?.key, 'contextFit');
+  expect('the second one is only waiting on time', waiting.waitingFor?.key, 'uncertainty');
+  expect(
+    'and time is the only thing that would work for it',
+    waiting.lifts.filter((l) => !l.impossible).length,
+    1,
+  );
+  expect('the third cannot be fixed by one change', compound.needsMoreThanOneThing, true);
+  expect('so it names nothing', compound.waitingFor, null);
+}
+
+/* ---- claim 11: the profile never claims to know a person ---------------- */
+
+console.log(HEADING11);
+{
+  expect('every belief starts unsupported', STARTING_TRAITS.every((t) => t.since === null), true);
+
+  // Answer everything, repeatedly, and certainty still never arrives.
+  let traits = STARTING_TRAITS;
+  for (let round = 0; round < 40; round++) {
+    for (const q of QUESTIONS) {
+      traits = applyAnswer(traits, q.answers[0], 'test').traits;
+    }
+  }
+  const top = Math.max(...traits.map((t) => t.confidence));
+  console.log(`  after 40 rounds of answering, the strongest belief reads ${top.toFixed(4)}`);
+  expect('confidence never passes the ceiling', top <= CONFIDENCE_CEILING, true);
+  expect('and certainty is unreachable by construction', top < 1, true);
+
+  // The claim that actually matters to the product: the real flow is three
+  // questions, and three questions must visibly not be enough to know someone.
+  let once = STARTING_TRAITS;
+  for (const q of QUESTIONS) once = applyAnswer(once, q.answers[0], 'test').traits;
+  const afterOnce = Math.max(...once.map((t) => t.confidence));
+  console.log(`  after the real flow -- three questions -- the strongest reads ${afterOnce.toFixed(2)}`);
+  expect('three questions do not produce a finished person', afterOnce < 0.7, true);
+  expect('and some beliefs are still unsupported', unknowns(once).length > 0, true);
+
+  // The favourite-colour question exists to be admitted to.
+  const colour = QUESTIONS.find((q) => q.id === 'colour')!;
+  const result = applyAnswer(STARTING_TRAITS, colour.answers[0], 'test');
+  expect('the useless question moves nothing', result.changes.length, 0);
+  expect('and reports itself as uninformative', result.informative, false);
+
+  // One answer should move beliefs the question was not about.
+  const worse = QUESTIONS.find((q) => q.id === 'worse')!;
+  const spread = applyAnswer(STARTING_TRAITS, worse.answers[0], 'test');
+  console.log(`  one answer moved ${spread.changes.length} separate beliefs`);
+  expect('a real question moves more than one belief', spread.changes.length > 1, true);
+
+  // Unknowns are never silently filled in.
+  const untouched = spread.traits.filter((t) => t.since === null);
+  expect('untouched beliefs stay untouched', untouched.every((t) => t.confidence < ACTIONABLE), true);
+  expect('and are still on the books', unknowns(spread.traits).length > 0, true);
 }
 
 

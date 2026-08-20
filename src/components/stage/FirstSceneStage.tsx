@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import Link from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
 import { SpatialStage } from '@/components/three/SpatialStage';
 import { CLOUD_COUNT, possibilityCloud } from '@/lib/possibility';
@@ -466,6 +467,36 @@ export function FirstSceneStage() {
                   </button>
                 )}
               </div>
+
+              {/*
+                The other surfaces.
+
+                The stage had no outgoing links at all — every other page linked
+                back to it and nothing led out, so half the project was
+                reachable only by typing a URL. Kept to the same register as
+                "break it" rather than promoted into a nav bar: these are places
+                to go afterwards, not chapters to work through.
+              */}
+              <nav
+                aria-label="Other surfaces"
+                className="order-4 flex flex-wrap items-center gap-x-3 gap-y-1.5 sm:w-full"
+              >
+                <span className="font-mono text-micro uppercase text-paper/25">also:</span>
+                {[
+                  { href: '/profile', label: 'what it knows about you' },
+                  { href: '/held-back', label: 'what it did not send' },
+                  { href: '/after', label: 'after the date' },
+                ].map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    data-cursor="go there"
+                    className="min-h-[44px] px-1 py-2 font-mono text-micro uppercase text-paper/35 underline-offset-4 transition-colors hover:text-paper hover:underline"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
 
               <div className="order-1 flex flex-col items-center gap-3 self-center sm:order-2 sm:self-end">
                 <TimeDial />

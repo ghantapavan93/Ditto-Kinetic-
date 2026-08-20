@@ -47,6 +47,10 @@ export type EventName =
   | 'feedback_started'
   | 'feedback_submitted'
   | 'memory_update_viewed'
+  | 'held_back_viewed'
+  | 'held_back_expanded'
+  | 'profile_viewed'
+  | 'profile_answered'
   | 'webgl_unavailable';
 
 export type TrackedEvent = {
