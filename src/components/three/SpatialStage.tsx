@@ -15,6 +15,7 @@ import * as THREE from 'three';
 import { Polaroid3D } from './Polaroid3D';
 import { ConnectionField } from './ConnectionField';
 import { Artifact3D } from './Artifact3D';
+import { PossibilityCloud } from './PossibilityCloud';
 import { SceneLighting } from './SceneLighting';
 import { StageProbe } from './StageProbe';
 import { ReasonField } from './ReasonField';
@@ -35,6 +36,8 @@ type StageProps = {
   intimacy?: number;
   /** 0 on stage, 1 receded during a pair swap. */
   swap?: number;
+  /** 0 closed, 1 fanned into every version of the night. */
+  cloud?: number;
 };
 
 /**
@@ -81,7 +84,7 @@ function CameraRig({ magnetism, exiting, reducedMotion }: { magnetism: number; e
   return null;
 }
 
-function StageContents({ pair, scene, magnetism, locked, exiting, reducedMotion, timeShift = 0, intimacy = 0, swap = 0, onFragment }: StageProps & { onFragment: (f: Fragment | null) => void }) {
+function StageContents({ pair, scene, magnetism, locked, exiting, reducedMotion, timeShift = 0, intimacy = 0, swap = 0, cloud = 0, onFragment }: StageProps & { onFragment: (f: Fragment | null) => void }) {
   // Hovering a `spark` fragment warms the paper. It is the one purely
   // affectionate thing on the stage and it is deliberately tiny.
   const [blush, setBlush] = useState(false);
@@ -127,6 +130,8 @@ function StageContents({ pair, scene, magnetism, locked, exiting, reducedMotion,
         intimacy={intimacy}
         swap={swap}
       />
+
+      <PossibilityCloud scene={scene} open={cloud} reducedMotion={reducedMotion} />
 
       <ReasonField
         pair={pair}

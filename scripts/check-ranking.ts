@@ -15,6 +15,7 @@
 
 import { PAIRS } from '../src/data/pairs';
 import { WEEK_TWO } from '../src/data/weekTwo';
+import { CLOUD_COUNT, possibilityCloud } from '../src/lib/possibility';
 import {
   LENSES,
   challengeSet,
@@ -38,6 +39,7 @@ import {
 } from '../src/lib/rankScenes';
 
 const HEADING8 = '\nClaim 8 — the lenses are a partition, not a cast:';
+const HEADING9 = '\nClaim 9 — the possibility cloud is uncertainty made physical:';
 
 const HEADING7 = '\nClaim 7 — last week changes this week:';
 
@@ -424,6 +426,53 @@ console.log(HEADING8);
     expect(`${pair.id}: no room is offered twice`, new Set(offered).size, offered.length);
   }
 }
+
+/* ---- claim 9: the possibility cloud is uncertainty, not decoration ------- */
+
+console.log(HEADING9);
+{
+  for (const pair of PAIRS) {
+    for (const scene of pair.scenes) {
+      const c = possibilityCloud(scene);
+
+      // Same room, same cloud. A cloud that reshuffled every render would be a
+      // mood, and could not be checked by anything, including this line.
+      const again = possibilityCloud(scene);
+      expect(
+        `${scene.id}: the cloud is deterministic`,
+        JSON.stringify(c) === JSON.stringify(again),
+        true,
+      );
+
+      // Both outcomes must always exist. All-agreeing is a claim of certainty
+      // the scorer never made; none-agreeing is a claim of chaos.
+      expect(`${scene.id}: some versions agree`, c.agreeing > 0, true);
+      expect(`${scene.id}: some versions do not`, c.agreeing < CLOUD_COUNT, true);
+    }
+  }
+
+  // The load-bearing claim: spread has to actually track uncertainty. If this
+  // ever stops holding, the fan is just an animation.
+  const all = PAIRS.flatMap((p) => p.scenes);
+  const ordered = [...all].sort((a, b) => a.metrics.uncertainty - b.metrics.uncertainty);
+  const spreads = ordered.map((s) => possibilityCloud(s).spread);
+  const monotonic = spreads.every((v, i) => i === 0 || v >= spreads[i - 1] - 1e-9);
+  console.log(
+    `  most certain room spreads ${spreads[0].toFixed(3)}, least certain ${spreads[spreads.length - 1].toFixed(3)}`,
+  );
+  expect('spread rises with uncertainty, always', monotonic, true);
+
+  // And the thesis, arriving from the numbers rather than from copy: for Maya
+  // and Jonah the cafe is the room the system is *most* sure about, and what it
+  // is sure of is that the night will be forgettable.
+  const mj = PAIRS[0];
+  const cafe = possibilityCloud(mj.scenes.find((s) => s.id === 'coffee')!);
+  const others = mj.scenes.filter((s) => s.id !== 'coffee').map((s) => possibilityCloud(s).spread);
+  console.log(`  cafe: ${cafe.agreeing}/${CLOUD_COUNT} agree — "${cafe.likeliestDrift}"`);
+  expect('the cafe is the most predictable room', cafe.spread <= Math.min(...others), true);
+  expect('and what it predicts is forgettable', cafe.likeliestDrift?.includes('forgotten'), true);
+}
+
 
 console.log(failures ? `\n${failures} assertion(s) FAILED` : '\nall assertions passed');
 process.exit(failures ? 1 : 0);

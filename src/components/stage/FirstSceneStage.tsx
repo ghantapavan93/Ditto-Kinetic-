@@ -1,8 +1,9 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { SpatialStage } from '@/components/three/SpatialStage';
+import { CLOUD_COUNT, possibilityCloud } from '@/lib/possibility';
 import { SceneDial } from './SceneDial';
 import { SceneHeadline } from './SceneHeadline';
 import { IntroCurtain } from './IntroCurtain';
@@ -74,6 +75,13 @@ export function FirstSceneStage() {
   const openReasoning = usePrototype((s) => s.openReasoning);
   const closeReasoning = usePrototype((s) => s.closeReasoning);
   const openDecision = usePrototype((s) => s.openDecision);
+
+  /**
+   * The possibility cloud. Local rather than in the store because nothing else
+   * in the app needs to know about it — it opens, it is looked at, it closes.
+   */
+  const [cloudOpen, setCloudOpen] = useState(false);
+  const cloud = useMemo(() => possibilityCloud(scene), [scene]);
   const closeDecision = usePrototype((s) => s.closeDecision);
   const toggleHearMeOut = usePrototype((s) => s.toggleHearMeOut);
   const makeItReal = usePrototype((s) => s.makeItReal);
@@ -154,6 +162,8 @@ export function FirstSceneStage() {
         else if (!reasoningOpen) openReasoning();
       } else if (e.key.toLowerCase() === 'd') {
         openDecision();
+      } else if (e.key.toLowerCase() === 'c') {
+        setCloudOpen((v) => !v);
       }
     };
     window.addEventListener('keydown', onKey);
@@ -197,10 +207,48 @@ export function FirstSceneStage() {
           reducedMotion={reduced}
           timeShift={timeShift}
           intimacy={intimacy}
-          swap={swap}
+          swap={Math.max(swap, cloudOpen ? 0.5 : 0)}
+          cloud={cloudOpen ? 1 : 0}
           onFragment={setReading}
         />
       </div>
+
+      {/*
+        The cloud states its own numbers.
+
+        The fan on its own is only a mood — it shows that a room is uncertain
+        without ever saying how much, and an uncertainty display that cannot be
+        read is decoration. This is also where the honesty has to live: seven is
+        openly a device for showing a range, so the copy says what the spread is
+        and refuses to call it a forecast.
+      */}
+      <AnimatePresence>
+        {cloudOpen && phase !== 'intro' && (
+          <motion.aside
+            key="cloud-readout"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8, transition: { duration: 0.22 } }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            aria-label="The range of outcomes"
+            className="pointer-events-none absolute right-gutter top-[24%] z-overlay max-w-[22rem] rounded-artifact border border-paper/10 bg-ink/70 px-5 py-4 text-right backdrop-blur-md"
+          >
+            <p className="font-mono text-[0.6rem] uppercase tracking-[0.28em] text-paper/35">
+              what could happen
+            </p>
+            <p className="mt-2 font-voice text-[clamp(1.3rem,2.6vw,1.8rem)] leading-tight text-paper">
+              {cloud.agreeing} of {CLOUD_COUNT} versions land in the same place.
+            </p>
+            <p className="ml-auto mt-2 max-w-[28ch] font-editorial text-[0.8rem] lowercase leading-relaxed tracking-wide text-tungsten/75">
+              when it doesn&rsquo;t: {cloud.likeliestDrift}.
+            </p>
+            <p className="ml-auto mt-3 max-w-[30ch] font-editorial text-[0.68rem] lowercase leading-relaxed tracking-wide text-paper/30">
+              seven is a way of drawing a range, not a number of anything that was
+              run. the spread is what we don&rsquo;t know yet, not a forecast.
+            </p>
+          </motion.aside>
+        )}
+      </AnimatePresence>
 
       {/* Intro */}
       <AnimatePresence>
@@ -213,7 +261,14 @@ export function FirstSceneStage() {
           <motion.div
             key="chrome"
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            /*
+              The cloud is a mode, not an overlay. Laid over a full stage it
+              competed with the headline and the notes and read as haze; with
+              the room cleared it is the only thing happening, which is the
+              only way "what could happen" is worth looking at. The controls
+              stay lit so you can always get back out.
+            */
+            animate={{ opacity: cloudOpen ? 0.16 : 1 }}
             exit={{ opacity: 0, filter: 'blur(6px)' }}
             transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
             className="pointer-events-none absolute inset-0 z-artifacts flex flex-col justify-between px-gutter py-[clamp(1rem,3.5vh,2rem)]"
@@ -346,6 +401,15 @@ export function FirstSceneStage() {
                   className="min-h-[44px] px-2 py-2 font-mono text-micro uppercase text-paper/40 underline-offset-4 transition-colors hover:text-paper/80 hover:underline"
                 >
                   see the decision
+                </button>
+                <button
+                  onClick={() => setCloudOpen((v) => !v)}
+                  data-cursor="see every version"
+                  className={`min-h-[44px] px-2 py-2 font-mono text-micro uppercase underline-offset-4 transition-colors hover:underline ${
+                    cloudOpen ? 'text-tungsten underline' : 'text-paper/40 hover:text-paper/80'
+                  }`}
+                >
+                  what could happen
                 </button>
                 <button
                   onClick={toggleHearMeOut}
