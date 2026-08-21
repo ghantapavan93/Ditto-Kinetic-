@@ -38,6 +38,7 @@ const SAYS: Record<string, string> = {
   '/end': 'the same question, asked once more, with none of it shown',
   '/possibility': 'an opening appears in your life before a person does',
   '/moments': 'the world the argument is for, cut like a film',
+  '/vision': 'tonight to 2030, one camera, their own direction taken seriously',
 };
 
 /**

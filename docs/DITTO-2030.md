@@ -207,10 +207,13 @@ locked pair on the First Scene stage via the same engine call the stage itself
 uses — including Noor and Sam, who previously could not be landed at all.
 
 **Build order status:** steps 1–4 of the world plan are live (network model,
-/possibility, compiler → possibility, possibility → First Scene). Remaining:
-/world as the pulled-back campus act, the missing edge folded into it, the room
-composer, the recurring-people imagery, and the single continuous camera across
-all of it.
+/possibility, compiler → possibility, possibility → First Scene), and the
+future itself now has a surface: [`/vision`](../src/app/vision/page.tsx) — five
+stations flown by one continuous camera (claim 27 samples the path), the
+shipped photography flying in the scene as textured planes, and copy written as
+a letter from 2030 by a three-writer panel judged three ways against the site's
+own register. Remaining: /world as the pulled-back campus act, the missing edge
+folded into it, and the room composer.
 
 All fourteen acts have a route. The arc closes at
 [`/end`](../src/app/end/page.tsx), which asks the question the compiler opens

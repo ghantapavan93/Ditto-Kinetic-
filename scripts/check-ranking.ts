@@ -39,6 +39,7 @@ import { MAX_GAP, MIN_GAP, coherence, fieldFor, fieldsFor, gapFor } from '../src
 import { ALIVE, buildWeek, readWeather } from '../src/lib/weather';
 import { SCRUB_DAYS, openWorld } from '../src/lib/intersections';
 import { PHOTOS } from '../src/data/photoManifest';
+import { STATIONS, stationAt, stationOpacity, visionCameraAt } from '../src/lib/vision';
 import { existsSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { SURFACES } from '../src/data/attentionInventory';
@@ -97,6 +98,7 @@ const HEADING23 = '\nClaim 23 — the top rung takes nothing and still costs you
 const HEADING24 = '\nClaim 24 — the ending runs the real thing:';
 const HEADING25 = '\nClaim 25 — an opening appears before a person does:';
 const HEADING26 = '\nClaim 26 — the reel ships only what it says it ships:';
+const HEADING27 = '\nClaim 27 — the future is flown, not asserted:';
 
 const HEADING7 = '\nClaim 7 — last week changes this week:';
 
@@ -1618,6 +1620,75 @@ console.log(HEADING26);
   const entries = readdirSync(join(process.cwd(), 'public'));
   expect('the photos folder is lowercase', entries.includes('photos'), true);
   expect('and the capitalised one is gone', entries.includes('Photos'), false);
+}
+
+
+/* ---- claim 27: the future is flown, not asserted ------------------------ */
+
+console.log(HEADING27);
+{
+  // Continuity, sampled — the same standard the zoom set. Five stations from
+  // tonight to 2030 with no cut anywhere.
+  const N = 3000;
+  let worst = 0;
+  let prev = visionCameraAt(0);
+  for (let i = 1; i <= N; i++) {
+    const s = visionCameraAt(i / N);
+    const d = Math.hypot(s.eye[0] - prev.eye[0], s.eye[1] - prev.eye[1], s.eye[2] - prev.eye[2]);
+    if (d > worst) worst = d;
+    prev = s;
+  }
+  console.log(`  ${N} samples -- largest single step ${worst.toFixed(4)} units`);
+  expect('the flight never cuts', worst < 0.2, true);
+
+  // It arrives, holds, and moves at every station — eased to a near stop.
+  const step = 1 / N;
+  const segments = STATIONS.length - 1;
+  for (let i = 1; i < segments; i++) {
+    const at = i / segments;
+    const vStation = Math.hypot(
+      ...visionCameraAt(at + step).eye.map((v, k) => v - visionCameraAt(at - step).eye[k]),
+    );
+    const vMid = Math.hypot(
+      ...visionCameraAt(at - 0.5 / segments + step).eye.map(
+        (v, k) => v - visionCameraAt(at - 0.5 / segments - step).eye[k],
+      ),
+    );
+    expect(`station ${i}: the camera slows to look`, vStation < vMid / 4, true);
+  }
+
+  // The route is the argument: tonight to the quiet, in order.
+  const path = [0, 0.25, 0.5, 0.75, 1].map((t) => stationAt(t).key);
+  console.log(`  route: ${path.join(' -> ')}`);
+  expect('it starts tonight', path[0], 'tonight');
+  expect('and ends in the quiet', path[4], 'quiet');
+  expect('through all five stations', new Set(path).size, 5);
+
+  // Every photograph the flight uses actually ships — from the same manifest
+  // the reel is held to. A vision made of missing files is a slideshow of 404s.
+  for (const s of STATIONS) {
+    for (const slug of s.photos) {
+      expect(
+        `${s.key}/${slug}: flies a photo that ships`,
+        PHOTOS.some((p) => p.src === `/photos/${slug}.webp`),
+        true,
+      );
+    }
+  }
+  const flown = STATIONS.reduce((t, s) => t + s.photos.length, 0);
+  console.log(`  ${flown} photographs fly in the scene`);
+  expect('the photography rides in the scene', flown >= 10, true);
+
+  // The last station is the quiet, and the quiet carries nothing. An ending
+  // about the interface getting out of the way cannot itself be furnished.
+  const quiet = STATIONS[STATIONS.length - 1];
+  expect('the quiet has no photographs', quiet.photos.length, 0);
+  expect('and no room plate', quiet.plate === undefined, true);
+
+  // Station visibility is level-of-detail, not a slideshow: mid-flight at the
+  // meeting, tonight has fully faded and the meeting is fully present.
+  expect('stations fade by distance', stationOpacity(0.5, 0) < 0.05, true);
+  expect('and the near one is fully there', stationOpacity(0.5, 2) > 0.95, true);
 }
 
 

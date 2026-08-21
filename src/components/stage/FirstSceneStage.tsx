@@ -522,6 +522,7 @@ export function FirstSceneStage() {
                   { href: '/ending', label: 'how it ends' },
                   { href: '/autonomy', label: 'how much to hand over' },
                   { href: '/attention', label: 'what this costs you' },
+                  { href: '/vision', label: 'where this goes' },
                   { href: '/next', label: 'what would have to be true' },
                   { href: '/end', label: 'the last one' },
                   { href: '/after', label: 'after the date' },
