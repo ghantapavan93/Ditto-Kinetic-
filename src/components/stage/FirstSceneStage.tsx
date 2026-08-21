@@ -77,6 +77,15 @@ export function FirstSceneStage() {
   const openReasoning = usePrototype((s) => s.openReasoning);
   const closeReasoning = usePrototype((s) => s.closeReasoning);
   const openDecision = usePrototype((s) => s.openDecision);
+  const landOnPair = usePrototype((s) => s.landOnPair);
+
+  // Arrival from /possibility: ?pair=<id>, read once from the raw location
+  // rather than useSearchParams, which would demand a Suspense boundary for a
+  // value that never changes after load.
+  useEffect(() => {
+    const wanted = new URLSearchParams(window.location.search).get('pair');
+    if (wanted) landOnPair(wanted);
+  }, [landOnPair]);
 
   /**
    * The possibility cloud. Local rather than in the store because nothing else
@@ -502,6 +511,7 @@ export function FirstSceneStage() {
                   { href: '/zoom', label: 'one camera, all of it' },
                   { href: '/network', label: 'the whole campus' },
                   { href: '/weather', label: 'is tonight worth it' },
+                  { href: '/possibility', label: 'where openings appear' },
                   { href: '/compiler', label: 'say it in one sentence' },
                   { href: '/app', label: 'the whole thing as an app' },
                   { href: '/profile', label: 'what it knows about you' },

@@ -166,7 +166,7 @@ Fourteen acts, and the ones with routes already exist.
 | act | | route |
 |---|---|---|
 | I | person — what kind of life do you want more of | [`/compiler`](../src/app/compiler/page.tsx) |
-| II | possibility | [`/network`](../src/app/network/page.tsx) |
+| II | possibility | [`/possibility`](../src/app/possibility/page.tsx) |
 | III | intersection | [`/compiler`](../src/app/compiler/page.tsx) |
 | IV | first scene — same people, six rooms | [`/`](../src/app/page.tsx) |
 | V | failure — venue, schedule, environment | [`/`](../src/app/page.tsx) (disruptions) |
@@ -179,6 +179,38 @@ Fourteen acts, and the ones with routes already exist.
 | XII | world — one relationship becomes a network | [`/network`](../src/app/network/page.tsx) |
 | XIII | beyond dating | [`/compiler`](../src/app/compiler/page.tsx) (intersection kinds) |
 | XIV | full circle | [`/end`](../src/app/end/page.tsx) |
+
+### The possibility layer
+
+Built at [`/possibility`](../src/app/possibility/page.tsx) — the connective act
+between the sentence and the stage, and the first surface where the compiler
+physically reorganises a world instead of printing stages.
+
+The rule that shaped it: **the world never shows you the database.** An
+unlocked candidate is an artifact and an hour — a ticket stub reading
+`THU · 8:32 PM` — and carries no person data at all. The type cannot leak what
+it does not hold, and claim 25 serialises every candidate set across every
+sentence and evening and asserts no name appears. Only an evening that clears
+the send bar may approach, and only when it arrives does anybody's photography
+develop.
+
+The physics is the existing machinery translated: distance is `gapFor` on the
+scorer's own utility, stillness is the gravity page's coherence, availability
+is the scheduler's mutual windows. The three held-back pairs are in the field
+and can never lock — visible, near, and never still, which is what being held
+back looks like from the possibility side.
+
+The evening scrub is social weather inside the product surface: wed → thu → fri
+genuinely reorganise which intersection approaches, and when a scrub keeps the
+same pair on a better night, the copy says exactly that. The handoff lands the
+locked pair on the First Scene stage via the same engine call the stage itself
+uses — including Noor and Sam, who previously could not be landed at all.
+
+**Build order status:** steps 1–4 of the world plan are live (network model,
+/possibility, compiler → possibility, possibility → First Scene). Remaining:
+/world as the pulled-back campus act, the missing edge folded into it, the room
+composer, the recurring-people imagery, and the single continuous camera across
+all of it.
 
 All fourteen acts have a route. The arc closes at
 [`/end`](../src/app/end/page.tsx), which asks the question the compiler opens

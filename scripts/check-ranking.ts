@@ -13,7 +13,7 @@
  *   npm run check
  */
 
-import { PAIRS } from '../src/data/pairs';
+import { PAIRS, pairById } from '../src/data/pairs';
 import { WEEK_TWO } from '../src/data/weekTwo';
 import { CLOUD_COUNT, possibilityCloud } from '../src/lib/possibility';
 import { HELD_BACK } from '../src/data/heldBack';
@@ -35,8 +35,9 @@ import { compile, scaffolding } from '../src/lib/compiler';
 import { buildCampus } from '../src/lib/campus';
 import { bridgeFor, readNetwork } from '../src/lib/network';
 import { WAYPOINTS, cameraAt, distanceToPair, levelAt } from '../src/lib/zoom';
-import { coherence, fieldFor, fieldsFor, gapFor } from '../src/lib/gravity';
+import { MAX_GAP, MIN_GAP, coherence, fieldFor, fieldsFor, gapFor } from '../src/lib/gravity';
 import { ALIVE, buildWeek, readWeather } from '../src/lib/weather';
+import { SCRUB_DAYS, openWorld } from '../src/lib/intersections';
 import { SURFACES } from '../src/data/attentionInventory';
 import {
   SECONDS_PER_DECISION,
@@ -91,6 +92,7 @@ const HEADING21 = '\nClaim 21 — the weather is counted, not written:';
 const HEADING22 = '\nClaim 22 — the audit includes the auditor:';
 const HEADING23 = '\nClaim 23 — the top rung takes nothing and still costs you:';
 const HEADING24 = '\nClaim 24 — the ending runs the real thing:';
+const HEADING25 = '\nClaim 25 — an opening appears before a person does:';
 
 const HEADING7 = '\nClaim 7 — last week changes this week:';
 
@@ -1454,6 +1456,113 @@ console.log(HEADING24);
   const rank = ranked.findIndex((c) => c.surface.path === '/end') + 1;
   console.log(`  and ranks ${rank} cheapest of ${ranked.length}`);
   expect('and is among the cheapest surfaces here', rank <= 3, true);
+}
+
+
+/* ---- claim 25: an opening appears before a person does ------------------ */
+
+console.log(HEADING25);
+{
+  const SENTENCES = [
+    'I moved here recently and just want someone fun to get me out of the house.',
+    'I need a cracked designer who thinks like me.',
+    'I want to go on an actual date.',
+  ];
+
+  // The world never shows you the database. An unlocked candidate must carry
+  // no person data — asserted by serialising every candidate set and checking
+  // that no modelled person's name appears anywhere in it.
+  const everyName = [...PAIRS, WEEK_TWO, ...HELD_BACK].flatMap((p) => [
+    p.personA.name,
+    p.personB.name,
+  ]);
+  for (const s of SENTENCES) {
+    for (const d of SCRUB_DAYS) {
+      const json = JSON.stringify(openWorld(s, d).candidates);
+      expect(
+        `"${s.slice(0, 18)}..." day ${d}: candidates leak no names`,
+        everyName.some((n) => json.includes(n)),
+        false,
+      );
+    }
+  }
+
+  // The lock is the send bar, and only the send bar.
+  let locks = 0;
+  for (const s of SENTENCES) {
+    for (const d of SCRUB_DAYS) {
+      const w = openWorld(s, d);
+      if (!w.locked) continue;
+      locks++;
+      expect(
+        `${w.locked.pair.id} on day ${d}: only a clearing evening approaches`,
+        w.locked.utility >= SEND_THRESHOLD,
+        true,
+      );
+      const c = w.candidates.find((x) => x.id === w.locked!.candidateId)!;
+      expect(`${w.locked.pair.id} on day ${d}: and only on a night they share`, c.availableToday, true);
+    }
+  }
+  expect('something locks somewhere', locks > 0, true);
+
+  // Held back means held back from every angle: the three below-bar pairs can
+  // never be the approaching intersection, whatever is said and whenever.
+  const heldIds = new Set(HELD_BACK.map((p) => p.id));
+  for (const s of SENTENCES) {
+    for (const d of SCRUB_DAYS) {
+      const w = openWorld(s, d);
+      expect(
+        `day ${d}: no held-back pair approaches`,
+        w.locked !== null && heldIds.has(w.locked.pair.id),
+        false,
+      );
+    }
+  }
+
+  // Both axes reorganise the world. Different sentences change the approach on
+  // a fixed evening; different evenings change it for a fixed sentence.
+  const bySentence = new Set(
+    SENTENCES.map((s) => openWorld(s, 3).locked?.pair.id ?? 'none'),
+  );
+  const byDay = new Set(
+    SCRUB_DAYS.map((d) => openWorld(SENTENCES[0], d).locked?.pair.id ?? 'none'),
+  );
+  console.log(`  sentences on wednesday -> ${[...bySentence].join(', ')}`);
+  console.log(`  evenings for one sentence -> ${[...byDay].join(', ')}`);
+  expect('the sentence reorganises the world', bySentence.size > 1, true);
+  expect('and so does the evening', byDay.size > 1, true);
+
+  // The physics is the ranking, not a second opinion.
+  const w = openWorld(SENTENCES[0], 4);
+  for (const c of w.candidates) {
+    expect(`${c.id}: closer always means better`, c.gap >= MIN_GAP && c.gap <= MAX_GAP, true);
+  }
+  expect(
+    'the approaching candidate uses the same gap mapping as the gravity page',
+    Math.abs(
+      w.candidates.find((c) => c.id === w.locked!.candidateId)!.gap -
+        gapFor(w.locked!.utility),
+    ) < 1e-9,
+    true,
+  );
+
+  // Times are real: an available candidate's shown day is a day the two people
+  // genuinely share, from the same mutual-window arithmetic the scheduler uses.
+  for (const c of w.candidates) {
+    if (!c.availableToday) continue;
+    expect(`${c.id}: the hour on the artifact is a shared day`, c.days.includes(w.day), true);
+  }
+
+  // The handoff cannot silently swap people: the resolver knows every pair the
+  // possibility layer can lock, including the one outside PAIRS.
+  expect('the stage can land on noor and sam', pairById(WEEK_TWO.id).id, WEEK_TWO.id);
+
+  // Same sentence, same evening, same world.
+  expect(
+    'the world is deterministic',
+    JSON.stringify(openWorld(SENTENCES[0], 4)) === JSON.stringify(openWorld(SENTENCES[0], 4)),
+    true,
+  );
 }
 
 

@@ -216,7 +216,7 @@ export const MISSING_SHAPE = {
  * preference. Wanting something specific does not entitle you to a bad evening,
  * and the assertion for it is in `npm run check`.
  */
-function requiredScaffolding(reading: Reading): number {
+export function requiredScaffolding(reading: Reading): number {
   if (reading.readiness < 0.5) return 0.8;
   switch (reading.kind) {
     case 'collaborator':

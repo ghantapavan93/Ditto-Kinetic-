@@ -1,4 +1,5 @@
 import { JONAH, MAYA, PRIYA, THEO } from './people';
+import { WEEK_TWO } from './weekTwo';
 import type { MatchPair, Scene } from '@/lib/types';
 
 /**
@@ -521,6 +522,19 @@ export const PAIRS: MatchPair[] = [
 
 export const SCENE_ORDER = ['coffee', 'mission', 'gallery', 'postshow', 'group', 'study'] as const;
 
+/**
+ * Resolve any fully-modelled pair, not only the two the dial rotates between.
+ *
+ * The possibility layer can land the stage on Noor and Sam, who live in
+ * `weekTwo.ts`. Before this, an unknown id fell back to pair one silently —
+ * which would have meant arriving from /possibility with one pair promised and
+ * a different pair shown, the exact kind of quiet lie this project exists to
+ * refuse.
+ */
 export function pairById(id: string): MatchPair {
-  return PAIRS.find((p) => p.id === id) ?? PAIRS[0];
+  return (
+    PAIRS.find((p) => p.id === id) ??
+    (WEEK_TWO.id === id ? WEEK_TWO : undefined) ??
+    PAIRS[0]
+  );
 }

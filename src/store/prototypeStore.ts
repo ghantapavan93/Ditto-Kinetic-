@@ -82,6 +82,8 @@ type Actions = {
   setWeek: (week: Conditions['week']) => void;
   resetConditions: () => void;
   swapPair: () => void;
+  /** Arrive from the possibility layer already on a specific pair. */
+  landOnPair: (pairId: string) => void;
   startFeedback: () => void;
   setFeedbackText: (t: string) => void;
   submitFeedback: () => Promise<void>;
@@ -269,6 +271,26 @@ export const usePrototype = create<State & Actions>((set, get) => ({
    * the incoming pair — which is the entire point, and would be a lie if the
    * destination were baked in.
    */
+  /**
+   * Same honest landing as swapPair — ask the engine where this pair opens —
+   * without the theatre, because arrival from /possibility happens behind the
+   * intro curtain where nothing is legible yet.
+   */
+  landOnPair: (pairId: string) => {
+    const pair = pairById(pairId);
+    if (pair.id === get().pairId) return;
+    const decision = sendDecision(pair, NO_CONDITIONS);
+    const landing = decision.send ? decision.scene.id : pair.scenes[0].id;
+    set({
+      pairId: pair.id,
+      sceneId: landing,
+      dialPosition: Math.max(0, SCENE_ORDER.indexOf(landing as (typeof SCENE_ORDER)[number])),
+      conditions: NO_CONDITIONS,
+      minute: 0,
+      feedback: null,
+    });
+  },
+
   swapPair: () => {
     if (get().swapPhase !== 'idle') return;
     const current = get().pairId;
