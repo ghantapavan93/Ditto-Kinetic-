@@ -65,8 +65,21 @@ export function EndStage() {
   const reduced = useReducedMotion();
 
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  /*
+   * Pacing is not motion.
+   *
+   * These delays used to be clamped to 200ms under reduced motion, which
+   * collapsed every beat of the closing sequence into about half a second: the
+   * page went from its first line to gone before anybody could read a word of
+   * it. Reduced motion is a request for less movement, not for less time --
+   * clamping the sequencing removed the content rather than the animation.
+   *
+   * The transitions are still shortened, below, so nothing slides or drifts.
+   * The reading time stays.
+   */
   const after = (ms: number, fn: () => void) => {
-    timers.current.push(setTimeout(fn, reduced ? Math.min(ms, 200) : ms));
+    timers.current.push(setTimeout(fn, ms));
   };
   useEffect(() => () => timers.current.forEach(clearTimeout), []);
 

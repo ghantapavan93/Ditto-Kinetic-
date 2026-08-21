@@ -15,7 +15,8 @@ const ARROW = new THREE.PlaneGeometry(1, 0.014);
 /**
  * Two bodies and ten forces.
  *
- * The gap between the cards is the utility, rescaled — that part is a bijection
+ * The gap between the cards is the utility, rescaled within the readable
+ * band — that part is a bijection
  * and is not pretending to be emergent. What the simulation adds is everything a
  * resting number cannot show: the transition when a condition changes, which
  * force is doing the work, and whether the equilibrium is calm or contested.

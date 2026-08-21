@@ -324,7 +324,7 @@ export function FirstSceneStage() {
             animate={{ opacity: cloudOpen ? 0.16 : 1 }}
             exit={{ opacity: 0, filter: 'blur(6px)' }}
             transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-            className="pointer-events-none absolute inset-0 z-artifacts flex flex-col justify-between px-gutter py-[clamp(1rem,3.5vh,2rem)]"
+            className="pointer-events-none absolute inset-0 z-artifacts flex flex-col justify-between px-gutter py-[clamp(1rem,3.5vh,2rem)] pb-[clamp(2.4rem,6vh,2.6rem)] sm:pb-[clamp(1rem,3.5vh,2rem)]"
           >
             {/* top bar */}
             <div className="pointer-events-auto flex flex-col gap-4">
@@ -418,7 +418,15 @@ export function FirstSceneStage() {
               )}
             </div>
 
-            {/* bottom bar */}
+            {/*
+              bottom bar
+
+              The disclosure joins this stack on small screens rather than
+              floating above it. Absolutely positioned, it landed on top of the
+              disruption controls -- which is presumably why the original simply
+              hid it below 1024px. In the flow it costs one short line and
+              collides with nothing.
+            */}
             <div className="pointer-events-auto flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
               <div className="order-2 flex flex-wrap items-center gap-2 sm:order-1">
                 <AnimatePresence mode="popLayout">
@@ -663,9 +671,24 @@ export function FirstSceneStage() {
       <NarrativeCursor />
       {showStageChrome && <TooMuch />}
 
-      {/* Disclosure persists on the stage, quietly. */}
+      {/*
+        The disclosure persists on the stage, quietly, and at every width.
+
+        It used to carry `hidden ... lg:block`, so the one sentence naming this
+        as unofficial did not render on any phone -- the device most people will
+        open the link on. The previous commit raised its contrast from 2.23:1
+        without noticing it was not being drawn at all below 1024px, which is a
+        good argument for checking that a thing renders before improving how it
+        looks.
+
+        Bottom-left on small screens because the bottom-right corner belongs to
+        the "too much?" control there; it moves to the right once there is room.
+      */}
       {showStageChrome && (
-        <PrototypeDisclosure className="pointer-events-none absolute bottom-9 right-gutter hidden text-right lg:block" />
+        <PrototypeDisclosure
+          compact
+          className="pointer-events-none fixed bottom-0 left-0 z-sheet w-full bg-ink/92 px-gutter py-1.5 text-left backdrop-blur-sm sm:absolute sm:bottom-9 sm:left-auto sm:right-gutter sm:w-auto sm:bg-transparent sm:px-0 sm:py-0 sm:text-right sm:backdrop-blur-none"
+        />
       )}
     </div>
   );

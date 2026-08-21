@@ -1,14 +1,5 @@
 import type { MatchPair, Scene } from './types';
-import {
-  NO_CONDITIONS,
-  SEND_THRESHOLD,
-  applyConditions,
-  scoreScene,
-  weightsFor,
-  type Conditions,
-  type Learned,
-  type WeightKey,
-} from './rankScenes';
+import { NO_CONDITIONS, SEND_THRESHOLD, applyConditions, belowSafetyFloor, metricsFor, scoreScene, type Conditions, type Learned, type WeightKey, weightsFor } from './rankScenes';
 
 /**
  * Connection gravity.
@@ -27,7 +18,9 @@ import {
  *
  * Two properties, and being clear about which is which matters:
  *
- * The RESTING GAP is a bijection with the utility, by construction. That is not
+ * The RESTING GAP is a bijection with the utility on [FLOOR, CEIL], by
+ * construction -- outside that band `gapFor` clamps and two different scores
+ * would draw at one distance, which claim 20 asserts never happens. That is not
  * an emergent result and pretending otherwise would be dishonest — it is a
  * rescaling of the score onto an axis, so you can read the ranking off the
  * distance. What it buys is that you no longer have to be told the number.
@@ -46,8 +39,8 @@ export const MAX_GAP = 3.4;
 export const MIN_GAP = 0.62;
 
 /** Utility range the gap is mapped across. Wider than any real scene. */
-const FLOOR = 0.1;
-const CEIL = 0.75;
+export const FLOOR = 0.1;
+export const CEIL = 0.75;
 
 export type Force = {
   key: WeightKey;
@@ -107,8 +100,24 @@ export function gapFor(utility: number): number {
  * Conditions are applied first, so breaking the week physically pushes the two
  * bodies apart rather than merely lowering a figure somewhere.
  */
-export function fieldFor(scene: Scene, conditions: Conditions = NO_CONDITIONS): Field {
-  const metrics = applyConditions(scene.metrics, conditions);
+export function fieldFor(
+  scene: Scene,
+  conditions: Conditions = NO_CONDITIONS,
+  pair?: MatchPair,
+): Field {
+  /*
+   * Through metricsFor when a pair is available.
+   *
+   * `scheduleFit` is derived from the two calendars now, so decomposing
+   * `scene.metrics` directly produced forces that summed to a number the
+   * ranker does not use -- every scene off by up to 0.055, on the page whose
+   * entire argument is that the distance IS the score. Claim 20 could not see
+   * it, because it only ever checked that the forces summed to the number this
+   * file had just computed from the same inputs.
+   */
+  const metrics = pair
+    ? metricsFor(pair, scene, conditions)
+    : applyConditions(scene.metrics, conditions);
   const weights = weightsFor(conditions.learned as readonly Learned[] | undefined);
 
   const raw = (Object.keys(weights) as WeightKey[]).map((key) => ({
@@ -144,7 +153,10 @@ export function fieldFor(scene: Scene, conditions: Conditions = NO_CONDITIONS): 
 export function fieldsFor(pair: MatchPair, conditions: Conditions = NO_CONDITIONS): Field[] {
   return pair.scenes
     .filter((s) => !conditions.excluded.includes(s.id))
-    .map((s) => fieldFor(s, conditions))
+    // The pair goes through, so the forces decompose the score the ranker
+    // actually produced rather than one this file computed on its own.
+    .filter((s) => !belowSafetyFloor(s.metrics))
+    .map((s) => fieldFor(s, conditions, pair))
     .sort((a, b) => a.gap - b.gap);
 }
 

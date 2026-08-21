@@ -37,7 +37,16 @@ import { compile, scaffolding } from '../src/lib/compiler';
 import { buildCampus } from '../src/lib/campus';
 import { bridgeFor, readNetwork } from '../src/lib/network';
 import { WAYPOINTS, cameraAt, distanceToPair, levelAt } from '../src/lib/zoom';
-import { MAX_GAP, MIN_GAP, coherence, fieldFor, fieldsFor, gapFor } from '../src/lib/gravity';
+import {
+  CEIL,
+  FLOOR,
+  MAX_GAP,
+  MIN_GAP,
+  coherence,
+  fieldFor,
+  fieldsFor,
+  gapFor,
+} from '../src/lib/gravity';
 import { ALIVE, buildWeek, readWeather } from '../src/lib/weather';
 import { SCRUB_DAYS, openWorld } from '../src/lib/intersections';
 import { PHOTOS } from '../src/data/photoManifest';
@@ -1228,6 +1237,24 @@ console.log(HEADING20);
         Math.abs(summed - field.net) < 1e-9,
         true,
       );
+
+      /*
+       * And the score is the one that ships.
+       *
+       * The assertion above sums the same products `field.net` was built from,
+       * so it cannot fail -- and while it stood alone it hid a real defect:
+       * `fieldFor` decomposed raw `scene.metrics` while the ranker used a
+       * `scheduleFit` derived from the calendars, so every force on /gravity
+       * added up to a number nothing else in the project agreed with, by as
+       * much as 0.055. On the page whose argument is that the distance IS the
+       * score, that is the whole page being slightly wrong.
+       */
+      const truth = rankScenes(pair).find((r) => r.scene.id === field.scene.id);
+      expect(
+        `${pair.id}/${field.scene.id}: and the score is the ranker's`,
+        truth !== undefined && Math.abs(truth.utility - field.net) < 1e-9,
+        true,
+      );
       expect(
         `${pair.id}/${field.scene.id}: ten forces, one per weighted term`,
         field.forces.length,
@@ -1251,7 +1278,25 @@ console.log(HEADING20);
     if (sorted[i].gap < sorted[i - 1].gap - 1e-9) monotonic = false;
   }
   expect('a better evening is always a smaller gap', monotonic, true);
-  expect('and the mapping is invertible', gapFor(0.6) < gapFor(0.3), true);
+
+  /*
+   * The bijection holds on a domain, and the domain is the interesting part.
+   *
+   * `gapFor` clamps, so every utility below the floor renders at exactly the
+   * same distance and stops being readable off the screen. Two hardcoded
+   * points -- gapFor(0.6) < gapFor(0.3) -- proved nothing about that. What
+   * matters is that the clamp never actually engages: if a real scene ever
+   * scores outside the range, the page is drawing two different evenings at
+   * one distance and the claim on it becomes false.
+   */
+  const strictlyMonotonic = all.every((f) =>
+    all.every((g) => f.net >= g.net || f.gap > g.gap - 1e-12),
+  );
+  expect('and no two different scores share a distance', strictlyMonotonic, true);
+
+  const outside = all.filter((f) => f.net < FLOOR || f.net > CEIL);
+  console.log(`  ${all.length} fields, ${outside.length} outside the readable range [${FLOOR}, ${CEIL}]`);
+  expect('every room sits inside the range the gap can express', outside.length, 0);
 
   // What the physics adds that the score cannot. Two rooms can carry the same
   // number with different compositions, so tension has to be independent of net.
