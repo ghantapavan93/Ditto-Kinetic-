@@ -5,7 +5,8 @@ import { costOf } from '@/lib/attention';
 /**
  * Five ways in.
  *
- * Twenty-six surfaces is a lot to hand somebody. The failure mode is obvious
+ * Twenty-odd surfaces is a lot to hand somebody -- the exact figure is
+ * generated, and deliberately not repeated here. The failure mode is obvious
  * and this project walked straight into it: everything is reachable and nothing
  * is recommended, so a person with four minutes opens the front page, admires
  * it, and never finds the two screens that would have convinced them.
@@ -53,7 +54,7 @@ export const WAYS_IN: WayIn[] = [
     key: 'the-model',
     forWhom: 'you own matching and want the model before the mood',
     route: '/mutual',
-    does: 'scores every room twice, once per person, from weights read off their own words — and reports honestly that it changed no decision here.',
+    does: 'scores every room twice, once per person, from weights read off their own words — and finds a room the shipping model would send that the reluctant one refuses.',
     doesNot: 'come from real behaviour. six synthetic pairs is a demonstration, not evidence.',
   },
   {

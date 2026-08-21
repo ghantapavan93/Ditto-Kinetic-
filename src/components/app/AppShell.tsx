@@ -183,7 +183,7 @@ function TabWhere({ pair }: { pair: (typeof PAIRS)[number] }) {
   const lenses = useMemo(() => readAllLenses(pair), [pair]);
   const disagree = lensesDisagree(lenses);
   const top = ranked[0];
-  const cloud = useMemo(() => possibilityCloud(top.scene), [top.scene]);
+  const cloud = useMemo(() => possibilityCloud(pair, top.scene), [pair, top.scene]);
 
   // Counted, not written. The first version said "three of these six" next to a
   // list showing two below the bar — the exact failure this project keeps

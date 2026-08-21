@@ -42,7 +42,18 @@ import { join, relative } from 'node:path';
 const ROOT = join(process.cwd(), 'src');
 
 /** Which component tree belongs to which route. */
-const ROUTES: { path: string; dir: string; kind: 'argument' | 'product' }[] = [
+/**
+ * Directories that belong to no single surface.
+ *
+ * They are shared machinery -- the WebGL primitives, the disclosure, the
+ * handoff and receipt that several flows end in -- so billing them to one route
+ * would be a lie in the other direction. Declared here rather than simply
+ * omitted, because five directories were quietly unbilled and 14% of the words
+ * on this site were charged to nobody. Silence is not a category.
+ */
+export const SHARED_DIRS = ['three', 'shared', 'reasoning', 'feedback', 'handoff'];
+
+export const ROUTES: { path: string; dir: string; kind: 'argument' | 'product' }[] = [
   { path: '/', dir: 'components/stage', kind: 'argument' },
   { path: '/compiler', dir: 'components/compiler', kind: 'product' },
   { path: '/app', dir: 'components/app', kind: 'product' },

@@ -12,7 +12,7 @@ import { track } from '@/lib/analytics';
  * The front door.
  *
  * Built because a review of this project pointed out something obvious in
- * hindsight: it has twenty-six surfaces, every one of them reachable, and not
+ * hindsight: every surface is reachable and not
  * one of them recommended. A person with four minutes admires the stage and
  * never finds the two screens that would have convinced them.
  *
@@ -21,7 +21,7 @@ import { track } from '@/lib/analytics';
  * route does not settle — because a recommendation without its limit is a sales
  * pitch with extra steps, and this whole project is an argument against those.
  *
- * It also carries the ask, which was missing everywhere. Twenty-six routes and
+ * It also carries the ask, which was missing everywhere. A site this size with
  * no way to reply is not modesty, it is an unfinished thought.
  */
 export function StartStage() {
@@ -128,7 +128,7 @@ export function StartStage() {
           </p>
         </section>
 
-        {/* the ask, which was missing from twenty-six routes */}
+        {/* the ask, which was missing from every route */}
         <section className="border-t border-paper/[0.09] pt-5">
           <p className="font-mono text-[0.56rem] uppercase tracking-[0.24em] text-paper/55">
             the ask

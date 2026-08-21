@@ -12,7 +12,7 @@ import { track } from '@/lib/analytics';
 /**
  * What would have to be true.
  *
- * The last surface, and deliberately not another argument. Fourteen pages
+ * The last surface, and deliberately not another argument. Every page before this one
  * making a case with no plan for finding out whether the case holds is exactly
  * the failure this project keeps pointing at in other people's products, so the
  * end of it is the measurement rather than one more demonstration.

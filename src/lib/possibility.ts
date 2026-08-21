@@ -1,4 +1,5 @@
-import type { Scene, SceneEvaluation } from './types';
+import type { MatchPair, Scene, SceneEvaluation } from './types';
+import { NO_CONDITIONS, metricsFor, type Conditions } from './rankScenes';
 
 /**
  * The possibility cloud.
@@ -133,14 +134,31 @@ export type Cloud = {
  * a cloud where everything agrees would be a claim of certainty the scorer
  * never made, and a cloud where nothing agrees would be a claim of chaos.
  */
-export function possibilityCloud(scene: Scene): Cloud {
+export function possibilityCloud(
+  pair: MatchPair,
+  scene: Scene,
+  conditions: Conditions = NO_CONDITIONS,
+): Cloud {
   const rand = seeded(scene.id);
-  const u = scene.metrics.uncertainty;
+
+  /*
+   * Through metricsFor, like everything else that scores a scene.
+   *
+   * This read `scene.metrics` raw, which cost it twice. It missed the derived
+   * `scheduleFit`, so on the stage's own default view -- Maya and Jonah's post
+   * show walk -- it named "it gets cut short" as the likeliest way the evening
+   * fails, when the two of them are comfortably inside a three-hour window at
+   * 8:32. And it never saw `applyConditions`, so breaking the week or turning
+   * on exam week changed every other number on screen and left the cloud
+   * sitting there predicting the same weather.
+   */
+  const metrics = metricsFor(pair, scene, conditions);
+  const u = metrics.uncertainty;
 
   const diverging = Math.min(CLOUD_COUNT - 2, Math.max(1, Math.round(u * CLOUD_COUNT)));
 
   // Worst first, so the version most likely to go wrong is the one that says so.
-  const ranked = [...DRIFTS].sort((a, b) => b.risk(scene.metrics) - a.risk(scene.metrics));
+  const ranked = [...DRIFTS].sort((a, b) => b.risk(metrics) - a.risk(metrics));
 
   // Where the diverging run starts. The drift list is indexed from HERE, not
   // from the absolute card index -- otherwise the first diverging card reads

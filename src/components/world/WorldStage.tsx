@@ -1,6 +1,7 @@
 'use client';
 
 import dynamic from 'next/dynamic';
+import { useReducedMotion } from '@/components/shared/useReducedMotion';
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -26,6 +27,7 @@ const WorldField = dynamic(() => import('./WorldField').then((m) => m.WorldField
 export function WorldStage() {
   const world = useMemo(() => buildWorld(), []);
   const [priced, setPriced] = useState(false);
+  const reduced = useReducedMotion();
 
   useEffect(() => {
     track('world_viewed', { pool: world.pool });
@@ -37,7 +39,7 @@ export function WorldStage() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-ink">
       <div className="fixed inset-0">
-        <WorldField world={world} priced={priced} />
+        <WorldField world={world} priced={priced} reducedMotion={reduced} />
       </div>
 
       <div

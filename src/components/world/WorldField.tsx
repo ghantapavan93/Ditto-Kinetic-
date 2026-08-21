@@ -44,10 +44,13 @@ function SchoolCluster({
   world,
   index,
   priced,
+  still,
 }: {
   world: World;
   index: number;
   priced: Priced;
+  /** True when the viewer has asked for less movement. */
+  still: boolean;
 }) {
   const group = useRef<THREE.Group>(null);
   const school = world.schools[index];
@@ -75,7 +78,7 @@ function SchoolCluster({
     const lit = 1 - p + p * alive;
     material.current.opacity = 0.14 + lit * 0.5;
     material.current.color.lerpColors(COLD_C, index === 0 ? WARM_C : PAPER_C, lit * 0.85);
-    if (group.current) group.current.rotation.y += 0.0009;
+    if (group.current && !still) group.current.rotation.y += 0.0009;
   });
 
   return (
@@ -135,7 +138,15 @@ function Threads({ world, priced }: { world: World; priced: Priced }) {
   );
 }
 
-function Rig({ world, target }: { world: World; target: number }) {
+function Rig({
+  world,
+  target,
+  reducedMotion,
+}: {
+  world: World;
+  target: number;
+  reducedMotion: boolean;
+}) {
   const smooth = useRef<Spring>({ x: 0, v: 0 });
   const drift = useRef(0);
   const value = useRef(0);
@@ -143,7 +154,7 @@ function Rig({ world, target }: { world: World; target: number }) {
   useFrame(({ camera }, delta) => {
     const dt = Math.min(delta, 1 / 30);
     value.current = spring(smooth.current, target, 4.5, dt);
-    drift.current += dt * 0.08;
+    if (!reducedMotion) drift.current += dt * 0.08;
 
     // Pricing the trip pulls the camera in toward your campus — the world does
     // not get smaller, the part of it that matters does.
@@ -158,14 +169,23 @@ function Rig({ world, target }: { world: World; target: number }) {
   return (
     <>
       {Array.from({ length: SCHOOLS }, (_, i) => (
-        <SchoolCluster key={i} world={world} index={i} priced={value} />
+        <SchoolCluster key={i} world={world} index={i} priced={value} still={reducedMotion} />
       ))}
       <Threads world={world} priced={value} />
     </>
   );
 }
 
-export function WorldField({ world, priced }: { world: World; priced: boolean }) {
+export function WorldField({
+  world,
+  priced,
+  reducedMotion,
+}: {
+  world: World;
+  priced: boolean;
+  /** Every sibling scene gates its drift on this; this one did not. */
+  reducedMotion: boolean;
+}) {
   return (
     <Canvas
       dpr={[1, 1.75]}
@@ -176,7 +196,7 @@ export function WorldField({ world, priced }: { world: World; priced: boolean })
       <color attach="background" args={[INK]} />
       <fog attach="fog" args={[INK, 12, 30]} />
       <ambientLight intensity={0.9} />
-      <Rig world={world} target={priced ? 1 : 0} />
+      <Rig world={world} target={priced ? 1 : 0} reducedMotion={reducedMotion} />
     </Canvas>
   );
 }

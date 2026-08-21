@@ -1,4 +1,4 @@
-import { WEIGHTS, scoreScene, type WeightKey } from '@/lib/rankScenes';
+import { WEIGHTS, metricsFor, scoreScene, type WeightKey } from '@/lib/rankScenes';
 import type { MatchPair, Person, Scene, SceneEvaluation } from '@/lib/types';
 
 /**
@@ -357,7 +357,15 @@ export type Mutuality = {
 export const RECIPROCITY_GAP = 0.25;
 
 export function mutualityOf(pair: MatchPair, scene: Scene): Mutuality {
-  const metrics = scene.metrics;
+  /*
+   * The same metrics the ranker uses.
+   *
+   * This read the raw data file, so `shipped` was not what ships -- the exact
+   * mistake this field was created to stop making. The page compares the
+   * shipping model against the reluctant reading; both sides have to be
+   * computed the same way or the comparison is between two strangers.
+   */
+  const metrics = metricsFor(pair, scene);
   const a = sideOf(pair.personA, metrics);
   const b = sideOf(pair.personB, metrics);
   const gap = Math.abs(a - b);

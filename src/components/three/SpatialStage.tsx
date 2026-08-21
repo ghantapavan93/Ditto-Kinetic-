@@ -132,7 +132,7 @@ function StageContents({ pair, scene, magnetism, locked, exiting, reducedMotion,
         swap={swap}
       />
 
-      <PossibilityCloud scene={scene} open={cloud} reducedMotion={reducedMotion} />
+      <PossibilityCloud pair={pair} scene={scene} open={cloud} reducedMotion={reducedMotion} />
 
       <ReasonField
         pair={pair}

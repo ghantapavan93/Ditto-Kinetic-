@@ -127,7 +127,7 @@ export function FirstSceneStage() {
    * in the app needs to know about it — it opens, it is looked at, it closes.
    */
   const [cloudOpen, setCloudOpen] = useState(false);
-  const cloud = useMemo(() => possibilityCloud(scene), [scene]);
+  const cloud = useMemo(() => possibilityCloud(pair, scene, conditions), [pair, scene, conditions]);
   const closeDecision = usePrototype((s) => s.closeDecision);
   const toggleHearMeOut = usePrototype((s) => s.toggleHearMeOut);
   const makeItReal = usePrototype((s) => s.makeItReal);

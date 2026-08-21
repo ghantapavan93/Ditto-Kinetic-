@@ -6,7 +6,7 @@ import * as THREE from 'three';
 import { possibilityCloud } from '@/lib/possibility';
 import { damp, spring, type Spring } from '@/lib/motion';
 import { CARD_H, CARD_W } from './useStageLayout';
-import type { Scene } from '@/lib/types';
+import type { MatchPair, Scene } from '@/lib/types';
 
 import { AMBER, PAPER } from '@/lib/palette';
 /**
@@ -93,16 +93,18 @@ function softCardTexture(): THREE.CanvasTexture {
 const GHOST_GEOMETRY = new THREE.PlaneGeometry(CARD_W * GHOST_SCALE, CARD_H * GHOST_SCALE);
 
 export function PossibilityCloud({
+  pair,
   scene,
   open,
   reducedMotion,
 }: {
+  pair: MatchPair;
   scene: Scene;
   /** 0 closed, 1 fully fanned. */
   open: number;
   reducedMotion: boolean;
 }) {
-  const cloud = useMemo(() => possibilityCloud(scene), [scene]);
+  const cloud = useMemo(() => possibilityCloud(pair, scene), [pair, scene]);
 
   // Built on first render rather than at module scope: this touches `document`,
   // and the module is imported during the server pass.

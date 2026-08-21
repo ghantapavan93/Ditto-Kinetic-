@@ -64,6 +64,7 @@ import { buildThread, silenceFor } from '../src/lib/thread';
 import { WAYS_IN, costOfWay, shortestWay } from '../src/lib/waysIn';
 import { PROOF } from '../src/data/proof';
 import { CONTRAST } from '../src/data/contrastReport';
+import { ROUTES, SHARED_DIRS } from './measure-attention';
 import {
   SITTING_MINUTES,
   type Booking,
@@ -135,6 +136,7 @@ const HEADING34 = "\nClaim 34 \u2014 the model is what it says it is:";
 const HEADING35 = "\nClaim 35 \u2014 a plan is not a ranking:";
 const HEADING36 = "\nClaim 36 \u2014 one card, one evening; one ranking, one partition:";
 const HEADING37 = "\nClaim 37 — everything on this site can actually be read:";
+const HEADING38 = "\nClaim 38 \u2014 the guards look where they say they look:";
 
 const HEADING7 = '\nClaim 7 — last week changes this week:';
 
@@ -544,11 +546,11 @@ console.log(HEADING9);
 {
   for (const pair of PAIRS) {
     for (const scene of pair.scenes) {
-      const c = possibilityCloud(scene);
+      const c = possibilityCloud(pair, scene);
 
       // Same room, same cloud. A cloud that reshuffled every render would be a
       // mood, and could not be checked by anything, including this line.
-      const again = possibilityCloud(scene);
+      const again = possibilityCloud(pair, scene);
       expect(
         `${scene.id}: the cloud is deterministic`,
         JSON.stringify(c) === JSON.stringify(again),
@@ -564,9 +566,11 @@ console.log(HEADING9);
 
   // The load-bearing claim: spread has to actually track uncertainty. If this
   // ever stops holding, the fan is just an animation.
-  const all = PAIRS.flatMap((p) => p.scenes);
-  const ordered = [...all].sort((a, b) => a.metrics.uncertainty - b.metrics.uncertainty);
-  const spreads = ordered.map((s) => possibilityCloud(s).spread);
+  const all = PAIRS.flatMap((p) => p.scenes.map((sc) => ({ pair: p, scene: sc })));
+  const ordered = [...all].sort(
+    (a, b) => a.scene.metrics.uncertainty - b.scene.metrics.uncertainty,
+  );
+  const spreads = ordered.map((e) => possibilityCloud(e.pair, e.scene).spread);
   const monotonic = spreads.every((v, i) => i === 0 || v >= spreads[i - 1] - 1e-9);
   console.log(
     `  most certain room spreads ${spreads[0].toFixed(3)}, least certain ${spreads[spreads.length - 1].toFixed(3)}`,
@@ -577,8 +581,10 @@ console.log(HEADING9);
   // and Jonah the cafe is the room the system is *most* sure about, and what it
   // is sure of is that the night will be forgettable.
   const mj = PAIRS[0];
-  const cafe = possibilityCloud(mj.scenes.find((s) => s.id === 'coffee')!);
-  const others = mj.scenes.filter((s) => s.id !== 'coffee').map((s) => possibilityCloud(s).spread);
+  const cafe = possibilityCloud(mj, mj.scenes.find((s) => s.id === 'coffee')!);
+  const others = mj.scenes
+    .filter((s) => s.id !== 'coffee')
+    .map((s) => possibilityCloud(mj, s).spread);
   console.log(`  cafe: ${cafe.agreeing}/${CLOUD_COUNT} agree — "${cafe.likeliestDrift}"`);
   expect('the cafe is the most predictable room', cafe.spread <= Math.min(...others), true);
   expect('and what it predicts is forgettable', cafe.likeliestDrift?.includes('forgotten'), true);
@@ -1911,8 +1917,25 @@ console.log(HEADING29);
   walk(join(process.cwd(), 'src'));
   const corpus = sources.join('\n');
 
+  /*
+   * Adjacent to an `href`, not merely present in the file.
+   *
+   * The second clause used to accept any `'/route'` string anywhere in the
+   * source -- and AllStage's SAYS map keys every route as a single-quoted path
+   * for caption lookup, so every route satisfied the check whether or not
+   * anything linked to it. The assertion was reading its own index.
+   *
+   * `href` has to be within a few characters, which admits both the JSX form
+   * and the nav-array form this project uses (`{ href: '/app', label: ... }`)
+   * while rejecting a bare key in a lookup table.
+   */
   for (const dir of routeDirs) {
-    expect(`/${dir}: something links to it`, corpus.includes(`href="/${dir}"`) || corpus.includes(`'/${dir}'`), true);
+    // String.raw, because inside a plain template literal `\s` collapses to a
+    // literal "s" and the pattern silently starts demanding one.
+    const linked = new RegExp(
+      String.raw`href[:=]\s*\{?\s*['"` + '`' + String.raw`]/` + dir + String.raw`['"` + '`' + String.raw`]`,
+    ).test(corpus);
+    expect(`/${dir}: something actually links to it`, linked, true);
   }
 
   // The stage is the front door, so it carries the widest nav. Every surface a
@@ -1932,9 +1955,27 @@ console.log(HEADING29);
   // And the counts the site says about itself are derived, never typed. These
   // three spellings were all stale at once, on the pages whose whole premise
   // is that numbers get measured.
-  for (const stale of ['fourteen surfaces', 'fifteen surfaces', 'Fifteen surfaces', 'Twenty surfaces']) {
-    expect(`no surface writes "${stale}"`, corpus.includes(stale), false);
+  /*
+   * A pattern, because a list of four literals could not fail.
+   *
+   * The old denylist named four exact strings, none of which existed anywhere
+   * in the tree -- so all four assertions passed forever while FOUR REAL stale
+   * counts sat in the source: "Fourteen surfaces" in roadmap.ts (capital F; the
+   * denylist carried the lowercase spelling), "Fourteen pages" in NextStage,
+   * and "twenty-six surfaces" in two more places, against a site that ships 27.
+   *
+   * The guard was checking for the specific mistakes already fixed rather than
+   * for the shape of the mistake, which is the difference between a regression
+   * test and a memorial.
+   */
+  const WRITTEN_COUNT =
+    /\b(?:ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty)(?:[\s-](?:one|two|three|four|five|six|seven|eight|nine))?\s+(?:surfaces?|pages?|routes?|claims?|assertions?)\b/gi;
+
+  const written = [...corpus.matchAll(WRITTEN_COUNT)].map((m) => m[0]);
+  if (written.length) {
+    console.log(`  written counts found: ${[...new Set(written)].join(', ')}`);
   }
+  expect('no surface writes a count it could derive', written.length, 0);
 }
 
 
@@ -2614,6 +2655,90 @@ console.log(HEADING37);
   const route = readSourceFile(join(process.cwd(), 'src/app/api/feedback/route.ts'), 'utf8');
   expect('the proxy is throttled', route.includes('overLimit'), true);
   expect('and says so with the right status', route.includes('429'), true);
+}
+
+
+/* ---- claim 38: the guards look where they say they look ------------------ */
+
+console.log(HEADING38);
+{
+  /*
+   * src/lib/palette.ts carried a comment saying "claim 38 asserts the two
+   * agree, so they cannot drift apart again". There was no claim 38. A comment
+   * describing a guard that does not exist is worse than no comment: it is the
+   * reason nobody goes looking. So here it is, and it is the reason that file
+   * may keep its sentence.
+   */
+  const config = readSourceFile(join(process.cwd(), 'tailwind.config.ts'), 'utf8');
+  const declared = new Map<string, string>();
+  let group: string | null = null;
+  for (const raw of config.split('\n')) {
+    const line = raw.trim();
+    const opens = /^([a-z][\w-]*)\s*:\s*\{/.exec(line);
+    if (opens) {
+      group = opens[1];
+      continue;
+    }
+    if (line.startsWith('}')) group = null;
+    const pair = /^([A-Za-z][\w-]*)\s*:\s*'(#[0-9a-fA-F]{3,8})'/.exec(line);
+    if (!pair) continue;
+    const [, key, hex] = pair;
+    declared.set(group ? (key === 'DEFAULT' ? group : `${group}-${key}`) : key, hex.toUpperCase());
+  }
+
+  const MIRRORED: Record<string, string> = {
+    INK: 'ink',
+    INK_SOFT: 'ink-soft',
+    INK_LINE: 'ink-line',
+    PAPER: 'paper',
+    COBALT: 'cobalt',
+    ACID: 'acid',
+    TUNGSTEN: 'tungsten',
+    AMBER: 'amber',
+    MINT: 'mint',
+    TICKET: 'ticket',
+  };
+
+  const palette = readSourceFile(join(process.cwd(), 'src/lib/palette.ts'), 'utf8');
+  for (const [token, tailwindKey] of Object.entries(MIRRORED)) {
+    const found = new RegExp(`export const ${token} = '(#[0-9A-Fa-f]{6})'`).exec(palette);
+    expect(`palette: ${token} is declared`, found !== null, true);
+    if (found) {
+      expect(
+        `palette: ${token} matches tailwind's ${tailwindKey}`,
+        found[1].toUpperCase(),
+        declared.get(tailwindKey),
+      );
+    }
+  }
+  console.log(`  ${Object.keys(MIRRORED).length} colours mirrored from tailwind.config.ts, all matching`);
+
+  /*
+   * And the guards that scan the source have to scan all of it.
+   *
+   * The contrast audit walked .tsx only, so `@apply text-paper/35` inside
+   * globals.css was invisible and the check reported zero failures while the
+   * disclosure shipped at 2.23:1. That is the shape to watch for: a guard whose
+   * failure mode is quietly succeeding.
+   */
+  const contrastScript = readSourceFile(join(process.cwd(), 'scripts/contrast.mjs'), 'utf8');
+  expect('the contrast walk reads stylesheets too', /tsx\?\|css/.test(contrastScript), true);
+
+  // Every component directory is either billed for attention or named as
+  // shared. Five were neither, so 14% of the words on this site were charged
+  // to nobody -- including the disclosure that mounts on all 27 surfaces.
+  const componentDirs = readdirSync(join(process.cwd(), 'src', 'components'), {
+    withFileTypes: true,
+  })
+    .filter((e) => e.isDirectory())
+    .map((e) => e.name);
+
+  const billedDirs = new Set(ROUTES.map((r) => r.dir.replace('components/', '')));
+  const unbilled = componentDirs.filter((d) => !billedDirs.has(d) && !SHARED_DIRS.includes(d));
+  console.log(
+    `  ${componentDirs.length} component directories -- ${billedDirs.size} billed, ${SHARED_DIRS.length} declared shared`,
+  );
+  expect('no component directory is silently unbilled', unbilled.join(','), '');
 }
 
 

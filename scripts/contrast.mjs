@@ -148,10 +148,15 @@ function audit() {
       const hex = PALETTE[token];
       if (!hex) continue;
 
-      // Disabled controls are exempt from 1.4.3, and so is anything a comment
-      // marks as decorative rather than read.
-      const line = source.slice(source.lastIndexOf('\n', match.index) + 1, source.indexOf('\n', match.index));
-      if (line.includes('disabled:')) continue;
+      /*
+       * The exemption belongs to the token, not the line.
+       *
+       * This skipped the whole physical line if `disabled:` appeared anywhere
+       * on it -- and these are long className strings, so one disabled variant
+       * excused every other colour sitting beside it. Only a token actually
+       * prefixed `disabled:` is exempt now, which is what 1.4.3 exempts.
+       */
+      if (source.slice(Math.max(0, match.index - 9), match.index) === 'disabled:') continue;
 
       const alpha = alphaRaw === undefined ? 1 : Number(alphaRaw) / 100;
       const bg = hexToRgb(surfaceFor(token));

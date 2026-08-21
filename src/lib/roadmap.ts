@@ -7,7 +7,7 @@ import { readSchedule } from '@/lib/schedule';
 /**
  * What would have to be true.
  *
- * Fourteen surfaces arguing a thesis, with no plan for finding out whether the
+ * A pile of surfaces arguing a thesis, with no plan for finding out whether the
  * thesis is right, is the exact failure this project keeps pointing at in other
  * people's products. So the last thing built here is not another surface. It is
  * the measurement it would take to kill this idea, and the order you would ship
