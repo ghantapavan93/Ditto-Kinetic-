@@ -212,8 +212,24 @@ future itself now has a surface: [`/vision`](../src/app/vision/page.tsx) — fiv
 stations flown by one continuous camera (claim 27 samples the path), the
 shipped photography flying in the scene as textured planes, and copy written as
 a letter from 2030 by a three-writer panel judged three ways against the site's
-own register. Remaining: /world as the pulled-back campus act, the missing edge
-folded into it, and the room composer.
+own register. Remaining: the room composer.
+
+The pulled-back campus act shipped as [`/world`](../src/app/world/page.tsx),
+and it turned into an argument rather than a wider view. Eight schools, 768
+people, and the question every expansion assumes the answer to: does eight
+times the pool mean eight times the matching? Price a Wednesday trip and it
+buys **1.95x**, four of the seven schools send nobody at all, and your own
+campus -- an eighth of the world -- supplies half of everything that survives.
+
+The turn is the second half: everybody who did travel had to clear a bar that
+travel raised on them, so every trip-taker beats the median match at home by
+construction. Scale does not widen the funnel, it raises the floor. And the
+missing edge folded in exactly where it belonged -- across two campuses there
+are no mutual friends at all, so every cross-campus intersection is the purest
+form of the edge [`/network`](../src/app/network/page.tsx) went looking for.
+
+Claim 30 does not assert the utility draw, which is a stated assumption. It
+asserts the conclusion survives 300 re-rolls of that assumption.
 
 All fourteen acts have a route. The arc closes at
 [`/end`](../src/app/end/page.tsx), which asks the question the compiler opens

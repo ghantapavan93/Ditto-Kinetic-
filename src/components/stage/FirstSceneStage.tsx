@@ -511,6 +511,7 @@ export function FirstSceneStage() {
                   { href: '/gravity', label: 'forces, not scores' },
                   { href: '/zoom', label: 'one camera, all of it' },
                   { href: '/network', label: 'the whole campus' },
+                  { href: '/world', label: 'every campus at once' },
                   { href: '/weather', label: 'is tonight worth it' },
                   { href: '/possibility', label: 'where openings appear' },
                   { href: '/moments', label: 'the reel' },

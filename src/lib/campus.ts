@@ -103,12 +103,12 @@ const KNOWN = [
  * because a graph where everybody is reasonably connected cannot demonstrate
  * the one thing this layer exists to demonstrate.
  */
-export function buildCampus(): Campus {
-  const rand = seeded(20260820);
+export function buildCampus(seed = 20260820): Campus {
+  const rand = seeded(seed);
   const nodes: Node[] = [];
 
   for (let i = 0; i < POPULATION; i++) {
-    const known = KNOWN[i];
+    const known = seed === 20260820 ? KNOWN[i] : undefined;
     const cluster = known ? known.cluster : Math.floor(rand() * CLUSTERS.length);
 
     // Clusters sit on a ring, each person jittered inside their own.

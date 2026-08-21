@@ -11,7 +11,7 @@ export const SURFACES: Surface[] = [
   {
     "path": "/",
     "kind": "argument",
-    "words": 506,
+    "words": 510,
     "decisions": 29
   },
   {
@@ -81,6 +81,12 @@ export const SURFACES: Surface[] = [
     "decisions": 3
   },
   {
+    "path": "/world",
+    "kind": "argument",
+    "words": 126,
+    "decisions": 5
+  },
+  {
     "path": "/zoom",
     "kind": "argument",
     "words": 146,
@@ -113,7 +119,7 @@ export const SURFACES: Surface[] = [
   {
     "path": "/all",
     "kind": "argument",
-    "words": 251,
+    "words": 258,
     "decisions": 5
   },
   {

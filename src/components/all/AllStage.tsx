@@ -28,6 +28,7 @@ const SAYS: Record<string, string> = {
   '/double': 'four people is not two pairs',
   '/ending': 'a twelfth dimension that did not earn its place',
   '/odds': 'a number you can argue with, and a lever that refuses',
+  '/world': 'eight campuses, and what scale actually buys',
   '/network': 'the introduction nobody can make',
   '/zoom': 'ninety-six people to one of them, without a page',
   '/gravity': 'ten forces, and no numbers on screen',

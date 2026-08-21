@@ -41,6 +41,7 @@ import { SCRUB_DAYS, openWorld } from '../src/lib/intersections';
 import { PHOTOS } from '../src/data/photoManifest';
 import { STATIONS, stationAt, stationOpacity, visionCameraAt } from '../src/lib/vision';
 import { LANGUAGE, termsFor } from '../src/lib/language';
+import { SCHOOLS, barAt, buildWorld, survivorsAt } from '../src/lib/world';
 import { existsSync, readFileSync as readSourceFile, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { SURFACES } from '../src/data/attentionInventory';
@@ -102,6 +103,7 @@ const HEADING26 = '\nClaim 26 — the reel ships only what it says it ships:';
 const HEADING27 = '\nClaim 27 — the future is flown, not asserted:';
 const HEADING28 = "\nClaim 28 — the language is the code's language:";
 const HEADING29 = "\nClaim 29 — nothing ships unreachable, and no count is written:";
+const HEADING30 = "\nClaim 30 — scale does not buy what it looks like it buys:";
 
 const HEADING7 = '\nClaim 7 — last week changes this week:';
 
@@ -1804,6 +1806,86 @@ console.log(HEADING29);
   for (const stale of ['fourteen surfaces', 'fifteen surfaces', 'Fifteen surfaces', 'Twenty surfaces']) {
     expect(`no surface writes "${stale}"`, corpus.includes(stale), false);
   }
+}
+
+
+/* ---- claim 30: scale does not buy what it looks like it buys ------------- */
+
+console.log(HEADING30);
+{
+  const world = buildWorld();
+  console.log(
+    `  ${SCHOOLS} schools, ${world.pool} people -- ${world.reachable.length} clear a wednesday`,
+  );
+
+  // The bar is the mechanism, so assert the mechanism first: your campus is the
+  // only school whose bar is the plain send threshold, and every other school's
+  // bar is strictly higher, in travel order.
+  expect('a free trip costs nothing', barAt(0), SEND_THRESHOLD);
+  const bars = world.schools.map((s) => barAt(s.minutes));
+  for (let i = 1; i < bars.length; i++) {
+    expect(`school ${i}: its bar is higher than the one before`, bars[i] > bars[i - 1], true);
+  }
+
+  // The headline. Eight times the people, nothing like eight times the options.
+  const localOnly = survivorsAt(world, 0).length;
+  console.log(
+    `  ${SCHOOLS}x the people buys ${world.multiplier.toFixed(2)}x the options (${localOnly} -> ${world.reachable.length})`,
+  );
+  expect('scale is badly sublinear', world.multiplier < SCHOOLS / 2, true);
+  expect('but it is not nothing', world.multiplier > 1, true);
+
+  // Whole schools contribute nobody. Not a rounding error -- a structural
+  // consequence of a bar that rises faster than talent is distributed.
+  console.log(`  ${world.deadSchools} of ${SCHOOLS - 1} expansion schools send nobody`);
+  expect('some schools send nobody at all', world.deadSchools >= 1, true);
+  expect('the furthest survivor is closer than the furthest school', world.furthest < 96, true);
+
+  // Your campus is over-represented among survivors by a lot more than its
+  // share of the world.
+  const share = 1 / SCHOOLS;
+  console.log(
+    `  your campus: ${Math.round(share * 100)}% of the world, ${Math.round(world.localShare * 100)}% of what survives`,
+  );
+  expect('home is over-represented', world.localShare > share * 2, true);
+
+  // The turn: everybody who travelled had to clear a raised bar, so every one
+  // of them beats the median match at home. This is what scale actually buys.
+  for (const c of world.worthTheTrip) {
+    expect(
+      `a ${world.schools[c.school].minutes}-minute trip beats the median at home`,
+      c.utility > world.localMedian,
+      true,
+    );
+  }
+
+  // And the honesty check, which is the point of the whole claim. The utility
+  // draw is a stated assumption, not a measurement -- so turn the knob. If the
+  // conclusion only held at one seed and one distribution shape, it would be a
+  // coincidence dressed as an argument.
+  let worstMultiplier = 0;
+  let worstOver = Infinity;
+  let fewestDead = Infinity;
+  let rolls = 0;
+  for (let seed = 1; seed <= 60; seed++) {
+    for (const shape of [2, 2.5, 3, 3.5, 4]) {
+      const w = buildWorld(seed * 7919, shape);
+      if (survivorsAt(w, 0).length === 0) continue;
+      rolls++;
+      worstMultiplier = Math.max(worstMultiplier, w.multiplier);
+      worstOver = Math.min(worstOver, w.localShare * SCHOOLS);
+      fewestDead = Math.min(fewestDead, w.deadSchools);
+    }
+  }
+  console.log(
+    `  across ${rolls} re-rolls: multiplier never above ${worstMultiplier.toFixed(2)}x, home never under ${worstOver.toFixed(2)}x over-represented, never fewer than ${fewestDead} dead schools`,
+  );
+  // Half of linear, not a hair under it: the worst roll lands on exactly 4.00x
+  // of a possible 8x, and pretending the bound is tighter than the data would
+  // be the same sin every other claim here exists to catch.
+  expect('the conclusion survives re-rolling the assumption', worstMultiplier <= SCHOOLS / 2, true);
+  expect('home is always over-represented', worstOver >= 2, true);
+  expect('a school always goes dark', fewestDead >= 1, true);
 }
 
 
