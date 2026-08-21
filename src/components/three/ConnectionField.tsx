@@ -15,6 +15,7 @@ import * as THREE from 'three';
 import { damp, lerp } from '@/lib/motion';
 import { CARD_H, CARD_W, useStageLayout } from './useStageLayout';
 
+import { ACID, THREAD_COLD, THREAD_WARM } from '@/lib/palette';
 const SEGMENTS = 48;
 
 type Props = {
@@ -43,9 +44,9 @@ type Props = {
  * two hex parses per frame, per line, forever, in the file whose own header
  * says the imperative loop exists to avoid precisely this. They never change.
  */
-const COLD = new THREE.Color('#3A4470');
-const WARM = new THREE.Color('#5C6CFF');
-const LOCKED = new THREE.Color('#FF2E88');
+const COLD = new THREE.Color(THREAD_COLD);
+const WARM = new THREE.Color(THREAD_WARM);
+const LOCKED = new THREE.Color(ACID);
 
 export function ConnectionField({ magnetism, locked, exiting, reducedMotion }: Props) {
   const sag = useRef(0.55);
@@ -57,7 +58,7 @@ export function ConnectionField({ magnetism, locked, exiting, reducedMotion }: P
     const geometry = new THREE.BufferGeometry();
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     const material = new THREE.LineBasicMaterial({
-      color: '#5C6CFF',
+      color: THREAD_WARM,
       transparent: true,
       opacity: 0.4,
     });

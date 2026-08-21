@@ -23,6 +23,7 @@ import { damp, lerp, spring, type Spring } from '@/lib/motion';
 import { track } from '@/lib/analytics';
 import type { Fragment, MatchPair, Scene } from '@/lib/types';
 
+import { INK, INK_SHADOW } from '@/lib/palette';
 type StageProps = {
   pair: MatchPair;
   scene: Scene;
@@ -96,7 +97,7 @@ function StageContents({ pair, scene, magnetism, locked, exiting, reducedMotion,
 
   return (
     <>
-      <fog attach="fog" args={['#120C0A', 8, 20]} />
+      <fog attach="fog" args={[INK_SHADOW, 8, 20]} />
       <SceneLighting mood={scene.mood} locked={locked} timeShift={timeShift} />
       {process.env.NODE_ENV !== 'production' && <StageProbe magnetism={magnetism} />}
       <CameraRig magnetism={magnetism} exiting={exiting} reducedMotion={reducedMotion} />
@@ -245,7 +246,7 @@ export function SpatialStage(props: StageProps & { onFragment?: (f: Fragment | n
       // paying that on first paint is not worth it.
       resize={{ scroll: false, debounce: { scroll: 0, resize: 0 } }}
       onCreated={({ gl }) => {
-        gl.setClearColor('#0B0907', 0);
+        gl.setClearColor(INK, 0);
 
         /*
          * Context loss, heard from the canvas itself.

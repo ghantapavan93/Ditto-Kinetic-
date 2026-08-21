@@ -110,7 +110,12 @@ const SCENES: Scene[] = [
   {
     id: 'gallery',
     label: 'GALLERY DRIFT',
-    time: '5:40 PM',
+    // Late, deliberately. `scheduleFit` is derived from these two calendars
+    // now, so a room's hour has to be authored with the calendars in mind
+    // rather than compensated for afterwards with a hand-written score. This
+    // one sits near the end of their shared window: the gallery is open, but
+    // barely, and the model should be able to see that from the clock alone.
+    time: '7:50 PM',
     location: 'student gallery',
     premise: 'a room that supplies the subject so neither of them has to.',
     mood: 'curious',

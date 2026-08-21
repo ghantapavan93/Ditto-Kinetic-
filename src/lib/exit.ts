@@ -1,5 +1,5 @@
 import type { MatchPair, Scene } from './types';
-import { scoreScene } from './rankScenes';
+import { metricsFor, scoreScene } from './rankScenes';
 
 /**
  * How it ends.
@@ -160,7 +160,9 @@ export function readExits(pair: MatchPair): ExitRead[] {
     .map((scene) => {
       const e = EXITS[scene.id];
       const quality = (e.endsItself + e.extends_) / 2;
-      const base = scoreScene(scene.metrics);
+      // Through metricsFor, or this module ranks a different evening from the
+      // one that ships -- which it did, and the suite caught it.
+      const base = scoreScene(metricsFor(pair, scene));
 
       return {
         scene,

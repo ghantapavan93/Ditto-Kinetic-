@@ -506,7 +506,7 @@ export function FirstSceneStage() {
                       onClick={() => applyDisruption(d)}
                       disabled={spent}
                       title={DISRUPTION_LABELS[d].effect}
-                      className="min-h-[44px] px-1 py-2 font-mono text-micro uppercase text-paper/55 underline-offset-4 transition-colors hover:text-acid hover:underline disabled:text-paper/55 disabled:no-underline"
+                      className="min-h-[44px] px-1 py-2 font-mono text-micro uppercase text-paper/55 underline-offset-4 transition-colors hover:text-acid hover:underline disabled:text-paper/30 disabled:line-through disabled:decoration-paper/40"
                     >
                       {DISRUPTION_LABELS[d].label}
                     </button>

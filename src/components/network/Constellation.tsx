@@ -6,6 +6,7 @@ import * as THREE from 'three';
 import type { Campus } from '@/lib/campus';
 import type { EdgeRead } from '@/lib/network';
 
+import { ACID, AMBER, COLD, INK, PAPER } from '@/lib/palette';
 const DOT = new THREE.SphereGeometry(0.055, 10, 10);
 
 /**
@@ -49,8 +50,8 @@ export function Constellation({
       gl={{ antialias: true, alpha: true }}
       resize={{ debounce: { resize: 0, scroll: 0 } }}
     >
-      <color attach="background" args={['#0B0907']} />
-      <fog attach="fog" args={['#0B0907', 11, 21]} />
+      <color attach="background" args={[INK]} />
+      <fog attach="fog" args={[INK, 11, 21]} />
       <ambientLight intensity={0.6} />
 
       <Scene
@@ -150,7 +151,7 @@ function Scene({
         return (
           <mesh key={n.id} geometry={DOT} position={n.at} scale={isEnd ? 1.9 : isLonely ? 0.68 : 1}>
             <meshBasicMaterial
-              color={isEnd ? '#FF2E88' : n.known ? '#E8913C' : isLonely ? '#4A6C8C' : '#F4EDE4'}
+              color={isEnd ? ACID : n.known ? AMBER : isLonely ? COLD : PAPER}
               transparent
               opacity={isEnd ? 1 : n.known ? 0.85 : isLonely ? 0.42 : 0.55}
             />

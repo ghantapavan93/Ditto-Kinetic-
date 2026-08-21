@@ -15,6 +15,7 @@ import {
 } from '@/lib/rankScenes';
 import type { MatchPair } from '@/lib/types';
 
+import { ACID, COBALT, THREAD_COLD } from '@/lib/palette';
 /**
  * The technical layer.
  *
@@ -151,7 +152,7 @@ export function DecisionView({
                             className="block h-full transition-[width] duration-scene ease-settle"
                             style={{
                               width: `${Math.max(2, norm(entry.utility) * 100)}%`,
-                              background: isSelected ? '#FF2E88' : clears ? '#2B44FF' : '#3A4470',
+                              background: isSelected ? ACID : clears ? COBALT : THREAD_COLD,
                             }}
                           />
                           <span

@@ -1,4 +1,5 @@
 import type { MatchPair, RankedScene, Scene, SceneEvaluation } from './types';
+import { scheduleFitFor } from '@/lib/schedule';
 
 /**
  * SYNTHETIC PROTOTYPE LOGIC — this is not Ditto's model.
@@ -255,12 +256,42 @@ function contributionsFor(metrics: SceneEvaluation, learned: readonly Learned[] 
  * Excluded scenes are dropped, not scored to zero: a venue that fell through is
  * not a bad option, it is not an option.
  */
+/**
+ * The metrics the engine actually scores for a pair's scene.
+ *
+ * `scheduleFit` is derived from the two calendars rather than read from the
+ * data file, so anything that scores a scene from `scene.metrics` directly is
+ * scoring a slightly different evening from the one that ships. `exit.ts`,
+ * `heldBack` and `doubleDate` each did, and each therefore produced a ranking
+ * that disagreed with the ranking -- the same defect `lenses.ts` had.
+ *
+ * One function, so there is one answer.
+ */
+export function metricsFor(
+  pair: MatchPair,
+  scene: Scene,
+  conditions: Conditions = NO_CONDITIONS,
+): SceneEvaluation {
+  return applyConditions(
+    { ...scene.metrics, scheduleFit: scheduleFitFor(pair.personA, pair.personB, scene.time) },
+    conditions,
+  );
+}
+
 export function rankScenes(pair: MatchPair, conditions: Conditions = NO_CONDITIONS): RankedScene[] {
   return pair.scenes
     .filter((scene) => !conditions.excluded.includes(scene.id))
     .filter((scene) => !belowSafetyFloor(scene.metrics))
     .map((scene) => {
-      const metrics = applyConditions(scene.metrics, conditions);
+      /*
+       * `scheduleFit` comes from the calendars, not from the data file.
+       *
+       * It was hand-authored on every scene and contradicted the availability
+       * arrays it claimed to summarise -- 0.92 for an hour the two people are
+       * not both free. Derived here so the one term that is a statement about
+       * two real calendars is computed from those calendars.
+       */
+      const metrics = metricsFor(pair, scene, conditions);
       return {
         scene,
         utility: scoreScene(metrics, conditions.learned),

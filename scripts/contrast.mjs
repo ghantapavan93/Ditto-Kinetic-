@@ -114,7 +114,11 @@ function walk(dir, files = []) {
   for (const entry of readdirSync(dir)) {
     const full = join(dir, entry);
     if (statSync(full).isDirectory()) walk(full, files);
-    else if (/\.tsx?$/.test(entry)) files.push(full);
+    // .css too: `@apply ... text-paper/35` inside globals.css is a text
+    // colour like any other, and leaving it out let the guard report zero
+    // failures while `.u-micro` shipped at 2.86:1 -- a check that passes
+    // because it is not looking is worse than no check.
+    else if (/\.(tsx?|css)$/.test(entry)) files.push(full);
   }
   return files;
 }

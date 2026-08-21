@@ -4,7 +4,7 @@ import { StartStage } from '@/components/start/StartStage';
 export const metadata: Metadata = {
   title: 'START HERE — five ways into this',
   description:
-    'An unofficial Ditto concept built on one line: the right person can still get the wrong first date. Twenty-six surfaces, five recommended ways in, and what each one does not prove.',
+    'An unofficial Ditto concept built on one line: the right person can still get the wrong first date. Every surface reachable, five recommended ways in, and what each one does not prove.',
 };
 
 /**

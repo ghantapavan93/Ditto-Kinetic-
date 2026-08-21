@@ -1,13 +1,5 @@
 import type { MatchPair, Scene } from './types';
-import {
-  NO_CONDITIONS,
-  SEND_THRESHOLD,
-  rankScenes,
-  weightsFor,
-  type Conditions,
-  type Learned,
-  type WeightKey,
-} from './rankScenes';
+import { NO_CONDITIONS, SEND_THRESHOLD, metricsFor, rankScenes, type Conditions, type Learned, type WeightKey, weightsFor } from './rankScenes';
 
 /**
  * Restraint.
@@ -107,9 +99,15 @@ export function restraintFor(
 
   const shortfall = SEND_THRESHOLD - top.utility;
 
+  // The lift is measured from what the engine actually scores, not from the
+  // raw data file. `top.utility` already comes from the ranker, so reading
+  // `scene.metrics` here compared two different evenings and the arithmetic
+  // silently stopped landing on the bar.
+  const scored = metricsFor(pair, top.scene);
+
   const lifts: Lift[] = (Object.keys(MOVABLE) as WeightKey[]).map((key) => {
     const w = weights[key];
-    const from = top.scene.metrics[key];
+    const from = scored[key];
     const need = shortfall / Math.abs(w);
 
     // A positive weight wants the metric higher; a negative weight wants it

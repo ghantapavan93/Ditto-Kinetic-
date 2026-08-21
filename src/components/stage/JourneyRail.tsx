@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import type { Phase } from '@/lib/types';
 
+import { PAPER, TUNGSTEN } from '@/lib/palette';
 /**
  * The journey rail.
  *
@@ -58,7 +59,7 @@ export function JourneyRail({ phase }: { phase: Phase }) {
                   animate={{
                     width: active ? 7 : 5,
                     height: active ? 7 : 5,
-                    backgroundColor: active ? '#FFB865' : done ? '#F5EFE3' : 'transparent',
+                    backgroundColor: active ? TUNGSTEN : done ? PAPER : 'transparent',
                     borderColor: done || active ? 'transparent' : 'rgba(245,239,227,0.26)',
                   }}
                   transition={{ duration: 0.4 }}
@@ -68,7 +69,7 @@ export function JourneyRail({ phase }: { phase: Phase }) {
                   className="font-editorial text-[0.66rem] lowercase tracking-[0.16em]"
                   animate={{
                     opacity: active ? 1 : done ? 0.45 : 0.2,
-                    color: active ? '#FFB865' : '#F5EFE3',
+                    color: active ? TUNGSTEN : PAPER,
                   }}
                   transition={{ duration: 0.4 }}
                 >

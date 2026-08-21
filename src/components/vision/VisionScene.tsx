@@ -6,6 +6,7 @@ import * as THREE from 'three';
 import { STATIONS, aspectOf, stationOpacity, visionCameraAt } from '@/lib/vision';
 import { buildCampus } from '@/lib/campus';
 
+import { AMBER, BOARD, CLOTH, COLD, INK, MINT, PAPER, TUNGSTEN } from '@/lib/palette';
 /**
  * Five stations, one flight.
  *
@@ -24,7 +25,8 @@ import { buildCampus } from '@/lib/campus';
  * untranslatable, and invisible to a screen reader.
  */
 
-const PAPER = '#D8C7AE';
+// the board a photograph is mounted on, from the shared palette
+const MOUNT = BOARD;
 
 /**
  * One texture per slug, for the life of the session — the same cache pattern
@@ -80,7 +82,7 @@ function PhotoPlane({
       {/* the paper the photograph sits on — same object language as the stage */}
       <mesh position={[0, -0.06, -0.005]}>
         <planeGeometry args={[w + 0.12, height + 0.3]} />
-        <meshBasicMaterial color={PAPER} transparent opacity={0.96} side={THREE.DoubleSide} />
+        <meshBasicMaterial color={MOUNT} transparent opacity={0.96} side={THREE.DoubleSide} />
       </mesh>
       <mesh>
         <planeGeometry args={[w, height]} />
@@ -111,7 +113,7 @@ function MiniCampus({ scale = 0.34, cold = false }: { scale?: number; cold?: boo
           <bufferAttribute attach="attributes-position" args={[lines, 3]} />
         </bufferGeometry>
         <lineBasicMaterial
-          color={cold ? '#4A6C8C' : '#F4EDE4'}
+          color={cold ? COLD : PAPER}
           transparent
           opacity={cold ? 0.14 : 0.1}
         />
@@ -119,7 +121,7 @@ function MiniCampus({ scale = 0.34, cold = false }: { scale?: number; cold?: boo
       {campus.nodes.map((n) => (
         <mesh key={n.id} position={n.at} geometry={DOT}>
           <meshBasicMaterial
-            color={n.known ? '#E8913C' : cold ? '#4A6C8C' : '#F4EDE4'}
+            color={n.known ? AMBER : cold ? COLD : PAPER}
             transparent
             opacity={n.known ? 0.9 : 0.4}
           />
@@ -135,11 +137,11 @@ function Artifacts() {
   const shapes = useMemo(
     () =>
       [
-        { w: 0.5, h: 0.24, tint: '#E8913C' }, // ticket
-        { w: 0.26, h: 0.48, tint: '#F4EDE4' }, // receipt
-        { w: 0.34, h: 0.42, tint: '#8A6CC8' }, // book
-        { w: 0.48, h: 0.28, tint: '#2FD8A8' }, // route
-        { w: 0.32, h: 0.32, tint: '#FFB865' }, // table light
+        { w: 0.5, h: 0.24, tint: AMBER }, // ticket
+        { w: 0.26, h: 0.48, tint: PAPER }, // receipt
+        { w: 0.34, h: 0.42, tint: CLOTH }, // book
+        { w: 0.48, h: 0.28, tint: MINT }, // route
+        { w: 0.32, h: 0.32, tint: TUNGSTEN }, // table light
       ] as const,
     [],
   );
@@ -171,10 +173,10 @@ function Artifacts() {
  *  as it goes: amber tonight, paper on campus, mint at the meeting, a cold
  *  blue over the city, and nothing at all in the quiet. */
 const STATION_LIGHT: Record<string, string | null> = {
-  tonight: '#FFB865',
-  campus: '#F4EDE4',
-  meeting: '#2FD8A8',
-  city: '#4A6C8C',
+  tonight: TUNGSTEN,
+  campus: PAPER,
+  meeting: MINT,
+  city: COLD,
   quiet: null,
 };
 
@@ -403,8 +405,8 @@ export function VisionScene({
       gl={{ antialias: true, alpha: true }}
       resize={{ debounce: { resize: 0, scroll: 0 } }}
     >
-      <color attach="background" args={['#0B0907']} />
-      <fog attach="fog" args={['#0B0907', 9, 26]} />
+      <color attach="background" args={[INK]} />
+      <fog attach="fog" args={[INK, 9, 26]} />
       <ambientLight intensity={0.85} />
       <directionalLight position={[3, 5, 4]} intensity={0.6} color="#FFD9A8" />
 

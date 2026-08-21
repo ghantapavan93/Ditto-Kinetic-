@@ -239,7 +239,7 @@ export function SceneDial({ scenes }: { scenes: Scene[] }) {
       <p className="u-micro text-center">
         <span className="hidden sm:inline">drag the first scene</span>
         <span className="sm:hidden">swipe the dial</span>
-        <span className="mx-2 text-paper/55">·</span>
+        <span className="mx-2">·</span>
         <span aria-hidden>← →</span>
       </p>
     </div>

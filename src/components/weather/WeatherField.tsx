@@ -5,10 +5,11 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { ALIVE, type Week } from '@/lib/weather';
 
+import { AMBER, INK, OVERCAST } from '@/lib/palette';
 const DOT = new THREE.SphereGeometry(0.055, 10, 10);
 
-const WARM = new THREE.Color('#E8913C');
-const COLD = new THREE.Color('#3E5F80');
+const WARM = new THREE.Color(AMBER);
+const COLD = new THREE.Color(OVERCAST);
 const scratch = new THREE.Color();
 
 /**
@@ -45,8 +46,8 @@ export function WeatherField({
       gl={{ antialias: true, alpha: true }}
       resize={{ debounce: { resize: 0, scroll: 0 } }}
     >
-      <color attach="background" args={['#0B0907']} />
-      <fog attach="fog" args={['#0B0907', 12, 22]} />
+      <color attach="background" args={[INK]} />
+      <fog attach="fog" args={[INK, 12, 22]} />
       <ambientLight intensity={0.6} />
 
       <Field week={week} day={day} warmth={warmth} reducedMotion={reducedMotion} />

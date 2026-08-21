@@ -132,3 +132,47 @@ export function readSchedule(a: Person, b: Person): ScheduleRead {
     dropDayCost: best && onDropDay ? best.score - onDropDay.score : null,
   };
 }
+
+/**
+ * How well a scene's hour actually fits the two people, from their calendars.
+ *
+ * `scheduleFit` was hand-authored on all twenty-four scenes and contradicted
+ * the availability arrays it claimed to summarise. Maya and Jonah's COFFEE
+ * carried 0.92 — near-perfect — at six in the evening, an hour when the two of
+ * them are provably not both free: their only mutual windows are Wednesday from
+ * seven and Thursday from eight. The number said the calendar worked. The
+ * calendar said otherwise, in the same repository, in a file the scorer already
+ * imports.
+ *
+ * That is the `venueSafety` defect wearing different clothes: a field that
+ * looks derived, reads as authoritative, and is neither.
+ *
+ * So it is derived. Inside a shared window the fit is that window's joint
+ * energy — the less-present person, never the average — discounted if the
+ * sitting would run past the end of it, because an hour that only half fits is
+ * only half an evening. Outside every window it decays with distance rather
+ * than dropping to zero: being twenty minutes early to a window is a different
+ * problem from being four hours out, and the model should be able to say which.
+ */
+export function scheduleFitFor(a: Person, b: Person, clock: string, sittingMinutes = 60): number {
+  const match = /^(\d{1,2}):(\d{2})\s*(AM|PM)$/i.exec(clock.trim());
+  if (!match) return 0.5;
+  const hour = Number(match[1]) % 12;
+  const start = hour * 60 + Number(match[2]) + (match[3].toUpperCase() === 'PM' ? 720 : 0);
+
+  const windows = mutualWindows(a, b);
+  if (windows.length === 0) return 0.05;
+
+  let best = 0;
+  for (const w of windows) {
+    if (start < w.startMin || start >= w.endMin) continue;
+    const room = Math.min(1, (w.endMin - start) / sittingMinutes);
+    best = Math.max(best, w.jointEnergy * (0.55 + 0.45 * room));
+  }
+  if (best > 0) return Number(best.toFixed(4));
+
+  const nearest = Math.min(
+    ...windows.map((w) => (start < w.startMin ? w.startMin - start : start - w.endMin)),
+  );
+  return Number(Math.max(0.05, 0.35 - nearest / 600).toFixed(4));
+}

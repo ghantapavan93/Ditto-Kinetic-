@@ -59,7 +59,7 @@ export const JONAH: Person = {
   conversationStyle: ['fast', 'associative', 'funnier when not being watched'],
   socialEnergy: ['spiky', 'peaks late evening', 'needs a side activity'],
   availability: [
-    { day: 3, startMin: 19 * 60, endMin: 24 * 60, energy: 0.8 },
+    { day: 3, startMin: 18 * 60, endMin: 24 * 60, energy: 0.8 },
     { day: 4, startMin: 20 * 60, endMin: 24 * 60, energy: 0.9 },
     { day: 6, startMin: 14 * 60, endMin: 22 * 60, energy: 0.65 },
   ],

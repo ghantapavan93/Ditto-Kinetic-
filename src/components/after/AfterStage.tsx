@@ -11,6 +11,7 @@ import { DevelopingFrame } from './DevelopingFrame';
 import { MemoryBoard } from './MemoryBoard';
 import { track } from '@/lib/analytics';
 
+import { TICKET } from '@/lib/palette';
 const EXAMPLE =
   'honestly she was way more outgoing than I expected but once we started walking it felt weirdly easy';
 
@@ -204,7 +205,7 @@ export function AfterStage() {
                             key={i}
                             initial={{ backgroundColor: 'rgba(0,0,0,0)' }}
                             animate={{
-                              backgroundColor: part.kind === 'up' ? '#FFD84D' : '#FF2E8844',
+                              backgroundColor: part.kind === 'up' ? TICKET : '#FF2E8844',
                             }}
                             transition={{ delay: 0.6 + i * 0.14, duration: 0.35 }}
                             className="px-0.5 text-ink"

@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import { drawPortrait } from '@/lib/portrait';
 import type { Person } from '@/lib/types';
 
+import { INK } from '@/lib/palette';
 /**
  * A disposable-camera frame, developing.
  *
@@ -57,7 +58,7 @@ export function DevelopingFrame({
           aria-hidden
           className="pointer-events-none absolute inset-0"
           style={{
-            background: '#0B0907',
+            background: INK,
             opacity: (1 - p) * 0.55,
             transition: 'opacity 120ms linear',
           }}

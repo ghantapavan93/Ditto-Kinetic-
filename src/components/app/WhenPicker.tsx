@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { DROP_DAY, label, readSchedule, type Window } from '@/lib/schedule';
 import type { Person } from '@/lib/types';
 
+import { MINT, PAPER } from '@/lib/palette';
 /** The strip runs 11am to midnight — the only hours anybody offers. */
 const DAY_START = 11 * 60;
 const DAY_END = 24 * 60;
@@ -78,7 +79,7 @@ export function WhenPicker({ a, b }: { a: Person; b: Person }) {
                   style={{
                     left: `${span(w.startMin)}%`,
                     width: `${span(w.endMin) - span(w.startMin)}%`,
-                    background: isBest ? '#2FD8A8' : '#F4EDE4',
+                    background: isBest ? MINT : PAPER,
                     opacity: 0.14 + w.jointEnergy * 0.72,
                   }}
                 />

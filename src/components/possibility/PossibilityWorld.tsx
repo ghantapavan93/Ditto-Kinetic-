@@ -6,6 +6,7 @@ import * as THREE from 'three';
 import { spring, type Spring } from '@/lib/motion';
 import type { Candidate } from '@/lib/intersections';
 
+import { AMBER, BOARD, CLOTH, INK, MINT, PAPER, TUNGSTEN } from '@/lib/palette';
 /**
  * The possibility field.
  *
@@ -39,12 +40,12 @@ const YOURS: { kind: Candidate['artifact']; at: [number, number, number]; rot: n
 ];
 
 const TINT: Record<Candidate['artifact'], string> = {
-  ticket: '#E8913C',
-  receipt: '#F4EDE4',
-  photo: '#D8C7AE',
-  table: '#FFB865',
-  book: '#8A6CC8',
-  route: '#2FD8A8',
+  ticket: AMBER,
+  receipt: PAPER,
+  photo: BOARD,
+  table: TUNGSTEN,
+  book: CLOTH,
+  route: MINT,
 };
 
 const SHAPE: Record<Candidate['artifact'], [number, number]> = {
@@ -91,8 +92,8 @@ export function PossibilityWorld({
       gl={{ antialias: true, alpha: true }}
       resize={{ debounce: { resize: 0, scroll: 0 } }}
     >
-      <color attach="background" args={['#0B0907']} />
-      <fog attach="fog" args={['#0B0907', 7, 15]} />
+      <color attach="background" args={[INK]} />
+      <fog attach="fog" args={[INK, 7, 15]} />
       <ambientLight intensity={0.85} />
       <directionalLight position={[2, 4, 5]} intensity={0.7} color="#FFD9A8" />
 

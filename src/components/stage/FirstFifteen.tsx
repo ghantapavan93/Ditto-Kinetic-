@@ -5,6 +5,7 @@ import { MINUTES, beatAt } from '@/data/firstFifteen';
 import { play } from '@/components/shared/sound';
 import { usePrototype } from '@/store/prototypeStore';
 
+import { TUNGSTEN } from '@/lib/palette';
 /**
  * The first fifteen minutes.
  *
@@ -70,7 +71,7 @@ export function FirstFifteen({ pairId, sceneId }: { pairId: string; sceneId: str
                     width: active ? 9 : 6,
                     height: active ? 9 : 6,
                     backgroundColor: active
-                      ? '#FFB865'
+                      ? TUNGSTEN
                       : passed
                         ? 'rgba(245,239,227,0.55)'
                         : 'rgba(11,9,7,1)',

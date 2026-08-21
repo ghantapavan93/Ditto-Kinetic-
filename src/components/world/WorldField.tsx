@@ -7,6 +7,7 @@ import { POPULATION } from '@/lib/campus';
 import { SCHOOLS, survivorsAt, type World } from '@/lib/world';
 import { spring, type Spring } from '@/lib/motion';
 
+import { AMBER, COLD_FAR, COLD_MARK, INK, PAPER } from '@/lib/palette';
 /**
  * Eight campuses, and what happens to seven of them.
  *
@@ -23,9 +24,11 @@ import { spring, type Spring } from '@/lib/motion';
 /** One dot for every person in the world. 768 of them, one geometry. */
 const DOT = new THREE.SphereGeometry(0.03, 6, 6);
 
-const WARM = new THREE.Color('#E8913C');
-const COLD = new THREE.Color('#3F5872');
-const PAPER = new THREE.Color('#F4EDE4');
+// THREE.Color instances, built once. Named for their role in the scene so
+// they cannot shadow the palette tokens they are built from.
+const WARM_C = new THREE.Color(AMBER);
+const COLD_C = new THREE.Color(COLD_FAR);
+const PAPER_C = new THREE.Color(PAPER);
 
 /**
  * How far the trip has been priced in, 0..1, shared across the scene.
@@ -71,7 +74,7 @@ function SchoolCluster({
     const p = priced.current;
     const lit = 1 - p + p * alive;
     material.current.opacity = 0.14 + lit * 0.5;
-    material.current.color.lerpColors(COLD, index === 0 ? WARM : PAPER, lit * 0.85);
+    material.current.color.lerpColors(COLD_C, index === 0 ? WARM_C : PAPER_C, lit * 0.85);
     if (group.current) group.current.rotation.y += 0.0009;
   });
 
@@ -92,7 +95,7 @@ function SchoolCluster({
       </points>
       {/* the school's own centre, so a cluster still reads when its people go out */}
       <mesh geometry={DOT}>
-        <meshBasicMaterial color={index === 0 ? '#E8913C' : '#6B7F96'} transparent opacity={0.8} />
+        <meshBasicMaterial color={index === 0 ? AMBER : COLD_MARK} transparent opacity={0.8} />
       </mesh>
     </group>
   );
@@ -170,8 +173,8 @@ export function WorldField({ world, priced }: { world: World; priced: boolean })
       gl={{ antialias: true, alpha: true }}
       resize={{ debounce: { resize: 0, scroll: 0 } }}
     >
-      <color attach="background" args={['#0B0907']} />
-      <fog attach="fog" args={['#0B0907', 12, 30]} />
+      <color attach="background" args={[INK]} />
+      <fog attach="fog" args={[INK, 12, 30]} />
       <ambientLight intensity={0.9} />
       <Rig world={world} target={priced ? 1 : 0} />
     </Canvas>

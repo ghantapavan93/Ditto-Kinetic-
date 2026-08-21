@@ -11,7 +11,10 @@ import type { MatchPair, Scene } from '@/lib/types';
  * scorer over the same six rooms with different people in them and a different
  * room wins.
  *
- * For Maya × Jonah, POST SHOW WALK wins and COFFEE comes fifth.
+ * For Maya × Jonah, POST SHOW WALK wins and COFFEE ranks near the bottom.
+ * The exact position is not authored here -- `scheduleFit` is derived from the
+ * two calendars, so where a room lands is a consequence of the data rather
+ * than a decision recorded next to it.
  * For Priya × Theo, COFFEE wins and POST SHOW WALK comes last.
  *
  * `pairSignal` is constant within each pair — deliberately. These two people are

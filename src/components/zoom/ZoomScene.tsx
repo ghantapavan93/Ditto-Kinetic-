@@ -9,6 +9,7 @@ import { bandOpacity, cameraAt, distanceToPair } from '@/lib/zoom';
 import { PAIRS } from '@/data/pairs';
 import { portraitTexture } from '@/lib/portrait';
 
+import { AMBER, COLD, INK, PAPER } from '@/lib/palette';
 /** Campus units are small; the journey needs room. */
 const S = 9.5;
 
@@ -46,7 +47,7 @@ export function ZoomScene({ t, reducedMotion }: { t: number; reducedMotion: bool
       gl={{ antialias: true, alpha: true }}
       resize={{ debounce: { resize: 0, scroll: 0 } }}
     >
-      <color attach="background" args={['#0B0907']} />
+      <color attach="background" args={[INK]} />
       <ambientLight intensity={0.8} />
       <directionalLight position={[3, 6, 4]} intensity={0.9} color="#FFD9A8" />
 
@@ -211,7 +212,7 @@ function Rig({ t, reducedMotion }: { t: number; reducedMotion: boolean }) {
             userData={{ base: n.known ? 0.9 : lonely.has(i) ? 0.4 : 0.5 }}
           >
             <meshBasicMaterial
-              color={n.known ? '#E8913C' : lonely.has(i) ? '#4A6C8C' : '#F4EDE4'}
+              color={n.known ? AMBER : lonely.has(i) ? COLD : PAPER}
               transparent
               opacity={0.5}
             />

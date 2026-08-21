@@ -9,6 +9,7 @@ import { CARD_H, CARD_W, useStageLayout } from './useStageLayout';
 import { cardTarget } from './cardTransform';
 import type { Person } from '@/lib/types';
 
+import { STOCK_COLD, STOCK_WARM } from '@/lib/palette';
 const CARD_D = 0.034;
 const PHOTO_W = 1.2;
 const PHOTO_H = 1.28;
@@ -59,11 +60,11 @@ const CARD_GEOMETRY = (() => {
  * blush tint has to be able to move independently of anything else on stage.
  */
 function makeCardMaterial() {
-  return new THREE.MeshStandardMaterial({ color: '#F4F1E8', roughness: 0.86, metalness: 0.02 });
+  return new THREE.MeshStandardMaterial({ color: STOCK_COLD, roughness: 0.86, metalness: 0.02 });
 }
 
-const PAPER_COLD = new THREE.Color('#F4F1E8');
-const PAPER_WARM = new THREE.Color('#FFE2E9');
+const PAPER_COLD = new THREE.Color(STOCK_COLD);
+const PAPER_WARM = new THREE.Color(STOCK_WARM);
 
 type Props = {
   person: Person;

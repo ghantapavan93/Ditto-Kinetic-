@@ -4,7 +4,7 @@ import { ProfileStage } from '@/components/profile/ProfileStage';
 export const metadata: Metadata = {
   title: 'THE LIVING PROFILE — three questions, and the gaps left over',
   description:
-    'Onboarding asks twenty questions and shows you a finished person. This asks three and shows you what it still does not know.',
+    'Onboarding asks a lot of questions and shows you a finished person. This asks three and shows you what it still does not know.',
 };
 
 /**

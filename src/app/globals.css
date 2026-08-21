@@ -45,11 +45,11 @@
 
 @layer components {
   .u-label {
-    @apply font-mono text-label uppercase text-paper/45;
+    @apply font-mono text-label uppercase text-paper/62;
   }
 
   .u-micro {
-    @apply font-mono text-micro uppercase text-paper/35;
+    @apply font-mono text-micro uppercase text-paper/55;
   }
 
   /* Physical paper. Used by tape notes, tickets, receipts. */

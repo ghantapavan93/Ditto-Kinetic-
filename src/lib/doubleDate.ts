@@ -1,5 +1,5 @@
 import type { MatchPair, Scene } from './types';
-import { SEND_THRESHOLD, scoreScene } from './rankScenes';
+import { SEND_THRESHOLD, metricsFor, scoreScene } from './rankScenes';
 
 /**
  * Four people.
@@ -110,7 +110,7 @@ export type DoubleDate = {
 };
 
 function side(pair: MatchPair, scene: Scene, otherF15: number, split: number): Side {
-  const solo = scoreScene(scene.metrics);
+  const solo = scoreScene(metricsFor(pair, scene));
   const f15 = scene.metrics.firstFifteenMinutesForecast;
 
   // Splitting keeps some of the cover — the first stretch still happened

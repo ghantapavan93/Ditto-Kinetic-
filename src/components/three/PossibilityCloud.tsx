@@ -8,6 +8,7 @@ import { damp, spring, type Spring } from '@/lib/motion';
 import { CARD_H, CARD_W } from './useStageLayout';
 import type { Scene } from '@/lib/types';
 
+import { AMBER, PAPER } from '@/lib/palette';
 /**
  * Seven versions of the same night, floating where the evening would be.
  *
@@ -195,7 +196,7 @@ export function PossibilityCloud({
             >
               <meshBasicMaterial
                 map={texture}
-                color={p.converges ? '#F4EDE4' : '#E8913C'}
+                color={p.converges ? PAPER : AMBER}
                 transparent
                 opacity={0}
                 depthWrite={false}

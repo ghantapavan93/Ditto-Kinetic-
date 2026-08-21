@@ -5,6 +5,7 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import type { Cost } from '@/lib/attention';
 
+import { AMBER, INK, MINT } from '@/lib/palette';
 const NODE = new THREE.SphereGeometry(1, 20, 20);
 
 /**
@@ -42,8 +43,8 @@ export function SurfaceField({
       gl={{ antialias: true, alpha: true }}
       resize={{ debounce: { resize: 0, scroll: 0 } }}
     >
-      <color attach="background" args={['#0B0907']} />
-      <fog attach="fog" args={['#0B0907', 11, 20]} />
+      <color attach="background" args={[INK]} />
+      <fog attach="fog" args={[INK, 11, 20]} />
       <ambientLight intensity={0.9} />
       <directionalLight position={[3, 6, 4]} intensity={0.7} color="#FFD9A8" />
 
@@ -154,8 +155,8 @@ function Ring({
           onPointerOver={() => onPick(i)}
         >
           <meshStandardMaterial
-            color={c.surface.kind === 'product' ? '#2FD8A8' : '#E8913C'}
-            emissive={c.surface.kind === 'product' ? '#2FD8A8' : '#E8913C'}
+            color={c.surface.kind === 'product' ? MINT : AMBER}
+            emissive={c.surface.kind === 'product' ? MINT : AMBER}
             emissiveIntensity={i === active ? 0.85 : 0.22}
             roughness={0.6}
           />

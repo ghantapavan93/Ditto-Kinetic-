@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import Link from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
 import { highlightRanges } from '@/lib/feedbackSchema';
 import { SPRING } from '@/lib/motion';
@@ -8,6 +9,7 @@ import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
 import { usePrototype } from '@/store/prototypeStore';
 import type { MatchPair } from '@/lib/types';
 
+import { TICKET } from '@/lib/palette';
 const PLACEHOLDER =
   'honestly she was way more outgoing than I expected but walking after the show made it really easy';
 
@@ -25,6 +27,7 @@ const PLACEHOLDER =
  */
 export function FeedbackReceipt({ pair }: { pair: MatchPair }) {
   const text = usePrototype((s) => s.feedbackText);
+  const reset = usePrototype((st) => st.reset);
   const setText = usePrototype((s) => s.setFeedbackText);
   const submit = usePrototype((s) => s.submitFeedback);
   const pending = usePrototype((s) => s.feedbackPending);
@@ -129,7 +132,7 @@ export function FeedbackReceipt({ pair }: { pair: MatchPair }) {
                         key={i}
                         initial={{ backgroundColor: 'rgba(0,0,0,0)' }}
                         animate={{
-                          backgroundColor: part.kind === 'up' ? '#FFD84D' : '#FF2E8855',
+                          backgroundColor: part.kind === 'up' ? TICKET : '#FF2E8855',
                         }}
                         transition={{ delay: 0.7 + i * 0.12, duration: 0.35 }}
                         className="px-0.5 text-ink"
@@ -232,6 +235,48 @@ export function FeedbackReceipt({ pair }: { pair: MatchPair }) {
                     ))}
                   </motion.ul>
                 )}
+              </motion.div>
+
+              {/*
+                A way out of the end.
+
+                The terminal phases -- handoff, quiet, memory -- had no
+                transition out of them and the stage chrome only renders while
+                exploring, so reaching this receipt left the session parked here
+                with nothing on screen to press. The reset action existed and
+                had no call site anywhere in src.
+
+                It is deliberately quiet. The page has just argued that the best
+                thing the product can do is stop talking, so the way back should
+                not be the loudest thing on it.
+              */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 4.4, duration: 0.8 }}
+                className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-2"
+              >
+                <button
+                  onClick={reset}
+                  data-cursor="from the top"
+                  className="min-h-[44px] font-editorial text-[0.72rem] lowercase tracking-wide text-paper/62 underline-offset-4 transition-colors hover:text-paper hover:underline"
+                >
+                  run it again &rarr;
+                </button>
+                <Link
+                  href="/after"
+                  data-cursor="what happened next"
+                  className="min-h-[44px] font-editorial text-[0.72rem] lowercase tracking-wide text-paper/62 underline-offset-4 transition-colors hover:text-paper hover:underline"
+                >
+                  what happened after &rarr;
+                </Link>
+                <Link
+                  href="/start"
+                  data-cursor="everything else"
+                  className="min-h-[44px] font-editorial text-[0.72rem] lowercase tracking-wide text-paper/62 underline-offset-4 transition-colors hover:text-paper hover:underline"
+                >
+                  everything else &rarr;
+                </Link>
               </motion.div>
 
               <PrototypeDisclosure className="mt-10" />

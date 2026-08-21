@@ -1,6 +1,7 @@
 'use client';
 
 import { create } from 'zustand';
+import { clockToMinutes, replanAfter } from '@/lib/booking';
 import { PAIRS, SCENE_ORDER, pairById } from '@/data/pairs';
 import {
   NO_CONDITIONS,
@@ -220,13 +221,47 @@ export const usePrototype = create<State & Actions>((set, get) => ({
         ? { ...conditions, excluded: [...conditions.excluded, sceneId] }
         : { ...conditions, disruptions: [...conditions.disruptions, d] };
 
-    const decision = sendDecision(pairById(pairId), next);
-    const snapped = snapToBest(pairId, next);
+    const pair = pairById(pairId);
+
+    /*
+     * A lost venue re-plans against the clock, not just against the scores.
+     *
+     * `snapToBest` takes the highest-scoring room that survives, which is
+     * correct about rooms and silent about time -- so losing an 8:32 PM walk
+     * snapped the stage to a 5:18 PM errand while the panel a few lines below
+     * it, which does consult the clock, said "nothing left late enough
+     * tonight". The two halves of one screen disagreed because only one of
+     * them had been taught about the hour.
+     *
+     * When nothing survives late enough, the honest state is that the plan has
+     * been withdrawn: stay where we are and drop to 'exploring', so the
+     * abstention reads as an abstention instead of a quiet downgrade.
+     */
+    const lost = d === 'venue' ? pair.scenes.find((sc) => sc.id === sceneId) : undefined;
+    const floor = lost ? clockToMinutes(lost.time) : null;
+
+    const replanned =
+      floor === null || !lost ? null : replanAfter(pair, lost.id, floor, next);
+
+    const snapped =
+      d === 'venue'
+        ? replanned
+          ? {
+              sceneId: replanned.scene.id,
+              dialPosition: SCENE_ORDER.indexOf(
+                replanned.scene.id as (typeof SCENE_ORDER)[number],
+              ),
+            }
+          : null
+        : snapToBest(pairId, next);
+
+    const decision = sendDecision(pair, next);
+    const sending = d === 'venue' ? Boolean(replanned) : decision.send;
 
     set({
       conditions: next,
       ...(snapped ?? {}),
-      phase: decision.send ? 'selected' : 'exploring',
+      phase: sending ? 'selected' : 'exploring',
       reasoningOpen: false,
     });
 
@@ -234,7 +269,7 @@ export const usePrototype = create<State & Actions>((set, get) => ({
       disruption: d,
       from: sceneId,
       to: snapped?.sceneId ?? null,
-      stillSending: decision.send,
+      stillSending: sending,
     });
   },
 
@@ -281,6 +316,16 @@ export const usePrototype = create<State & Actions>((set, get) => ({
     if (pair.id === get().pairId) return;
     const decision = sendDecision(pair, NO_CONDITIONS);
     const landing = decision.send ? decision.scene.id : pair.scenes[0].id;
+    /*
+     * Landing on a pair resets the view, not only the data.
+     *
+     * This set the pair and left `phase` alone. Arrive from a link while the
+     * store is sitting in a terminal phase -- handoff, quiet, memory -- and the
+     * new pair loads underneath a receipt for the old one, with no control on
+     * screen to leave it, because the stage chrome only renders while
+     * exploring. `swapPair` already clears these; this is the same journey
+     * arriving by a different door.
+     */
     set({
       pairId: pair.id,
       sceneId: landing,
@@ -288,6 +333,11 @@ export const usePrototype = create<State & Actions>((set, get) => ({
       conditions: NO_CONDITIONS,
       minute: 0,
       feedback: null,
+      feedbackText: '',
+      phase: 'exploring',
+      reasoningOpen: false,
+      decisionOpen: false,
+      hearMeOutOpen: false,
     });
   },
 

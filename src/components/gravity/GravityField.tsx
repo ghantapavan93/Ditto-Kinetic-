@@ -7,6 +7,7 @@ import { MIN_GAP, coherence, type Field } from '@/lib/gravity';
 import { portraitTexture } from '@/lib/portrait';
 import type { Person } from '@/lib/types';
 
+import { ACID, INK, MINT, PAPER } from '@/lib/palette';
 const CARD = new THREE.PlaneGeometry(1.05, 1.45);
 const PHOTO = new THREE.PlaneGeometry(0.86, 0.94);
 const ARROW = new THREE.PlaneGeometry(1, 0.014);
@@ -48,7 +49,7 @@ export function GravityField({
       gl={{ antialias: true, alpha: true }}
       resize={{ debounce: { resize: 0, scroll: 0 } }}
     >
-      <color attach="background" args={['#0B0907']} />
+      <color attach="background" args={[INK]} />
       <ambientLight intensity={0.9} />
       <directionalLight position={[2, 4, 5]} intensity={0.8} color="#FFD9A8" />
 
@@ -170,7 +171,7 @@ function Bodies({
           return (
             <mesh key={f.key} geometry={ARROW} position={[0, y, 0.12]}>
               <meshBasicMaterial
-                color={f.pulls ? '#2FD8A8' : '#FF2E88'}
+                color={f.pulls ? MINT : ACID}
                 transparent
                 opacity={0.3}
               />
@@ -183,7 +184,7 @@ function Bodies({
       <mesh position={[0, 0, -0.35]}>
         <planeGeometry args={[MIN_GAP * 2, 0.006]} />
         <meshBasicMaterial
-          color={field.locked ? '#2FD8A8' : '#F4EDE4'}
+          color={field.locked ? MINT : PAPER}
           transparent
           opacity={field.locked ? 0.5 : 0.12}
         />

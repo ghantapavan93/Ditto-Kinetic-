@@ -9,6 +9,7 @@ import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
 import { NarrativeCursor } from '@/components/shared/NarrativeCursor';
 import { track } from '@/lib/analytics';
 
+import { ACID, PAPER } from '@/lib/palette';
 /**
  * How it ends.
  *
@@ -19,7 +20,8 @@ import { track } from '@/lib/analytics';
  * has a field for.
  *
  * So this proposes a twelfth dimension, applies it, and then reports honestly
- * that it changes nothing. Neither pair reorders. That is the finding, not a
+ * that it does not change the decision. It reorders the middle for two of the
+ * three pairs and moves the winner for none of them. That is the finding, not a
  * failure of it, and it took building the thing to know.
  *
  * The number that matters is the disagreement between a room's exit quality and
@@ -131,6 +133,15 @@ export function EndingStage() {
           <p className="mt-3 font-display text-[clamp(1.4rem,3.4vw,2.1rem)] uppercase leading-none text-paper">
             {verdict.reorders ? 'it reorders the week.' : 'nothing.'}
           </p>
+
+          {verdict.reorders && (
+            <p className="mt-4 font-voice text-[1.2rem] leading-snug text-paper/75">
+              it moves the middle of the week and leaves the top of it alone. the room
+              that gets sent is the same room. a twelfth dimension that reshuffles the
+              options nobody was going to take has not changed anything a person would
+              notice &mdash; which is the useful version of a null result, not a weaker one.
+            </p>
+          )}
 
           {!verdict.reorders && (
             <>
@@ -343,7 +354,7 @@ function Meter({ label, value }: { label: string; value: number }) {
           animate={{ width: `${value * 100}%` }}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           className="absolute inset-y-0 left-0 block rounded-[1px]"
-          style={{ background: value < 0.3 ? '#FF2E88' : '#F4EDE4', opacity: 0.75 }}
+          style={{ background: value < 0.3 ? ACID : PAPER, opacity: 0.75 }}
         />
       </span>
     </span>
