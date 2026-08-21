@@ -89,7 +89,7 @@ export const SURFACES: Surface[] = [
   {
     "path": "/mutual",
     "kind": "argument",
-    "words": 255,
+    "words": 338,
     "decisions": 4
   },
   {

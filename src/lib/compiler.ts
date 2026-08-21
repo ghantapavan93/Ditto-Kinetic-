@@ -1,6 +1,7 @@
 import { PAIRS } from '@/data/pairs';
 import { SEND_THRESHOLD, rankScenes } from '@/lib/rankScenes';
-import { readSchedule, label as clockLabel } from '@/lib/schedule';
+import { readSchedule } from '@/lib/schedule';
+import { clockToMinutes } from '@/lib/booking';
 import { readExits } from '@/lib/exit';
 import type { MatchPair, Scene } from '@/lib/types';
 
@@ -307,8 +308,26 @@ export function compile(sentence: string): Compiled {
   const scene = chosen.scene;
   const withheld = chosen.utility < SEND_THRESHOLD;
 
+  /*
+   * The window the chosen evening actually falls inside.
+   *
+   * This was `schedule.best` -- the highest-scoring mutual window anywhere in
+   * the week, chosen without reference to the scene the rest of the card is
+   * about. So the "when" row could name a Friday afternoon while "where" named
+   * a room at 8:32 PM and the ending was computed from that room's own clock:
+   * three facts on one card, describing three different evenings.
+   *
+   * The scene is what is being planned, so the scene decides. The window shown
+   * is the one containing its hour; if no mutual window contains it, that is a
+   * real and interesting answer rather than something to paper over with the
+   * best window available.
+   */
   const schedule = readSchedule(pair.personA, pair.personB);
-  const when = schedule.best;
+  const sceneStart = clockToMinutes(scene.time);
+  const when =
+    sceneStart === null
+      ? schedule.best
+      : (schedule.windows.find((w) => sceneStart >= w.startMin && sceneStart < w.endMin) ?? null);
   const exit = readExits(pair).find((r) => r.scene.id === scene.id)!;
   const shape = SHAPES[scene.id];
   const work = scaffolding(scene);
@@ -360,10 +379,10 @@ export function compile(sentence: string): Compiled {
     {
       key: 'when',
       label: 'when',
-      value: when ? clockLabel(when) : 'no shared hour',
+      value: when ? `${when.dayName}, ${scene.time.toLowerCase()}` : scene.time.toLowerCase(),
       detail: when
         ? `joint energy ${when.jointEnergy.toFixed(2)} — the less present of you, never the average.`
-        : 'they share no window at all this week.',
+        : 'this hour sits outside every window the two of you share. the room is right and the clock is not.',
       derived: true,
     },
     {
@@ -399,7 +418,10 @@ export function compile(sentence: string): Compiled {
 
   const action = withheld
     ? 'nothing this week. none of it cleared the bar, and sending it anyway would cost you a wednesday.'
-    : `${pair.personB.name} · ${when ? clockLabel(when) : scene.time} · ${scene.location}`;
+    : // The plan line names the hour the evening starts, not the range of the
+      // window it sits in. `clockLabel(when)` rendered something like "1-5 PM",
+      // which is when they are both free -- not when to turn up.
+      `${pair.personB.name} · ${when ? `${when.dayName}, ` : ''}${scene.time.toLowerCase()} · ${scene.location}`;
 
   return { sentence, reading, pair, scene, stages, action, withheld };
 }

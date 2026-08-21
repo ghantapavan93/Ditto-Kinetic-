@@ -5,7 +5,13 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useCurrentPair } from '@/store/prototypeStore';
 import { SEND_THRESHOLD } from '@/lib/rankScenes';
-import { dispositionsOf, overruled, overstatement, readMutuality } from '@/lib/mutuality';
+import {
+  beliefsFor,
+  dispositionsOf,
+  overruled,
+  overstatement,
+  readMutuality,
+} from '@/lib/mutuality';
 import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
 import { NarrativeCursor } from '@/components/shared/NarrativeCursor';
 import { useReducedMotion } from '@/components/shared/useReducedMotion';
@@ -37,6 +43,7 @@ export function MutualStage() {
   const row = rows[at];
 
   const refused = useMemo(() => overruled(pair, SEND_THRESHOLD), [pair]);
+  const beliefs = useMemo(() => beliefsFor(pair), [pair]);
   const dispA = useMemo(() => dispositionsOf(pair.personA), [pair.personA]);
   const dispB = useMemo(() => dispositionsOf(pair.personB), [pair.personB]);
 
@@ -262,6 +269,69 @@ export function MutualStage() {
             this page said the opposite until recently. it compared the new model
             against itself, found the tie it had guaranteed, and called that an
             honest negative result.
+          </p>
+        </section>
+
+        {/*
+          What they said, against what the model used.
+
+          `statedPreferences` and `revealedHypotheses` are authored on every
+          person here and were read by nothing at all until now -- the same
+          defect venueSafety was. Reading them exposes something worth admitting
+          rather than quietly fixing: the weights on this page come from how
+          somebody behaves in a room, not from what they asked for.
+        */}
+        <section aria-label="What each person said, and what the model used" className="border-t border-paper/[0.09] pt-5">
+          <p className="font-mono text-[0.56rem] uppercase tracking-[0.24em] text-paper/30">
+            what they asked for &mdash; and what actually moved a weight
+          </p>
+
+          <div className="mt-4 grid gap-5 sm:grid-cols-2">
+            {beliefs.map((b) => (
+              <div key={b.person.id}>
+                <p className="font-display text-[0.9rem] uppercase leading-none text-paper/80">
+                  {b.person.name}
+                </p>
+
+                <p className="mt-2.5 font-mono text-[0.54rem] uppercase tracking-[0.2em] text-paper/25">
+                  told us
+                </p>
+                {b.told.map((t) => (
+                  <p key={t} className="font-voice text-[0.95rem] leading-snug text-paper/65">
+                    {t}
+                  </p>
+                ))}
+
+                <p className="mt-2.5 font-mono text-[0.54rem] uppercase tracking-[0.2em] text-paper/25">
+                  we suspect
+                </p>
+                {b.suspected.map((t) => (
+                  <p key={t} className="font-voice text-[0.95rem] leading-snug text-paper/45">
+                    {t}
+                  </p>
+                ))}
+
+                <p className="mt-2.5 font-mono text-[0.54rem] uppercase tracking-[0.2em] text-tungsten/50">
+                  moved a weight
+                </p>
+                {b.used.length === 0 ? (
+                  <p className="font-voice text-[0.95rem] leading-snug text-paper/30">nothing did.</p>
+                ) : (
+                  b.used.map((t) => (
+                    <p key={t} className="font-voice text-[0.95rem] leading-snug text-tungsten/80">
+                      &ldquo;{t}&rdquo;
+                    </p>
+                  ))
+                )}
+              </div>
+            ))}
+          </div>
+
+          <p className="mt-5 max-w-[54ch] font-voice text-[1.02rem] leading-snug text-paper/55">
+            the third column never overlaps the first. this model re-weights on how
+            someone behaves in a room and ignores what they asked for &mdash; which is a
+            position, and an arguable one, and better said here than left as an
+            accident of which fields happened to get read.
           </p>
         </section>
 

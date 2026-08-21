@@ -21,6 +21,8 @@ import { heldBack } from '../src/lib/restraint';
 import { privateSignals } from '../src/lib/redaction';
 import { doubleDate, rankDoubles } from '../src/lib/doubleDate';
 import { ENOUGH_MINUTES, label, readSchedule } from '../src/lib/schedule';
+import { beliefsFor } from '../src/lib/mutuality';
+import { readLens, type LensKey } from '../src/lib/lenses';
 import { QUESTIONS, STARTING_TRAITS } from '../src/data/livingProfile';
 import {
   ACTIONABLE,
@@ -120,6 +122,7 @@ const HEADING32 = "\nClaim 32 \u2014 the thread says what the engine decided:";
 const HEADING33 = "\nClaim 33 \u2014 the front door recommends, and admits:";
 const HEADING34 = "\nClaim 34 \u2014 the model is what it says it is:";
 const HEADING35 = "\nClaim 35 \u2014 a plan is not a ranking:";
+const HEADING36 = "\nClaim 36 \u2014 one card, one evening; one ranking, one partition:";
 
 const HEADING7 = '\nClaim 7 — last week changes this week:';
 
@@ -2382,6 +2385,82 @@ console.log(HEADING35);
   expect('a surface shows the week plan', restraint.includes('planWeek'), true);
 }
 
+
+/* ---- claim 36: one card, one evening; one ranking, one partition ---------- */
+
+console.log(HEADING36);
+{
+  /*
+   * The compiler card used to carry three facts about three different evenings:
+   * `when` came from the best mutual window anywhere in the week, `where` came
+   * from the chosen scene, and the ending was computed from that scene's own
+   * clock. Now the window shown is the one the scene actually sits inside.
+   */
+  const SENTENCES = [
+    'i want to meet someone without it being a whole thing',
+    'someone i could actually build something with',
+    'i am exhausted but i do not want to be alone tonight',
+  ];
+
+  for (const sentence of SENTENCES) {
+    const card = compile(sentence);
+    const whenStage = card.stages.find((st) => st.key === 'when');
+    const hour = card.scene.time.toLowerCase();
+
+    expect(`"${sentence.slice(0, 24)}...": the card names the scene's own hour`,
+      Boolean(whenStage && whenStage.value.includes(hour)), true);
+    expect(`"${sentence.slice(0, 24)}...": and the plan line agrees`,
+      card.withheld || card.action.includes(hour), true);
+
+    // If a day is named, the scene really falls inside that window.
+    const start = clockToMinutes(card.scene.time);
+    const schedule = readSchedule(card.pair.personA, card.pair.personB);
+    const containing =
+      start === null
+        ? null
+        : (schedule.windows.find((w) => start >= w.startMin && start < w.endMin) ?? null);
+    if (containing && whenStage) {
+      expect(`"${sentence.slice(0, 24)}...": the named day contains the hour`,
+        whenStage.value.startsWith(containing.dayName), true);
+    }
+  }
+
+  /*
+   * The lenses claim to be a partition of the ranking, so they have to be a
+   * partition of the SAME ranking -- same conditions, same candidate set. Read
+   * raw, they disagreed silently the moment a disruption was active.
+   */
+  const disrupted: Conditions = { ...NO_CONDITIONS, disruptions: ['availability'] };
+  for (const pair of [...PAIRS, WEEK_TWO]) {
+    const ranked = rankScenes(pair, disrupted);
+    for (const key of Object.keys(LENSES) as LensKey[]) {
+      const reading = readLens(pair, key, disrupted);
+      expect(
+        `${pair.id}/${String(key)}: the lens sees what the ranker sees`,
+        reading.ranked.length,
+        ranked.length,
+      );
+    }
+
+    /*
+     * And the fields that were authored and never read. Surfacing them exposed
+     * the real position: this model re-weights on temperament and ignores what
+     * people explicitly asked for. Asserted so it stays a stated position
+     * rather than drifting back into an accident of which fields got read.
+     */
+    for (const belief of beliefsFor(pair)) {
+      expect(`${belief.person.name}: what they told us is carried`, belief.told.length > 0, true);
+      expect(`${belief.person.name}: what we suspect is kept separate`, belief.suspected.length > 0, true);
+      const overlap = belief.used.filter((u: string) =>
+        belief.told.some((t: string) => t.includes(u)),
+      );
+      expect(`${belief.person.name}: no stated preference moves a weight`, overlap.length, 0);
+    }
+  }
+
+  const surface = readSourceFile(join(process.cwd(), 'src/components/mutual/MutualStage.tsx'), 'utf8');
+  expect('and a surface says so out loud', surface.includes('beliefsFor'), true);
+}
 
 console.log(failures ? `\n${failures} assertion(s) FAILED` : '\nall assertions passed');
 process.exit(failures ? 1 : 0);

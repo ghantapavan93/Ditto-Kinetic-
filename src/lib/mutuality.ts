@@ -399,3 +399,39 @@ export function overruled(pair: MatchPair, threshold: number): Mutuality[] {
 export function overstatement(m: Mutuality): number {
   return m.shipped - m.mutual;
 }
+
+/**
+ * What a person told us, against what the model actually used.
+ *
+ * `statedPreferences` and `revealedHypotheses` are authored on all twelve
+ * people in this project and, until this function existed, read by nothing —
+ * the same defect `venueSafety` was: data that looks priced and is not.
+ *
+ * Surfacing them turns out to say something worth saying. The weights above are
+ * derived from `socialEnergy` and `conversationStyle` — how somebody behaves in
+ * a room. They are NOT derived from `statedPreferences` — what somebody asked
+ * for. So the model re-weights on temperament and ignores the stated wish,
+ * which is a real position and an arguable one, and much better said out loud
+ * than left as an accident of which fields happened to get read.
+ *
+ * The gap between the two columns is the site's oldest idea in its smallest
+ * form: what people say they want, and what the evenings suggest.
+ */
+export type Belief = {
+  person: Person;
+  /** In their words, from onboarding. High confidence it came from them. */
+  told: string[];
+  /** What the history suggests. A hypothesis, and labelled as one. */
+  suspected: string[];
+  /** The phrases that actually moved a weight. */
+  used: string[];
+};
+
+export function beliefsFor(pair: MatchPair): Belief[] {
+  return [pair.personA, pair.personB].map((person) => ({
+    person,
+    told: person.statedPreferences,
+    suspected: person.revealedHypotheses,
+    used: dispositionsOf(person).map((d) => d.phrase),
+  }));
+}

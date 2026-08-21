@@ -1,6 +1,8 @@
 import type { MatchPair, Scene } from './types';
 import {
   SEND_THRESHOLD,
+  applyConditions,
+  belowSafetyFloor,
   rankScenes,
   weightsFor,
   type Conditions,
@@ -81,8 +83,18 @@ function lensScore(
   scene: Scene,
   key: LensKey,
   weights: Record<WeightKey, number>,
+  conditions: Conditions,
 ): number {
-  return LENSES[key].terms.reduce((sum, term) => sum + weights[term] * scene.metrics[term], 0);
+  /*
+   * Scored through the same conditions the ranker uses.
+   *
+   * This read `scene.metrics` raw, so with a disruption active the lens
+   * breakdown quietly disagreed with the ranking it claimed to decompose: the
+   * ranker saw a shift moved or a walk doubled and the lenses did not. A
+   * partition of a number has to be a partition of THAT number.
+   */
+  const metrics = applyConditions(scene.metrics, conditions);
+  return LENSES[key].terms.reduce((sum, term) => sum + weights[term] * metrics[term], 0);
 }
 
 export function readLens(
@@ -94,7 +106,10 @@ export function readLens(
 
   const ranked = pair.scenes
     .filter((s) => !conditions.excluded.includes(s.id))
-    .map((scene) => ({ scene, score: lensScore(scene, key, weights) }))
+    // The ranker gates unsafe rooms out before scoring. A view that claims to
+    // decompose the ranking has to be looking at the same candidate set.
+    .filter((s) => !belowSafetyFloor(s.metrics))
+    .map((scene) => ({ scene, score: lensScore(scene, key, weights, conditions) }))
     .sort((a, b) => b.score - a.score);
 
   const spread = ranked.length
