@@ -43,6 +43,7 @@ import { STATIONS, stationAt, stationOpacity, visionCameraAt } from '../src/lib/
 import { LANGUAGE, termsFor } from '../src/lib/language';
 import { SCHOOLS, barAt, buildWorld, survivorsAt } from '../src/lib/world';
 import { DISPOSITIONS, mutualityOf, readMutuality, weightsOf } from '../src/lib/mutuality';
+import { buildThread, silenceFor } from '../src/lib/thread';
 import { existsSync, readFileSync as readSourceFile, readdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { join } from 'node:path';
@@ -98,6 +99,7 @@ const HEADING28 = "\nClaim 28 — the language is the code's language:";
 const HEADING29 = "\nClaim 29 — nothing ships unreachable, and no count is written:";
 const HEADING30 = "\nClaim 30 — scale does not buy what it looks like it buys:";
 const HEADING31 = "\nClaim 31 \u2014 an introduction is only as good as the reluctant one:";
+const HEADING32 = "\nClaim 32 \u2014 the thread says what the engine decided:";
 
 const HEADING7 = '\nClaim 7 — last week changes this week:';
 
@@ -2001,6 +2003,74 @@ console.log(HEADING31);
     `  closest a sent room came to failing on the reluctant reading: +${closestCall.toFixed(4)}`,
   );
   expect('the margin is thin enough to be worth guarding', closestCall < 0.1, true);
+}
+
+
+/* ---- claim 32: the thread says what the engine decided --------------------- */
+
+console.log(HEADING32);
+{
+  for (const pair of [...PAIRS, WEEK_TWO]) {
+    const t = buildThread(pair);
+    const decision = sendDecision(pair);
+    const text = t.beats.map((b) => b.text).join(' | ');
+
+    // Exactly one message opens the apparatus. Two would make the thread a menu;
+    // none would make the reasoning unreachable and the claim of transparency
+    // decorative.
+    expect(`${pair.id}: exactly one message opens the reasoning`, t.beats.filter((b) => b.opens).length, 1);
+
+    // No placeholder survives to the screen. A thread that shipped "{NAME}"
+    // would be the most embarrassing possible bug on the most human surface.
+    expect(`${pair.id}: no unfilled placeholder`, /\{[A-Z]+\}/.test(text), false);
+
+    // No HTML entity survives either. `&rsquo;` inside a .ts string literal is
+    // six characters, not an apostrophe, and it shipped that way once.
+    expect(`${pair.id}: no raw html entities`, /&[a-z]+;/.test(text), false);
+
+    if (decision.send) {
+      // The plan in the thread is the plan the engine chose. Not a plan, not a
+      // representative plan -- that one.
+      const scene = decision.scene;
+      expect(`${pair.id}: the thread names the chosen hour`, text.includes(scene.time.toLowerCase()), true);
+      expect(`${pair.id}: and the chosen place`, text.includes(scene.location), true);
+      expect(`${pair.id}: and the other person`, text.includes(pair.personB.name), true);
+
+      // The ending is stated before it starts. That is the site's oldest claim
+      // and the thread is the surface where it matters most.
+      expect(`${pair.id}: the ending is in the thread`, t.ending.length > 0, true);
+      expect(`${pair.id}: and the ending is text-length, not an essay`, t.ending.length < 130, true);
+
+      // A room with no walk gets no walk message. Sending one anyway would cost
+      // attention to say nothing, which is the failure this project is about.
+      const hasRoute = scene.artifacts.some((a) => a.kind === 'route' && a.label);
+      expect(`${pair.id}: logistics message only when there are logistics`, t.detail !== null, hasRoute);
+    } else {
+      // Abstention has to survive all the way to the thread. A product that
+      // texts you every week regardless is a newsletter.
+      expect(`${pair.id}: the thread abstains too`, text.includes('rather send nothing'), true);
+    }
+
+    // The whole product, priced the same way the rest of the site is priced.
+    console.log(`  ${pair.id}: ${t.beats.length} messages, ${t.words} words, ${t.seconds.toFixed(1)}s`);
+    expect(`${pair.id}: the whole thing reads in under a minute`, t.seconds < 60, true);
+
+    // The closing line counts the thread it is describing. It used to say
+    // "eight messages" while rendering eleven.
+    const silence = silenceFor(t);
+    expect(`${pair.id}: the closing line counts correctly`, silence.includes(`${t.beats.length} messages`), true);
+  }
+
+  // The thread must be cheaper than the surface that explains the machinery.
+  // If reading the reasoning were shorter than reading the plan, the whole
+  // argument of this page would be upside down.
+  const stage = SURFACES.find((s) => s.path === '/');
+  const threadCost = buildThread(PAIRS[0]).seconds;
+  if (stage) {
+    const stageCost = costOf(stage).seconds;
+    console.log(`  the thread is ${threadCost.toFixed(0)}s against the stage's ${stageCost.toFixed(0)}s`);
+    expect('the thread is the cheapest way to get the product', threadCost < stageCost, true);
+  }
 }
 
 

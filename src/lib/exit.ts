@@ -141,7 +141,7 @@ export type ExitRead = {
  * missing something rather than merely not naming it.
  */
 /** "3:40 PM" plus N minutes, back in the same shape. */
-function endingClock(start: string, addMin: number): string {
+export function endingClock(start: string, addMin: number): string {
   const m = /^(\d{1,2}):(\d{2})\s*(AM|PM)$/i.exec(start.trim());
   if (!m) return start;
 
