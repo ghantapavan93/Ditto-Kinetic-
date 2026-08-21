@@ -83,7 +83,7 @@ export function HearMeOut({
               <button
                 onClick={onClose}
                 data-cursor="fine"
-                className="font-editorial text-[0.72rem] lowercase text-ink/40 underline-offset-4 transition-colors hover:text-ink hover:underline"
+                className="font-editorial text-[0.72rem] lowercase text-ink/62 underline-offset-4 transition-colors hover:text-ink hover:underline"
               >
                 close
               </button>
@@ -91,7 +91,7 @@ export function HearMeOut({
 
             <div className="mt-5 space-y-3.5 border-y border-dashed border-ink/20 py-4">
               <div>
-                <p className="font-editorial text-[0.62rem] uppercase tracking-[0.2em] text-ink/40">
+                <p className="font-editorial text-[0.62rem] uppercase tracking-[0.2em] text-ink/62">
                   you said
                 </p>
                 <p className="mt-1 font-voice text-[1.1rem] leading-snug text-ink/75">
@@ -99,7 +99,7 @@ export function HearMeOut({
                 </p>
               </div>
               <div>
-                <p className="font-editorial text-[0.62rem] uppercase tracking-[0.2em] text-ink/40">
+                <p className="font-editorial text-[0.62rem] uppercase tracking-[0.2em] text-ink/62">
                   your history suggests
                 </p>
                 <p className="mt-1 font-voice text-[1.1rem] leading-snug text-ink/75">
@@ -122,7 +122,7 @@ export function HearMeOut({
               </button>
             )}
 
-            <p className="mt-4 font-editorial text-[0.6rem] uppercase tracking-[0.16em] text-ink/35">
+            <p className="mt-4 font-editorial text-[0.6rem] uppercase tracking-[0.16em] text-ink/62">
               working hypothesis · we may be wrong
             </p>
           </div>

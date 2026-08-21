@@ -21,8 +21,8 @@ const FirstSceneStage = dynamic(
     ssr: false,
     loading: () => (
       <div className="fixed inset-0 flex flex-col items-center justify-center gap-6 bg-ink px-gutter">
-        <p className="font-display text-hero uppercase leading-[0.86] text-paper/12">first scene</p>
-        <p className="font-mono text-micro uppercase text-paper/30">loading the stage…</p>
+        <p className="font-display text-hero uppercase leading-[0.86] text-paper/55">first scene</p>
+        <p className="font-mono text-micro uppercase text-paper/55">loading the stage…</p>
       </div>
     ),
   },

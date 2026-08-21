@@ -35,10 +35,10 @@ export function WhenPicker({ a, b }: { a: Person; b: Person }) {
   return (
     <section aria-label="When they are both actually free" className="mt-6">
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-        <p className="font-mono text-[0.58rem] uppercase tracking-[0.24em] text-paper/35">
+        <p className="font-mono text-[0.58rem] uppercase tracking-[0.24em] text-paper/55">
           when
         </p>
-        <p className="font-editorial text-[0.68rem] lowercase tracking-wide text-paper/25">
+        <p className="font-editorial text-[0.68rem] lowercase tracking-wide text-paper/55">
           {read.windows.length} shared windows
         </p>
       </div>
@@ -59,12 +59,12 @@ export function WhenPicker({ a, b }: { a: Person; b: Person }) {
               <div className="flex items-baseline justify-between gap-3">
                 <span
                   className={`font-editorial text-[0.72rem] lowercase tracking-wide transition-colors ${
-                    active ? 'text-paper' : 'text-paper/45 group-hover:text-paper/80'
+                    active ? 'text-paper' : 'text-paper/62 group-hover:text-paper/80'
                   }`}
                 >
                   {label(w)}
                 </span>
-                <span className="shrink-0 font-mono text-[0.58rem] tabular-nums text-paper/30">
+                <span className="shrink-0 font-mono text-[0.58rem] tabular-nums text-paper/55">
                   {Math.round(w.minutes / 60)}h
                 </span>
               </div>
@@ -92,9 +92,9 @@ export function WhenPicker({ a, b }: { a: Person; b: Person }) {
               </div>
 
               <div className="mt-1 flex flex-wrap gap-x-3 font-mono text-[0.56rem] uppercase tracking-[0.12em]">
-                <span className="text-paper/30">energy {w.jointEnergy.toFixed(2)}</span>
-                {isBest && <span className="text-mint/70">best hour</span>}
-                {isLongest && !isBest && <span className="text-acid/70">longest, and worst</span>}
+                <span className="text-paper/55">energy {w.jointEnergy.toFixed(2)}</span>
+                {isBest && <span className="text-mint">best hour</span>}
+                {isLongest && !isBest && <span className="text-acid">longest, and worst</span>}
               </div>
             </button>
           );
@@ -129,18 +129,18 @@ export function WhenPicker({ a, b }: { a: Person; b: Person }) {
             only way to see the price of it.
           */}
           {read.dropDayCost !== null && read.dropDayCost > 0.001 && read.onDropDay && (
-            <p className="mt-3 font-editorial text-[0.74rem] lowercase leading-relaxed tracking-wide text-acid/75">
+            <p className="mt-3 font-editorial text-[0.74rem] lowercase leading-relaxed tracking-wide text-acid">
               holding it to wednesday costs {read.dropDayCost.toFixed(2)} of joint energy —{' '}
               {label(read.onDropDay)} instead of {read.best && label(read.best)}.
             </p>
           )}
           {read.dropDayCost === 0 && (
-            <p className="mt-3 font-editorial text-[0.74rem] lowercase leading-relaxed tracking-wide text-mint/70">
+            <p className="mt-3 font-editorial text-[0.74rem] lowercase leading-relaxed tracking-wide text-mint">
               wednesday is genuinely their best hour. nothing is being given up.
             </p>
           )}
           {read.dropDayCost === null && (
-            <p className="mt-3 font-editorial text-[0.74rem] lowercase leading-relaxed tracking-wide text-acid/75">
+            <p className="mt-3 font-editorial text-[0.74rem] lowercase leading-relaxed tracking-wide text-acid">
               they share no hour at all on wednesday.
             </p>
           )}

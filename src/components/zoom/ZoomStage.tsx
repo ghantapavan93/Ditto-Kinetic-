@@ -139,13 +139,13 @@ export function ZoomStage() {
 
       <div className="relative flex h-full flex-col justify-between px-gutter py-[clamp(1.25rem,4vh,2.25rem)]">
         <header className="flex items-baseline justify-between gap-4">
-          <p className="font-mono text-[0.66rem] uppercase tracking-[0.2em] text-paper/40">
+          <p className="font-mono text-[0.66rem] uppercase tracking-[0.2em] text-paper/62">
             one camera · {distance.toFixed(1)} units out
           </p>
           <Link
             href="/"
             data-cursor="back to the stage"
-            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/35 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             first scene →
           </Link>
@@ -160,7 +160,7 @@ export function ZoomStage() {
               exit={{ opacity: 0, y: -8, transition: { duration: 0.2 } }}
               transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
             >
-              <p className="font-mono text-[0.58rem] uppercase tracking-[0.28em] text-paper/30">
+              <p className="font-mono text-[0.58rem] uppercase tracking-[0.28em] text-paper/55">
                 {level}
               </p>
               <h1 className="mt-3 font-display text-[clamp(1.7rem,4.6vw,2.9rem)] uppercase leading-[0.95] text-paper">
@@ -175,7 +175,7 @@ export function ZoomStage() {
                   {PAIRS[0].fragments.slice(0, 3).map((f) => (
                     <li
                       key={f.text}
-                      className="font-hand text-[1.05rem] leading-snug text-tungsten/70"
+                      className="font-hand text-[1.05rem] leading-snug text-tungsten"
                     >
                       {f.text.split(' | ')[0]}
                     </li>
@@ -200,7 +200,7 @@ export function ZoomStage() {
                     }}
                     data-cursor="go here"
                     className={`font-editorial text-[0.72rem] lowercase tracking-wide transition-colors ${
-                      near ? 'text-tungsten' : 'text-paper/30 hover:text-paper/70'
+                      near ? 'text-tungsten' : 'text-paper/55 hover:text-paper/70'
                     }`}
                   >
                     {w.label}
@@ -219,7 +219,7 @@ export function ZoomStage() {
               />
             </div>
 
-            <p className="mt-3 font-editorial text-[0.7rem] lowercase tracking-wide text-paper/25">
+            <p className="mt-3 font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55">
               scroll, drag, or use the arrow keys. nothing here is a page.
             </p>
           </div>

@@ -9,10 +9,11 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "check": "tsx scripts/check-ranking.ts && tsx scripts/measure-attention.ts --check && node scripts/build-photo-manifest.mjs --check && node scripts/build-proof.mjs --check",
+    "check": "tsx scripts/check-ranking.ts && tsx scripts/measure-attention.ts --check && node scripts/build-photo-manifest.mjs --check && node scripts/build-proof.mjs --check && node scripts/contrast.mjs --check",
     "measure": "tsx scripts/measure-attention.ts",
     "photos": "node scripts/build-photo-manifest.mjs",
-    "proof": "node scripts/build-proof.mjs"
+    "proof": "node scripts/build-proof.mjs",
+    "contrast": "node scripts/contrast.mjs"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.23",

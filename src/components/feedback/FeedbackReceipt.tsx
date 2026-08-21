@@ -64,7 +64,7 @@ export function FeedbackReceipt({ pair }: { pair: MatchPair }) {
               transition={SPRING.copy}
               className="col-start-1 row-start-1"
             >
-              <p className="font-mono text-micro uppercase text-paper/35">the date happened</p>
+              <p className="font-mono text-micro uppercase text-paper/55">the date happened</p>
               <h2 className="mt-2 font-display text-[clamp(1.7rem,5vw,2.8rem)] uppercase leading-none text-paper">
                 how did the opening feel?
               </h2>
@@ -78,7 +78,7 @@ export function FeedbackReceipt({ pair }: { pair: MatchPair }) {
                 rows={4}
                 aria-label="How the opening felt"
                 placeholder={PLACEHOLDER}
-                className="mt-5 w-full resize-none border border-paper/15 bg-paper/[0.04] p-3.5 font-editorial text-[0.98rem] leading-snug text-paper placeholder:text-paper/25 focus:border-paper/40"
+                className="mt-5 w-full resize-none border border-paper/15 bg-paper/[0.04] p-3.5 font-editorial text-[0.98rem] leading-snug text-paper placeholder:text-paper/55 focus:border-paper/40"
               />
 
               <div className="mt-4 flex flex-wrap items-center gap-3">
@@ -92,7 +92,7 @@ export function FeedbackReceipt({ pair }: { pair: MatchPair }) {
                 {!text.trim() && (
                   <button
                     onClick={() => setText(PLACEHOLDER)}
-                    className="font-mono text-micro uppercase text-paper/35 underline-offset-4 hover:underline"
+                    className="font-mono text-micro uppercase text-paper/55 underline-offset-4 hover:underline"
                   >
                     use the example
                   </button>
@@ -117,7 +117,7 @@ export function FeedbackReceipt({ pair }: { pair: MatchPair }) {
                 className="u-paper u-torn-bottom origin-top px-5 py-5"
                 style={{ transform: 'rotate(-0.6deg)' }}
               >
-                <p className="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-ink/45">
+                <p className="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-ink/62">
                   Ditto · feedback · {pair.personA.name} × {pair.personB.name}
                 </p>
                 <div className="my-3 border-t border-dashed border-ink/25" />
@@ -143,7 +143,7 @@ export function FeedbackReceipt({ pair }: { pair: MatchPair }) {
                 </p>
 
                 <div className="my-3 border-t border-dashed border-ink/25" />
-                <p className="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-ink/45">
+                <p className="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-ink/62">
                   interpretation: {result.source === 'model' ? 'model' : 'deterministic'}
                 </p>
               </motion.div>
@@ -164,7 +164,7 @@ export function FeedbackReceipt({ pair }: { pair: MatchPair }) {
                 ).map(([label, items, tone]) =>
                   items.length ? (
                     <div key={label} className="flex gap-3">
-                      <span className="w-16 shrink-0 pt-0.5 font-mono text-micro uppercase text-paper/30">
+                      <span className="w-16 shrink-0 pt-0.5 font-mono text-micro uppercase text-paper/55">
                         {label}
                       </span>
                       <span className={`font-editorial text-[0.92rem] leading-snug ${tone}`}>
@@ -183,9 +183,9 @@ export function FeedbackReceipt({ pair }: { pair: MatchPair }) {
                 onAnimationComplete={() => setTorn(true)}
                 className="mt-6 border-t border-paper/10 pt-5"
               >
-                <p className="font-mono text-micro uppercase text-paper/35">Ditto learned</p>
+                <p className="font-mono text-micro uppercase text-paper/55">Ditto learned</p>
 
-                <p className="mt-3 font-editorial text-[0.98rem] leading-snug text-paper/35">
+                <p className="mt-3 font-editorial text-[0.98rem] leading-snug text-paper/55">
                   first hypothesis:{' '}
                   <span className={torn ? 'line-through decoration-acid decoration-2' : ''}>
                     “{pair.hearMeOut.stated}” is the problem
@@ -203,7 +203,7 @@ export function FeedbackReceipt({ pair }: { pair: MatchPair }) {
                     <p className="font-editorial text-[1.02rem] leading-snug text-paper">
                       new hypothesis: {h.hypothesis}
                     </p>
-                    <p className="mt-1 font-mono text-micro uppercase text-paper/35">
+                    <p className="mt-1 font-mono text-micro uppercase text-paper/55">
                       {h.confidence} confidence · {h.evidence}
                     </p>
                   </motion.div>
@@ -226,7 +226,7 @@ export function FeedbackReceipt({ pair }: { pair: MatchPair }) {
                     className="mt-4 space-y-1"
                   >
                     {result.uncertainty.map((u) => (
-                      <li key={u} className="font-mono text-micro uppercase text-paper/25">
+                      <li key={u} className="font-mono text-micro uppercase text-paper/55">
                         · {u}
                       </li>
                     ))}

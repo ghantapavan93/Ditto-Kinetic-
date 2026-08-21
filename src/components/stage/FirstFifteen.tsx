@@ -35,7 +35,7 @@ export function FirstFifteen({ pairId, sceneId }: { pairId: string; sceneId: str
       aria-label="The first fifteen minutes"
       className="pointer-events-auto mt-7 max-w-[30rem]"
     >
-      <p className="font-editorial text-[0.66rem] uppercase tracking-[0.22em] text-paper/30">
+      <p className="font-editorial text-[0.66rem] uppercase tracking-[0.22em] text-paper/55">
         the first fifteen
       </p>
 
@@ -81,7 +81,7 @@ export function FirstFifteen({ pairId, sceneId }: { pairId: string; sceneId: str
                 />
                 <span
                   className={`font-mono text-[0.66rem] tabular-nums transition-colors ${
-                    active ? 'text-tungsten' : 'text-paper/30 group-hover:text-paper/60'
+                    active ? 'text-tungsten' : 'text-paper/55 group-hover:text-paper/60'
                   }`}
                 >
                   {m}

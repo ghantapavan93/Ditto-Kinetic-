@@ -89,13 +89,13 @@ export function OddsStage() {
 
       <div className="relative mx-auto flex min-h-screen max-w-[64rem] flex-col gap-10 px-gutter py-[clamp(1.5rem,5vh,3rem)]">
         <header className="flex items-baseline justify-between gap-4">
-          <p className="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-paper/45">
+          <p className="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-paper/62">
             step 25 of 25
           </p>
           <Link
             href="/"
             data-cursor="back to the stage"
-            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/35 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             first scene →
           </Link>
@@ -104,7 +104,7 @@ export function OddsStage() {
         <div className="grid gap-12 md:grid-cols-[minmax(0,22rem)_1fr] md:items-start">
           {/* the machine */}
           <section>
-            <p className="font-mono text-[0.6rem] uppercase tracking-[0.28em] text-paper/30">
+            <p className="font-mono text-[0.6rem] uppercase tracking-[0.28em] text-paper/55">
               your chance on drop day
             </p>
 
@@ -134,7 +134,7 @@ export function OddsStage() {
             )}
 
             {phase === 'refused' && (
-              <p className="mt-6 border border-paper/15 px-5 py-3 text-center font-editorial text-[0.76rem] lowercase tracking-wide text-paper/40">
+              <p className="mt-6 border border-paper/15 px-5 py-3 text-center font-editorial text-[0.76rem] lowercase tracking-wide text-paper/62">
                 it stops at {Math.round(ODDS_CEILING * 100)}. it always stops at{' '}
                 {Math.round(ODDS_CEILING * 100)}.
               </p>
@@ -168,7 +168,7 @@ export function OddsStage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                 >
-                  <p className="font-mono text-[0.6rem] uppercase tracking-[0.28em] text-paper/30">
+                  <p className="font-mono text-[0.6rem] uppercase tracking-[0.28em] text-paper/55">
                     what made it {Math.round(odds.value * 100)}
                   </p>
 
@@ -185,15 +185,15 @@ export function OddsStage() {
                           <span className="font-editorial text-[0.8rem] lowercase tracking-wide text-paper/70">
                             {f.label}
                           </span>
-                          <span className="font-mono text-[0.78rem] tabular-nums text-mint/75">
+                          <span className="font-mono text-[0.78rem] tabular-nums text-mint">
                             +{Math.round(f.points * 100)}
                           </span>
                         </div>
-                        <p className="mt-1.5 max-w-[46ch] font-editorial text-[0.72rem] lowercase leading-relaxed tracking-wide text-paper/40">
+                        <p className="mt-1.5 max-w-[46ch] font-editorial text-[0.72rem] lowercase leading-relaxed tracking-wide text-paper/62">
                           {f.says}
                         </p>
                         {!f.actionable && (
-                          <p className="mt-1.5 font-mono text-[0.58rem] uppercase tracking-[0.16em] text-acid/60">
+                          <p className="mt-1.5 font-mono text-[0.58rem] uppercase tracking-[0.16em] text-acid">
                             not yours to fix
                           </p>
                         )}
@@ -202,7 +202,7 @@ export function OddsStage() {
                   </ul>
 
                   {odds.bestMove && (
-                    <p className="mt-5 max-w-[44ch] font-voice text-[1.05rem] leading-snug text-tungsten/80">
+                    <p className="mt-5 max-w-[44ch] font-voice text-[1.05rem] leading-snug text-tungsten">
                       the cheapest real thing you could do is {odds.bestMove.asMove}. not
                       invite anybody.
                     </p>
@@ -234,11 +234,11 @@ export function OddsStage() {
 
               {cost.fundedBy && (
                 <div className="mt-6 border-l-2 border-acid/50 pl-4">
-                  <p className="font-editorial text-[0.62rem] uppercase tracking-[0.24em] text-paper/35">
+                  <p className="font-editorial text-[0.62rem] uppercase tracking-[0.24em] text-paper/55">
                     it would be theirs
                   </p>
                   <p className="mt-2 font-display text-[1.3rem] uppercase leading-none text-paper">
-                    {cost.fundedBy.personA.name} <span className="text-paper/30">×</span>{' '}
+                    {cost.fundedBy.personA.name} <span className="text-paper/55">×</span>{' '}
                     {cost.fundedBy.personB.name}
                   </p>
                   <p className="mt-3 max-w-[46ch] font-editorial text-[0.82rem] lowercase leading-relaxed tracking-wide text-paper/50">
@@ -247,7 +247,7 @@ export function OddsStage() {
                     them back and told them why. guaranteeing your wednesday means sending
                     that evening anyway.
                   </p>
-                  <p className="mt-4 max-w-[44ch] font-voice text-[1.1rem] italic leading-snug text-tungsten/75">
+                  <p className="mt-4 max-w-[44ch] font-voice text-[1.1rem] italic leading-snug text-tungsten">
                     they did not ask to pay for it, and nobody would have told them they had.
                   </p>
                 </div>
@@ -326,7 +326,7 @@ function Reels({ phase, target }: { phase: Phase; target: number }) {
           />
         </div>
       ))}
-      <div className="flex items-center justify-center px-1 font-display text-[clamp(1.6rem,4vw,2.4rem)] text-paper/35">
+      <div className="flex items-center justify-center px-1 font-display text-[clamp(1.6rem,4vw,2.4rem)] text-paper/55">
         %
       </div>
     </div>

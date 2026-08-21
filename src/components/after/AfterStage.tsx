@@ -107,13 +107,13 @@ export function AfterStage() {
 
       <div className="relative mx-auto flex min-h-screen max-w-[62rem] flex-col gap-10 px-gutter py-[clamp(1.5rem,5vh,3rem)]">
         <header className="flex items-baseline justify-between gap-4">
-          <p className="font-mono text-[0.7rem] tabular-nums tracking-[0.2em] text-paper/45">
+          <p className="font-mono text-[0.7rem] tabular-nums tracking-[0.2em] text-paper/62">
             12:14 AM
           </p>
           <Link
             href="/"
             data-cursor="back to the stage"
-            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/35 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             first scene →
           </Link>
@@ -137,13 +137,13 @@ export function AfterStage() {
                   transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
                   className="col-start-1 row-start-1"
                 >
-                  <p className="font-mono text-[0.6rem] uppercase tracking-[0.28em] text-paper/30">
+                  <p className="font-mono text-[0.6rem] uppercase tracking-[0.28em] text-paper/55">
                     Ditto
                   </p>
                   <h1 className="mt-3 font-voice text-[clamp(1.8rem,4.4vw,2.8rem)] leading-tight text-paper">
                     so&hellip; how was it?
                   </h1>
-                  <p className="mt-3 max-w-[34ch] font-editorial text-[0.85rem] lowercase tracking-wide text-paper/40">
+                  <p className="mt-3 max-w-[34ch] font-editorial text-[0.85rem] lowercase tracking-wide text-paper/62">
                     not a rating. a sentence. the messier the better.
                   </p>
 
@@ -153,7 +153,7 @@ export function AfterStage() {
                     rows={4}
                     aria-label="How the date went"
                     placeholder={EXAMPLE}
-                    className="mt-6 w-full max-w-[34rem] resize-none rounded-artifact border border-paper/14 bg-paper/[0.03] p-4 font-voice text-[1.15rem] leading-snug text-paper placeholder:text-paper/20 focus:border-paper/40"
+                    className="mt-6 w-full max-w-[34rem] resize-none rounded-artifact border border-paper/14 bg-paper/[0.03] p-4 font-voice text-[1.15rem] leading-snug text-paper placeholder:text-paper/55 focus:border-paper/40"
                   />
 
                   <div className="mt-4 flex flex-wrap items-center gap-4">
@@ -168,7 +168,7 @@ export function AfterStage() {
                     {!text.trim() && (
                       <button
                         onClick={() => setText(EXAMPLE)}
-                        className="font-editorial text-[0.74rem] lowercase text-paper/30 underline-offset-4 hover:underline"
+                        className="font-editorial text-[0.74rem] lowercase text-paper/55 underline-offset-4 hover:underline"
                       >
                         use the example
                       </button>
@@ -193,7 +193,7 @@ export function AfterStage() {
                     className="u-paper u-torn-bottom max-w-[30rem] px-5 py-5"
                     style={{ transform: 'rotate(-0.5deg)' }}
                   >
-                    <p className="font-mono text-[0.58rem] uppercase tracking-[0.22em] text-ink/45">
+                    <p className="font-mono text-[0.58rem] uppercase tracking-[0.22em] text-ink/62">
                       what you said
                     </p>
                     <div className="my-3 border-t border-dashed border-ink/25" />
@@ -223,7 +223,7 @@ export function AfterStage() {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 1.4 }}
-                      className="mt-6 max-w-[34ch] font-voice text-[1.2rem] italic leading-snug text-tungsten/85"
+                      className="mt-6 max-w-[34ch] font-voice text-[1.2rem] italic leading-snug text-tungsten"
                     >
                       {reading.inferredHypotheses[0]?.hypothesis}
                     </motion.p>
@@ -233,7 +233,7 @@ export function AfterStage() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ delay: 1.9 }}
-                    className="mt-3 font-editorial text-[0.74rem] lowercase tracking-wide text-paper/35"
+                    className="mt-3 font-editorial text-[0.74rem] lowercase tracking-wide text-paper/55"
                   >
                     working hypothesis. not fact. we&rsquo;ll test it gently.
                   </motion.p>
@@ -249,7 +249,7 @@ export function AfterStage() {
             <h2 className="font-display text-[1.4rem] uppercase leading-none text-paper">
               {phase === 'learned' ? 'what changed' : 'what we believed'}
             </h2>
-            <span className="font-editorial text-[0.72rem] lowercase tracking-wide text-paper/30">
+            <span className="font-editorial text-[0.72rem] lowercase tracking-wide text-paper/55">
               {phase === 'learned'
                 ? 'one contradicted, one stronger, one new'
                 : 'three standing hypotheses'}
@@ -266,7 +266,7 @@ export function AfterStage() {
                 transition={{ delay: 1.1, duration: 0.7 }}
                 className="mt-8"
               >
-                <p className="max-w-[40ch] font-voice text-[1.1rem] italic leading-snug text-paper/45">
+                <p className="max-w-[40ch] font-voice text-[1.1rem] italic leading-snug text-paper/62">
                   nothing was deleted. the belief that turned out to be wrong is still on the
                   board, crossed out, so you can see it was ever there.
                 </p>

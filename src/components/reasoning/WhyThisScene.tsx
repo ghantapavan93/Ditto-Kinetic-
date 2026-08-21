@@ -39,7 +39,7 @@ export function WhyThisScene({
               <h3 className="font-display text-[1.6rem] uppercase leading-none text-paper">why this one?</h3>
               <button
                 onClick={onClose}
-                className="font-mono text-micro uppercase text-paper/45 transition-colors hover:text-paper"
+                className="font-mono text-micro uppercase text-paper/62 transition-colors hover:text-paper"
               >
                 close
               </button>
@@ -75,7 +75,7 @@ export function WhyThisScene({
                 data-cursor="hmm..."
                 className="relative rounded-artifact border border-dashed border-paper/25 bg-paper/[0.07] px-4 py-3 backdrop-blur-sm"
               >
-                <p className="font-mono text-micro uppercase text-paper/45">what we don’t know yet</p>
+                <p className="font-mono text-micro uppercase text-paper/62">what we don’t know yet</p>
                 <p className="mt-1.5 font-editorial text-[0.94rem] leading-snug text-paper/80">
                   {scene.uncertainty}
                 </p>

@@ -41,7 +41,7 @@ export function NotThisWeek({
       aria-live="polite"
       className="pointer-events-auto max-w-[34rem]"
     >
-      <p className="font-mono text-label uppercase text-paper/40">the system is declining to send</p>
+      <p className="font-mono text-label uppercase text-paper/62">the system is declining to send</p>
 
       <h2 className="mt-2 font-display text-[clamp(2rem,6.5vw,4.2rem)] uppercase leading-[0.88] text-paper">
         not this
@@ -61,7 +61,7 @@ export function NotThisWeek({
 
       {decision.best && (
         <div className="mt-6 flex flex-wrap items-baseline gap-x-4 gap-y-1 border-y border-paper/10 py-3">
-          <span className="font-mono text-micro uppercase text-paper/35">best available</span>
+          <span className="font-mono text-micro uppercase text-paper/55">best available</span>
           <span className="font-mono text-[0.82rem] uppercase tracking-wider text-paper/80">
             {decision.best.scene.label}
           </span>
@@ -87,7 +87,7 @@ export function NotThisWeek({
         </button>
         <button
           onClick={onEaseOff}
-          className="min-h-[44px] px-2 py-2 font-mono text-micro uppercase text-paper/40 underline-offset-4 transition-colors hover:text-paper/80 hover:underline"
+          className="min-h-[44px] px-2 py-2 font-mono text-micro uppercase text-paper/62 underline-offset-4 transition-colors hover:text-paper/80 hover:underline"
         >
           give them an easier week
         </button>

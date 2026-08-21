@@ -163,7 +163,7 @@ export function PossibilityStage() {
       <div className="relative flex h-full flex-col justify-between px-gutter py-[clamp(1.25rem,4vh,2.25rem)]">
         <header className="flex items-baseline justify-between gap-4">
           <div className="flex items-baseline gap-4">
-            <p className="font-mono text-[0.66rem] uppercase tracking-[0.2em] text-paper/40">
+            <p className="font-mono text-[0.66rem] uppercase tracking-[0.2em] text-paper/62">
               possibility
             </p>
             {phase !== 'you' && (
@@ -174,7 +174,7 @@ export function PossibilityStage() {
                     onClick={() => scrub(d)}
                     data-cursor="this evening"
                     className={`font-mono text-[0.66rem] uppercase tracking-[0.16em] transition-colors ${
-                      d === day ? 'text-tungsten' : 'text-paper/25 hover:text-paper/60'
+                      d === day ? 'text-tungsten' : 'text-paper/55 hover:text-paper/60'
                     }`}
                   >
                     {DAY_LABEL[d]}
@@ -186,7 +186,7 @@ export function PossibilityStage() {
           <Link
             href="/"
             data-cursor="back to the stage"
-            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/35 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             first scene →
           </Link>
@@ -211,7 +211,7 @@ export function PossibilityStage() {
                 }}
                 aria-label="What kind of life do you want more of"
                 placeholder={PRESET}
-                className="mt-6 w-full border-b border-paper/15 bg-transparent pb-2 font-voice text-[1.1rem] text-paper outline-none transition-colors placeholder:text-paper/25 focus:border-tungsten"
+                className="mt-6 w-full border-b border-paper/15 bg-transparent pb-2 font-voice text-[1.1rem] text-paper outline-none transition-colors placeholder:text-paper/55 focus:border-tungsten"
               />
               <button
                 onClick={() => say(sentence || PRESET)}
@@ -234,7 +234,7 @@ export function PossibilityStage() {
                   initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
-                  className="mb-3 font-voice text-[1.1rem] italic leading-snug text-tungsten/85"
+                  className="mb-3 font-voice text-[1.1rem] italic leading-snug text-tungsten"
                 >
                   {nightNote}
                 </motion.p>
@@ -254,8 +254,8 @@ export function PossibilityStage() {
                         : c.availableToday
                           ? c.clears
                             ? 'border-paper/20 text-paper/60'
-                            : 'border-paper/12 text-paper/35'
-                          : 'border-paper/[0.07] text-paper/20'
+                            : 'border-paper/12 text-paper/55'
+                          : 'border-paper/[0.07] text-paper/55'
                     }`}
                   >
                     <Glyph size={12} strokeWidth={1.5} aria-hidden />
@@ -274,7 +274,7 @@ export function PossibilityStage() {
               })}
             </div>
 
-            <p className="mt-3 max-w-[52ch] font-editorial text-[0.7rem] lowercase leading-relaxed tracking-wide text-paper/25">
+            <p className="mt-3 max-w-[52ch] font-editorial text-[0.7rem] lowercase leading-relaxed tracking-wide text-paper/55">
               no names, no faces, no map of strangers. a possibility is an artifact and an
               hour until it clears the bar — the unsettled ones are real pairs this system
               held back, and they will not stop moving.
@@ -293,7 +293,7 @@ export function PossibilityStage() {
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
               className="pointer-events-auto absolute right-gutter top-[16%] max-w-[24rem] rounded-artifact border border-paper/12 bg-ink/80 p-5 backdrop-blur-md"
             >
-              <p className="font-mono text-[0.58rem] uppercase tracking-[0.26em] text-paper/35">
+              <p className="font-mono text-[0.58rem] uppercase tracking-[0.26em] text-paper/55">
                 an opening just appeared
               </p>
 
@@ -303,14 +303,14 @@ export function PossibilityStage() {
               </div>
 
               <p className="mt-4 font-display text-[1.25rem] uppercase leading-none text-paper">
-                {locked.pair.personA.name} <span className="text-paper/30">×</span>{' '}
+                {locked.pair.personA.name} <span className="text-paper/55">×</span>{' '}
                 {locked.pair.personB.name}
               </p>
               <p className="mt-2 font-voice text-[1rem] leading-snug text-paper/70">
                 {locked.scene.label.toLowerCase()} · {locked.when.toLowerCase()} ·{' '}
                 {locked.scene.location}
               </p>
-              <p className="mt-2 font-editorial text-[0.74rem] lowercase leading-relaxed tracking-wide text-paper/40">
+              <p className="mt-2 font-editorial text-[0.74rem] lowercase leading-relaxed tracking-wide text-paper/62">
                 {locked.shape.how}
               </p>
 

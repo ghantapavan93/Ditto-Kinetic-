@@ -65,7 +65,7 @@ export function PairSwap() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6, transition: { duration: 0.8 } }}
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            className="pointer-events-none absolute bottom-[clamp(8rem,19vh,11.5rem)] left-1/2 z-overlay -translate-x-1/2 text-center font-voice text-[1.3rem] leading-relaxed text-tungsten/85"
+            className="pointer-events-none absolute bottom-[clamp(8rem,19vh,11.5rem)] left-1/2 z-overlay -translate-x-1/2 text-center font-voice text-[1.3rem] leading-relaxed text-tungsten"
           >
             same rooms.
             <br />

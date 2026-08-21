@@ -65,7 +65,7 @@ export function DevelopingFrame({
       </div>
 
       <figcaption
-        className="mt-3 px-1 font-hand text-[1.05rem] leading-none text-ink/55"
+        className="mt-3 px-1 font-hand text-[1.05rem] leading-none text-ink/62"
         style={{ opacity: Math.max(0, p * 1.4 - 0.4), transition: 'opacity 300ms ease' }}
       >
         {caption}

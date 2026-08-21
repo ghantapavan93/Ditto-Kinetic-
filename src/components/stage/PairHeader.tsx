@@ -26,11 +26,11 @@ function PersonNote({ person, align }: { person: Person; align: 'left' | 'right'
     >
       <p className="font-display text-[1.05rem] uppercase leading-none text-paper">
         {person.name}
-        <span className="ml-2 font-mono text-[0.62rem] tabular-nums text-paper/30">
+        <span className="ml-2 font-mono text-[0.62rem] tabular-nums text-paper/55">
           {person.age}
         </span>
       </p>
-      <p className="mt-1 font-editorial text-[0.7rem] lowercase tracking-wide text-paper/35">
+      <p className="mt-1 font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55">
         {person.major}
       </p>
 
@@ -38,17 +38,17 @@ function PersonNote({ person, align }: { person: Person; align: 'left' | 'right'
         {person.surface}
       </p>
       <p
-        className={`mt-1 flex items-baseline gap-1.5 font-voice text-[0.98rem] italic leading-tight text-tungsten/85 ${
+        className={`mt-1 flex items-baseline gap-1.5 font-voice text-[0.98rem] italic leading-tight text-tungsten ${
           align === 'right' ? 'justify-end' : ''
         }`}
       >
-        <span className="font-editorial text-[0.62rem] not-italic uppercase tracking-[0.16em] text-tungsten/45">
+        <span className="font-editorial text-[0.62rem] not-italic uppercase tracking-[0.16em] text-tungsten">
           but
         </span>
         {person.contradiction}
       </p>
 
-      <p className="mt-2 font-hand text-[0.98rem] leading-tight text-paper/30">
+      <p className="mt-2 font-hand text-[0.98rem] leading-tight text-paper/55">
         {person.tinyDetail}
       </p>
     </motion.div>
@@ -60,10 +60,10 @@ export function PairHeader({ pair }: { pair: MatchPair }) {
     <div className="pointer-events-none hidden w-full items-start justify-between gap-8 md:flex">
       <PersonNote person={pair.personA} align="left" />
       <div className="mt-6 shrink-0 text-center">
-        <p className="font-mono text-[0.62rem] uppercase tracking-[0.3em] text-paper/25">
+        <p className="font-mono text-[0.62rem] uppercase tracking-[0.3em] text-paper/55">
           wed 7:00 pm
         </p>
-        <p className="mt-1 font-voice text-[0.85rem] italic text-paper/25">
+        <p className="mt-1 font-voice text-[0.85rem] italic text-paper/55">
           {pair.personA.fictionalCampus}
         </p>
       </div>

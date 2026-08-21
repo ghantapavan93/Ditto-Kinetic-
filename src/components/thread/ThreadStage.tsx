@@ -87,13 +87,13 @@ export function ThreadStage() {
 
       <div className="relative mx-auto flex min-h-screen max-w-[52rem] flex-col gap-7 px-gutter py-[clamp(1.5rem,5vh,3rem)]">
         <header className="flex items-baseline justify-between gap-4">
-          <p className="font-mono text-[0.62rem] uppercase tracking-[0.3em] text-tungsten/60">
+          <p className="font-mono text-[0.62rem] uppercase tracking-[0.3em] text-tungsten">
             the whole product
           </p>
           <Link
             href="/"
             data-cursor="the apparatus"
-            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/35 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             first scene →
           </Link>
@@ -117,7 +117,7 @@ export function ThreadStage() {
           aria-label="The message thread"
           className="mx-auto w-full max-w-[24rem] rounded-artifact border border-paper/10 bg-ink-soft/50 p-4"
         >
-          <p className="mb-4 border-b border-paper/[0.07] pb-2.5 text-center font-mono text-[0.6rem] uppercase tracking-[0.24em] text-paper/40">
+          <p className="mb-4 border-b border-paper/[0.07] pb-2.5 text-center font-mono text-[0.6rem] uppercase tracking-[0.24em] text-paper/62">
             ditto
           </p>
 
@@ -130,7 +130,7 @@ export function ThreadStage() {
               return (
                 <div key={beat.id}>
                   {showDay && (
-                    <p className="py-2.5 text-center font-mono text-[0.55rem] uppercase tracking-[0.2em] text-paper/25">
+                    <p className="py-2.5 text-center font-mono text-[0.55rem] uppercase tracking-[0.2em] text-paper/55">
                       {beat.day}
                     </p>
                   )}
@@ -145,12 +145,12 @@ export function ThreadStage() {
         <section className="mx-auto w-full max-w-[24rem]">
           <div className="grid gap-1.5 font-mono text-[0.66rem]">
             <div className="flex items-baseline justify-between border-t border-paper/[0.07] pt-2">
-              <span className="text-paper/45">the thread, read end to end</span>
+              <span className="text-paper/62">the thread, read end to end</span>
               <span className="text-paper/70">{thread.seconds.toFixed(0)}s</span>
             </div>
             <div className="flex items-baseline justify-between border-t border-paper/[0.07] pt-2">
-              <span className="text-paper/45">you, inside the reasoning</span>
-              <span className={spent > 0 ? 'text-tungsten' : 'text-paper/30'}>
+              <span className="text-paper/62">you, inside the reasoning</span>
+              <span className={spent > 0 ? 'text-tungsten' : 'text-paper/55'}>
                 {spent > 0 ? `${spent.toFixed(0)}s` : 'not yet'}
               </span>
             </div>
@@ -172,7 +172,7 @@ export function ThreadStage() {
           <Link
             href="/attention"
             data-cursor="what this costs you"
-            className="font-editorial text-[0.72rem] lowercase tracking-wide text-paper/35 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="font-editorial text-[0.72rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             what the rest of it costs →
           </Link>
@@ -193,13 +193,13 @@ export function ThreadStage() {
           >
             <div className="mx-auto flex min-h-screen max-w-[46rem] flex-col gap-5 px-gutter py-[clamp(1.5rem,5vh,3rem)]">
               <div className="flex items-baseline justify-between gap-4">
-                <p className="font-mono text-[0.6rem] uppercase tracking-[0.26em] text-tungsten/70">
+                <p className="font-mono text-[0.6rem] uppercase tracking-[0.26em] text-tungsten">
                   how i got there
                 </p>
                 <button
                   onClick={close}
                   data-cursor="back to the thread"
-                  className="min-h-[44px] font-mono text-[0.66rem] uppercase tracking-[0.18em] text-paper/45 underline-offset-4 transition-colors hover:text-paper hover:underline"
+                  className="min-h-[44px] font-mono text-[0.66rem] uppercase tracking-[0.18em] text-paper/62 underline-offset-4 transition-colors hover:text-paper hover:underline"
                 >
                   close ✕
                 </button>
@@ -227,14 +227,14 @@ export function ThreadStage() {
                       >
                         {r.scene.label}
                       </p>
-                      <p className="mt-1 font-mono text-[0.58rem] uppercase tracking-wide text-paper/30">
+                      <p className="mt-1 font-mono text-[0.58rem] uppercase tracking-wide text-paper/55">
                         {pair.personA.name.toLowerCase()} {m.a.toFixed(2)} · {pair.personB.name.toLowerCase()}{' '}
                         {m.b.toFixed(2)} · both {m.mutual.toFixed(2)}
                       </p>
                     </div>
                     <p
                       className={`font-mono text-[0.8rem] ${
-                        r.utility >= SEND_THRESHOLD ? 'text-paper' : 'text-paper/25'
+                        r.utility >= SEND_THRESHOLD ? 'text-paper' : 'text-paper/55'
                       }`}
                     >
                       {r.utility.toFixed(3)}
@@ -259,7 +259,7 @@ export function ThreadStage() {
                       key={l.href}
                       href={l.href}
                       data-cursor="deeper"
-                      className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/35 underline-offset-4 transition-colors hover:text-paper hover:underline"
+                      className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
                     >
                       {l.label} →
                     </Link>
@@ -306,7 +306,7 @@ function Bubble({ beat, onOpen }: { beat: Beat; onOpen: () => void }) {
         body
       )}
       <p
-        className={`mt-1 font-mono text-[0.52rem] uppercase tracking-[0.16em] text-paper/20 ${
+        className={`mt-1 font-mono text-[0.52rem] uppercase tracking-[0.16em] text-paper/55 ${
           mine ? 'text-right' : 'text-left'
         }`}
       >

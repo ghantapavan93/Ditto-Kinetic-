@@ -72,20 +72,20 @@ export function RestraintStage() {
 
       <div className="relative mx-auto flex min-h-screen max-w-[68rem] flex-col gap-10 px-gutter py-[clamp(1.5rem,5vh,3rem)]">
         <header className="flex items-baseline justify-between gap-4">
-          <p className="font-mono text-[0.7rem] tabular-nums tracking-[0.2em] text-paper/45">
+          <p className="font-mono text-[0.7rem] tabular-nums tracking-[0.2em] text-paper/62">
             WED · 7:02 PM
           </p>
           <Link
             href="/"
             data-cursor="back to the stage"
-            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/35 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             first scene →
           </Link>
         </header>
 
         <section className="max-w-[46rem]">
-          <p className="font-mono text-[0.6rem] uppercase tracking-[0.28em] text-paper/30">
+          <p className="font-mono text-[0.6rem] uppercase tracking-[0.28em] text-paper/55">
             Ditto · this wednesday
           </p>
           <h1 className="mt-4 font-display text-[clamp(2.2rem,6.5vw,4rem)] uppercase leading-[0.92] text-paper">
@@ -99,7 +99,7 @@ export function RestraintStage() {
             absence of one.
           </p>
 
-          <p className="mt-5 max-w-[52ch] font-editorial text-[0.85rem] lowercase leading-relaxed tracking-wide text-paper/45">
+          <p className="mt-5 max-w-[52ch] font-editorial text-[0.85rem] lowercase leading-relaxed tracking-wide text-paper/62">
             an app that never declines is not being generous, it is being indifferent —
             it has no threshold, so it has no opinion. the bar is {SEND_THRESHOLD}. below it,
             sending costs someone a week and teaches us nothing. what follows is what each
@@ -116,7 +116,7 @@ export function RestraintStage() {
         {/* what the week took away, as opposed to what the score did */}
         {week.displaced.length > 0 && (
           <section aria-label="Pairs moved because a room was taken" className="mt-10">
-            <p className="font-mono text-[0.56rem] uppercase tracking-[0.24em] text-paper/30">
+            <p className="font-mono text-[0.56rem] uppercase tracking-[0.24em] text-paper/55">
               and what the week took
             </p>
             <p className="mt-3 max-w-[52ch] font-voice text-[1.05rem] leading-snug text-paper/65">
@@ -133,19 +133,19 @@ export function RestraintStage() {
                 >
                   <p className="text-paper/70">
                     {d.pairId} &mdash; {d.from.label.toLowerCase()}
-                    <span className="text-paper/30"> &rarr; </span>
+                    <span className="text-paper/55"> &rarr; </span>
                     <span className={d.to ? 'text-tungsten' : 'text-acid'}>
                       {d.to ? d.to.label.toLowerCase() : 'nothing this week'}
                     </span>
                   </p>
-                  <p className="mt-1 font-editorial text-[0.85rem] lowercase text-paper/35">
+                  <p className="mt-1 font-editorial text-[0.85rem] lowercase text-paper/55">
                     {d.reason}
                   </p>
                 </div>
               ))}
             </div>
 
-            <p className="mt-4 max-w-[52ch] font-voice text-[1.02rem] leading-snug text-paper/45">
+            <p className="mt-4 max-w-[52ch] font-voice text-[1.02rem] leading-snug text-paper/62">
               the pair the engine was more confident about keeps the table. the other is
               offered a different evening rather than the same one at an awkward angle,
               and if there is nothing left it is held &mdash; which is the same answer this
@@ -164,7 +164,7 @@ export function RestraintStage() {
             none of these are rejections. two of them are timing, and one of them is us
             not knowing enough yet to be worth trusting.
           </p>
-          <p className="mt-4 font-editorial text-[0.78rem] lowercase leading-relaxed tracking-wide text-paper/35">
+          <p className="mt-4 font-editorial text-[0.78rem] lowercase leading-relaxed tracking-wide text-paper/55">
             they all come back into the pool next wednesday, with one more week of
             evidence attached.
           </p>

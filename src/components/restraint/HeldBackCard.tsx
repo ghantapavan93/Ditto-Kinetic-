@@ -49,9 +49,9 @@ export function HeldBackCard({ restraint, index }: { restraint: Restraint; index
     >
       <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
         <h2 className="font-display text-[clamp(1.5rem,3.4vw,2.2rem)] uppercase leading-none text-paper">
-          {pair.personA.name} <span className="text-paper/30">×</span> {pair.personB.name}
+          {pair.personA.name} <span className="text-paper/55">×</span> {pair.personB.name}
         </h2>
-        <p className="font-editorial text-[0.72rem] lowercase tracking-wide text-paper/35">
+        <p className="font-editorial text-[0.72rem] lowercase tracking-wide text-paper/55">
           {pair.personA.fictionalCampus} · best room was {best?.label.toLowerCase()}
         </p>
       </div>
@@ -66,7 +66,7 @@ export function HeldBackCard({ restraint, index }: { restraint: Restraint; index
       <div className="mt-6">
         <div className="relative mb-2 h-4">
           <span
-            className="absolute font-mono text-[0.58rem] uppercase tracking-[0.16em] text-acid/80"
+            className="absolute font-mono text-[0.58rem] uppercase tracking-[0.16em] text-acid"
             style={{ left: pct(SEND_THRESHOLD), transform: 'translateX(-50%)' }}
           >
             would send
@@ -104,7 +104,7 @@ export function HeldBackCard({ restraint, index }: { restraint: Restraint; index
 
         <div className="relative mt-3 h-4">
           <span
-            className="absolute font-mono text-[0.62rem] tabular-nums text-paper/45"
+            className="absolute font-mono text-[0.62rem] tabular-nums text-paper/62"
             style={{ left: pct(utility), transform: 'translateX(-50%)' }}
           >
             {utility.toFixed(3)}
@@ -119,7 +119,7 @@ export function HeldBackCard({ restraint, index }: { restraint: Restraint; index
             <p className="font-voice text-[1.25rem] leading-snug text-paper">
               no single change clears this.
             </p>
-            <p className="mt-2 font-editorial text-[0.82rem] lowercase leading-relaxed tracking-wide text-paper/45">
+            <p className="mt-2 font-editorial text-[0.82rem] lowercase leading-relaxed tracking-wide text-paper/62">
               every dimension was checked on its own. not one of them has enough room left
               to cover {shortfall.toFixed(3)} by itself, which means the week is wrong in more
               than one way at once.
@@ -127,13 +127,13 @@ export function HeldBackCard({ restraint, index }: { restraint: Restraint; index
           </>
         ) : (
           <>
-            <p className="font-editorial text-[0.62rem] uppercase tracking-[0.24em] text-paper/35">
+            <p className="font-editorial text-[0.62rem] uppercase tracking-[0.24em] text-paper/55">
               waiting for
             </p>
             <p className="mt-2 font-voice text-[1.25rem] leading-snug text-tungsten">
               {waitingFor?.says}.
             </p>
-            <p className="mt-2 font-editorial text-[0.82rem] lowercase leading-relaxed tracking-wide text-paper/45">
+            <p className="mt-2 font-editorial text-[0.82rem] lowercase leading-relaxed tracking-wide text-paper/62">
               {TERM_LABEL[waitingFor!.key]} reads {waitingFor!.from.toFixed(2)} and would have to
               reach {waitingFor!.to.toFixed(2)}. that is {Math.round(waitingFor!.effort * 100)}% of
               the room it has left.
@@ -145,7 +145,7 @@ export function HeldBackCard({ restraint, index }: { restraint: Restraint; index
       <button
         onClick={() => setOpen((v) => !v)}
         data-cursor="check the others"
-        className="mt-5 font-editorial text-[0.72rem] lowercase tracking-wide text-paper/40 underline-offset-4 transition-colors hover:text-paper hover:underline"
+        className="mt-5 font-editorial text-[0.72rem] lowercase tracking-wide text-paper/62 underline-offset-4 transition-colors hover:text-paper hover:underline"
       >
         {open ? 'hide the rest' : 'what about everything else?'}
       </button>
@@ -161,7 +161,7 @@ export function HeldBackCard({ restraint, index }: { restraint: Restraint; index
           >
             <table className="mt-4 w-full max-w-[40rem] border-collapse text-left">
               <thead>
-                <tr className="font-mono text-[0.56rem] uppercase tracking-[0.16em] text-paper/25">
+                <tr className="font-mono text-[0.56rem] uppercase tracking-[0.16em] text-paper/55">
                   <th className="py-1 font-normal">dimension</th>
                   <th className="py-1 font-normal tabular-nums">now</th>
                   <th className="py-1 font-normal tabular-nums">would need</th>
@@ -175,19 +175,19 @@ export function HeldBackCard({ restraint, index }: { restraint: Restraint; index
                     className="border-t border-paper/[0.07] font-editorial text-[0.76rem] lowercase text-paper/60"
                   >
                     <td className="py-1.5">{TERM_LABEL[lift.key]}</td>
-                    <td className="py-1.5 font-mono tabular-nums text-paper/45">
+                    <td className="py-1.5 font-mono tabular-nums text-paper/62">
                       {lift.from.toFixed(2)}
                     </td>
-                    <td className="py-1.5 font-mono tabular-nums text-paper/45">
+                    <td className="py-1.5 font-mono tabular-nums text-paper/62">
                       {lift.to.toFixed(2)}
                     </td>
                     <td
                       className={`py-1.5 ${
                         lift.key === 'pairSignal'
-                          ? 'text-paper/30'
+                          ? 'text-paper/55'
                           : lift.impossible
-                            ? 'text-paper/30'
-                            : 'text-mint/75'
+                            ? 'text-paper/55'
+                            : 'text-mint'
                       }`}
                     >
                       {lift.key === 'pairSignal'
@@ -208,7 +208,7 @@ export function HeldBackCard({ restraint, index }: { restraint: Restraint; index
               reach for. Hiding the row would have been tidier and would have
               concealed the fact that the people were never the variable.
             */}
-            <p className="mt-3 max-w-[44ch] font-editorial text-[0.7rem] lowercase leading-relaxed tracking-wide text-paper/30">
+            <p className="mt-3 max-w-[44ch] font-editorial text-[0.7rem] lowercase leading-relaxed tracking-wide text-paper/55">
               pair signal is listed and struck out on purpose. it does not change between
               rooms, so the only thing it could ever ask for is two different people.
             </p>

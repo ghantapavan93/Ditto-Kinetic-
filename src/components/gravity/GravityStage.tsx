@@ -89,13 +89,13 @@ export function GravityStage() {
 
       <div className="relative flex h-full flex-col justify-between px-gutter py-[clamp(1.25rem,4vh,2.25rem)]">
         <header className="flex items-baseline justify-between gap-4">
-          <p className="font-mono text-[0.66rem] uppercase tracking-[0.2em] text-paper/40">
+          <p className="font-mono text-[0.66rem] uppercase tracking-[0.2em] text-paper/62">
             no numbers · {field.locked ? 'holding' : 'apart'}
           </p>
           <Link
             href="/"
             data-cursor="back to the stage"
-            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/35 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             first scene →
           </Link>
@@ -110,7 +110,7 @@ export function GravityStage() {
               exit={{ opacity: 0, y: -6, transition: { duration: 0.16 } }}
               transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
             >
-              <p className="font-mono text-[0.58rem] uppercase tracking-[0.28em] text-paper/30">
+              <p className="font-mono text-[0.58rem] uppercase tracking-[0.28em] text-paper/55">
                 {field.scene.label}
               </p>
               <h1 className="mt-2.5 font-display text-[clamp(1.5rem,4vw,2.4rem)] uppercase leading-[0.95] text-paper">
@@ -131,10 +131,10 @@ export function GravityStage() {
               </p>
 
               <div className="mt-4 grid gap-1">
-                <p className="font-editorial text-[0.76rem] lowercase tracking-wide text-mint/70">
+                <p className="font-editorial text-[0.76rem] lowercase tracking-wide text-mint">
                   pulling — {pulls[0]?.label}
                 </p>
-                <p className="font-editorial text-[0.76rem] lowercase tracking-wide text-acid/70">
+                <p className="font-editorial text-[0.76rem] lowercase tracking-wide text-acid">
                   pushing — {pushes[0]?.label}
                 </p>
               </div>
@@ -144,7 +144,7 @@ export function GravityStage() {
 
         <footer className="grid gap-4">
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
-            <span className="font-mono text-micro uppercase text-paper/25">who:</span>
+            <span className="font-mono text-micro uppercase text-paper/55">who:</span>
             {PAIRS.map((p, i) => (
               <button
                 key={p.id}
@@ -154,7 +154,7 @@ export function GravityStage() {
                 }}
                 data-cursor="these two"
                 className={`font-editorial text-[0.74rem] lowercase tracking-wide underline-offset-4 transition-colors ${
-                  which === i ? 'text-tungsten underline' : 'text-paper/30 hover:text-paper'
+                  which === i ? 'text-tungsten underline' : 'text-paper/55 hover:text-paper'
                 }`}
               >
                 {p.personA.name} &amp; {p.personB.name}
@@ -163,7 +163,7 @@ export function GravityStage() {
           </div>
 
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
-            <span className="font-mono text-micro uppercase text-paper/25">room:</span>
+            <span className="font-mono text-micro uppercase text-paper/55">room:</span>
             {fields.map((f) => (
               <button
                 key={f.scene.id}
@@ -172,7 +172,7 @@ export function GravityStage() {
                 className={`font-editorial text-[0.74rem] lowercase tracking-wide underline-offset-4 transition-colors ${
                   f.scene.id === field.scene.id
                     ? 'text-tungsten underline'
-                    : 'text-paper/30 hover:text-paper'
+                    : 'text-paper/55 hover:text-paper'
                 }`}
               >
                 {f.scene.label.toLowerCase()}
@@ -181,7 +181,7 @@ export function GravityStage() {
           </div>
 
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5">
-            <span className="font-mono text-micro uppercase text-paper/25">break it:</span>
+            <span className="font-mono text-micro uppercase text-paper/55">break it:</span>
             {(Object.keys(DISRUPTION_LABELS) as Disruption[]).map((d) => (
               <button
                 key={d}
@@ -190,7 +190,7 @@ export function GravityStage() {
                 className={`font-editorial text-[0.74rem] lowercase tracking-wide underline-offset-4 transition-colors ${
                   conditions.disruptions.includes(d)
                     ? 'text-acid underline'
-                    : 'text-paper/30 hover:text-paper'
+                    : 'text-paper/55 hover:text-paper'
                 }`}
               >
                 {DISRUPTION_LABELS[d].label}
@@ -207,7 +207,7 @@ export function GravityStage() {
               className={`font-editorial text-[0.74rem] lowercase tracking-wide underline-offset-4 transition-colors ${
                 conditions.week === 'strained'
                   ? 'text-acid underline'
-                  : 'text-paper/30 hover:text-paper'
+                  : 'text-paper/55 hover:text-paper'
               }`}
             >
               exam week
@@ -215,7 +215,7 @@ export function GravityStage() {
             {(conditions.disruptions.length > 0 || conditions.week !== 'normal') && (
               <button
                 onClick={() => setConditions(NO_CONDITIONS)}
-                className="font-editorial text-[0.74rem] lowercase tracking-wide text-paper/35 underline-offset-4 hover:underline"
+                className="font-editorial text-[0.74rem] lowercase tracking-wide text-paper/55 underline-offset-4 hover:underline"
               >
                 reset
               </button>

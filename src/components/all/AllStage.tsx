@@ -96,13 +96,13 @@ export function AllStage() {
 
       <div className="pointer-events-none relative flex h-full flex-col justify-between px-gutter py-[clamp(1.25rem,4vh,2.25rem)]">
         <header className="pointer-events-auto flex items-baseline justify-between gap-4">
-          <p className="font-mono text-[0.66rem] uppercase tracking-[0.2em] text-paper/40">
+          <p className="font-mono text-[0.66rem] uppercase tracking-[0.2em] text-paper/62">
             {SURFACES.length} surfaces · {saidAs(a.total)} of attention
           </p>
           <Link
             href="/"
             data-cursor="back to the stage"
-            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/35 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             first scene →
           </Link>
@@ -117,7 +117,7 @@ export function AllStage() {
               exit={{ opacity: 0, y: -6, transition: { duration: 0.14 } }}
               transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             >
-              <p className="font-mono text-[0.58rem] uppercase tracking-[0.26em] text-paper/30">
+              <p className="font-mono text-[0.58rem] uppercase tracking-[0.26em] text-paper/55">
                 {current.surface.kind === 'product' ? 'could ship' : 'an argument'} ·{' '}
                 {saidAs(current.seconds)}
               </p>
@@ -155,8 +155,8 @@ export function AllStage() {
                   i === active
                     ? 'text-tungsten'
                     : c.surface.kind === 'product'
-                      ? 'text-mint/45 hover:text-paper'
-                      : 'text-paper/28 hover:text-paper'
+                      ? 'text-mint hover:text-paper'
+                      : 'text-paper/55 hover:text-paper'
                 }`}
               >
                 {c.surface.path}
@@ -164,7 +164,7 @@ export function AllStage() {
             ))}
           </div>
 
-          <p className="max-w-[54ch] font-editorial text-[0.72rem] lowercase leading-relaxed tracking-wide text-paper/25">
+          <p className="max-w-[54ch] font-editorial text-[0.72rem] lowercase leading-relaxed tracking-wide text-paper/55">
             size is what a surface costs to read. mint is close to the centre and could ship;
             amber orbits and exists to argue. this page is on the map too, and is measured the
             same way — see{' '}

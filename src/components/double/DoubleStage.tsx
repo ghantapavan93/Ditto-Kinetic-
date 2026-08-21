@@ -80,13 +80,13 @@ export function DoubleStage() {
 
       <div className="relative mx-auto flex min-h-screen max-w-[70rem] flex-col gap-10 px-gutter py-[clamp(1.5rem,5vh,3rem)]">
         <header className="flex items-baseline justify-between gap-4">
-          <p className="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-paper/45">
+          <p className="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-paper/62">
             four people
           </p>
           <Link
             href="/"
             data-cursor="back to the stage"
-            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/35 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             first scene →
           </Link>
@@ -107,7 +107,7 @@ export function DoubleStage() {
 
         {/* who */}
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-          <span className="font-mono text-[0.6rem] uppercase tracking-[0.24em] text-paper/25">
+          <span className="font-mono text-[0.6rem] uppercase tracking-[0.24em] text-paper/55">
             put together
           </span>
           {COMBINATIONS.map(([i, j], n) => (
@@ -118,7 +118,7 @@ export function DoubleStage() {
               className={`font-editorial text-[0.76rem] lowercase tracking-wide underline-offset-4 transition-colors ${
                 combo === n
                   ? 'text-tungsten underline'
-                  : 'text-paper/35 hover:text-paper hover:underline'
+                  : 'text-paper/55 hover:text-paper hover:underline'
               }`}
             >
               {ALL[i].personA.name} &amp; {ALL[i].personB.name} + {ALL[j].personA.name} &amp;{' '}
@@ -160,7 +160,7 @@ export function DoubleStage() {
 
           {nearest && (
             <div className="mt-7 border-l-2 border-acid/50 pl-4">
-              <p className="font-editorial text-[0.62rem] uppercase tracking-[0.24em] text-paper/35">
+              <p className="font-editorial text-[0.62rem] uppercase tracking-[0.24em] text-paper/55">
                 closest we came
               </p>
               <p className="mt-2 font-voice text-[1.2rem] leading-snug text-paper">
@@ -171,7 +171,7 @@ export function DoubleStage() {
                 end up {Math.abs(Math.min(nearest.a.delta, nearest.b.delta)).toFixed(3)} worse
                 off than they would have been alone.
               </p>
-              <p className="mt-4 font-editorial text-[0.82rem] lowercase leading-relaxed tracking-wide text-paper/45">
+              <p className="mt-4 font-editorial text-[0.82rem] lowercase leading-relaxed tracking-wide text-paper/62">
                 the net across all four is{' '}
                 {nearest.net >= 0 ? '+' : ''}
                 {nearest.net.toFixed(3)}, and it is still a no.
@@ -182,7 +182,7 @@ export function DoubleStage() {
                 kind of decision a person should be able to disagree with, and a
                 threshold you cannot see is not one you can argue with.
               */}
-              <p className="mt-3 max-w-[44ch] font-voice text-[1.1rem] italic leading-snug text-tungsten/75">
+              <p className="mt-3 max-w-[44ch] font-voice text-[1.1rem] italic leading-snug text-tungsten">
                 a positive net means somebody paid for somebody else&rsquo;s evening. nobody
                 asked them, and the net is not a person.
               </p>
@@ -222,7 +222,7 @@ function RoomRow({ d, index }: { d: DoubleDate; index: number }) {
         <SplitMeter split={d.split} />
       </div>
 
-      <p className="mt-2 max-w-[54ch] font-editorial text-[0.76rem] lowercase leading-relaxed tracking-wide text-paper/40">
+      <p className="mt-2 max-w-[54ch] font-editorial text-[0.76rem] lowercase leading-relaxed tracking-wide text-paper/62">
         {d.splitWhy}
       </p>
 
@@ -244,7 +244,7 @@ function RoomRow({ d, index }: { d: DoubleDate; index: number }) {
 function SplitMeter({ split }: { split: number }) {
   return (
     <div className="flex items-center gap-3">
-      <span className="font-mono text-[0.58rem] uppercase tracking-[0.16em] text-paper/25">
+      <span className="font-mono text-[0.58rem] uppercase tracking-[0.16em] text-paper/55">
         splits
       </span>
       {/*
@@ -280,32 +280,32 @@ function SideRow({ side }: { side: Side }) {
       </p>
 
       <div className="mt-1.5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <span className="font-mono text-[0.78rem] tabular-nums text-paper/35 line-through">
+        <span className="font-mono text-[0.78rem] tabular-nums text-paper/55 line-through">
           {side.solo.toFixed(3)}
         </span>
-        <span className={`font-mono text-[0.95rem] tabular-nums ${sendable ? 'text-paper' : 'text-paper/45'}`}>
+        <span className={`font-mono text-[0.95rem] tabular-nums ${sendable ? 'text-paper' : 'text-paper/62'}`}>
           {side.joint.toFixed(3)}
         </span>
         <span
-          className={`font-mono text-[0.68rem] tabular-nums ${worse ? 'text-acid/85' : 'text-mint/75'}`}
+          className={`font-mono text-[0.68rem] tabular-nums ${worse ? 'text-acid' : 'text-mint'}`}
         >
           {side.delta >= 0 ? '+' : ''}
           {side.delta.toFixed(3)}
         </span>
         {!sendable && (
-          <span className="font-editorial text-[0.66rem] lowercase tracking-wide text-paper/25">
+          <span className="font-editorial text-[0.66rem] lowercase tracking-wide text-paper/55">
             below the bar
           </span>
         )}
       </div>
 
       {/* the three cross-terms, so the number is never just a number */}
-      <div className="mt-2 flex flex-wrap gap-x-4 gap-y-0.5 font-mono text-[0.6rem] tabular-nums text-paper/30">
-        <span className="text-mint/50">cover +{side.cover.toFixed(3)}</span>
-        <span className={side.eclipse > 0.0005 ? 'text-acid/60' : ''}>
+      <div className="mt-2 flex flex-wrap gap-x-4 gap-y-0.5 font-mono text-[0.6rem] tabular-nums text-paper/55">
+        <span className="text-mint">cover +{side.cover.toFixed(3)}</span>
+        <span className={side.eclipse > 0.0005 ? 'text-acid' : ''}>
           eclipse −{side.eclipse.toFixed(3)}
         </span>
-        <span className={side.dilution > 0.02 ? 'text-acid/60' : ''}>
+        <span className={side.dilution > 0.02 ? 'text-acid' : ''}>
           diluted −{side.dilution.toFixed(3)}
         </span>
       </div>

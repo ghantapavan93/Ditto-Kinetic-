@@ -38,7 +38,7 @@ export function TooMuch() {
       <button
         onClick={toggle}
         data-cursor="be honest"
-        className="pointer-events-auto fixed bottom-3 right-4 z-overlay font-mono text-micro uppercase text-paper/25 underline-offset-4 transition-colors hover:text-paper/70 hover:underline"
+        className="pointer-events-auto fixed bottom-3 right-4 z-overlay font-mono text-micro uppercase text-paper/55 underline-offset-4 transition-colors hover:text-paper/70 hover:underline"
       >
         too much?
       </button>
@@ -53,7 +53,7 @@ export function TooMuch() {
             transition={{ duration: 0.18 }}
             className="fixed inset-0 z-sheet flex flex-col justify-center bg-[#FBFAF6] px-gutter"
           >
-            <p className="font-mono text-micro uppercase text-ink/40">tldr</p>
+            <p className="font-mono text-micro uppercase text-ink/62">tldr</p>
 
             <div className="mt-4 space-y-1 font-mono text-[clamp(1.1rem,3.6vw,2rem)] leading-tight text-ink">
               {decision.send ? (
@@ -71,7 +71,7 @@ export function TooMuch() {
               )}
             </div>
 
-            <p className="mt-8 max-w-[42ch] font-mono text-[0.78rem] leading-relaxed text-ink/45">
+            <p className="mt-8 max-w-[42ch] font-mono text-[0.78rem] leading-relaxed text-ink/62">
               {pair.personA.name} and {pair.personB.name} are synthetic. so is everything else.
               the long version has more evidence and better lighting.
             </p>

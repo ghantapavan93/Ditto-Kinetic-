@@ -66,7 +66,7 @@ export function TimeDial() {
               ${
                 active
                   ? 'bg-paper/90 font-editorial font-medium text-ink'
-                  : 'font-editorial text-paper/45 hover:text-paper/80'
+                  : 'font-editorial text-paper/62 hover:text-paper/80'
               }`}
           >
             {stop.label}

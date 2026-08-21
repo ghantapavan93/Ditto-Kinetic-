@@ -64,13 +64,13 @@ export function AttentionStage() {
 
       <div className="relative mx-auto flex min-h-screen max-w-[66rem] flex-col gap-10 px-gutter py-[clamp(1.5rem,5vh,3rem)]">
         <header className="flex items-baseline justify-between gap-4">
-          <p className="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-paper/45">
+          <p className="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-paper/62">
             the bill
           </p>
           <Link
             href="/"
             data-cursor="back to the stage"
-            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/35 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             first scene →
           </Link>
@@ -95,25 +95,25 @@ export function AttentionStage() {
         <section className="border-t border-paper/12 pt-8">
           <div className="flex flex-wrap items-end gap-x-14 gap-y-6">
             <div>
-              <p className="font-editorial text-[0.62rem] uppercase tracking-[0.24em] text-paper/35">
+              <p className="font-editorial text-[0.62rem] uppercase tracking-[0.24em] text-paper/55">
                 a week of the real product
               </p>
               <p className="mt-2 font-display text-[clamp(2rem,5vw,3rem)] leading-none text-mint">
                 {WEEKLY_BUDGET_SECONDS}s
               </p>
-              <p className="mt-2 max-w-[24ch] font-editorial text-[0.74rem] lowercase leading-relaxed tracking-wide text-paper/35">
+              <p className="mt-2 max-w-[24ch] font-editorial text-[0.74rem] lowercase leading-relaxed tracking-wide text-paper/55">
                 read one text, decide, reply.
               </p>
             </div>
 
             <div>
-              <p className="font-editorial text-[0.62rem] uppercase tracking-[0.24em] text-paper/35">
+              <p className="font-editorial text-[0.62rem] uppercase tracking-[0.24em] text-paper/55">
                 this site
               </p>
               <p className="mt-2 font-display text-[clamp(2rem,5vw,3rem)] leading-none text-acid">
                 {saidAs(a.total)}
               </p>
-              <p className="mt-2 max-w-[26ch] font-editorial text-[0.74rem] lowercase leading-relaxed tracking-wide text-paper/35">
+              <p className="mt-2 max-w-[26ch] font-editorial text-[0.74rem] lowercase leading-relaxed tracking-wide text-paper/55">
                 which is {a.weeksOfProduct.toFixed(0)} weeks of the thing it is arguing about.
               </p>
             </div>
@@ -135,7 +135,7 @@ export function AttentionStage() {
         {/* the itemisation */}
         <section aria-label="What each surface costs">
           <div className="flex flex-wrap items-baseline justify-between gap-4">
-            <p className="font-editorial text-[0.62rem] uppercase tracking-[0.24em] text-paper/35">
+            <p className="font-editorial text-[0.62rem] uppercase tracking-[0.24em] text-paper/55">
               itemised · {saidAs(shown)}
             </p>
             <div className="flex gap-4">
@@ -152,7 +152,7 @@ export function AttentionStage() {
                   className={`font-editorial text-[0.74rem] lowercase tracking-wide underline-offset-4 transition-colors ${
                     showing === key
                       ? 'text-tungsten underline'
-                      : 'text-paper/30 hover:text-paper hover:underline'
+                      : 'text-paper/55 hover:text-paper hover:underline'
                   }`}
                 >
                   {label}
@@ -200,7 +200,7 @@ export function AttentionStage() {
                   </span>
                   <span
                     className={`font-mono text-[0.55rem] uppercase tracking-[0.14em] ${
-                      c.surface.kind === 'product' ? 'text-mint/50' : 'text-paper/25'
+                      c.surface.kind === 'product' ? 'text-mint' : 'text-paper/55'
                     }`}
                   >
                     {c.surface.kind}
@@ -210,7 +210,7 @@ export function AttentionStage() {
             ))}
           </ul>
 
-          <p className="mt-4 max-w-[52ch] font-editorial text-[0.76rem] lowercase leading-relaxed tracking-wide text-paper/35">
+          <p className="mt-4 max-w-[52ch] font-editorial text-[0.76rem] lowercase leading-relaxed tracking-wide text-paper/55">
             pale is reading, pink is deciding. every control costs{' '}
             {SECONDS_PER_DECISION} seconds even when you decline it, because it still has to
             be read and dismissed. reading runs at {WORDS_PER_MINUTE} words a minute. both
@@ -225,7 +225,7 @@ export function AttentionStage() {
           transition={{ delay: 0.5, duration: 0.8 }}
           className="max-w-[54ch] border-t border-paper/12 pt-8"
         >
-          <p className="font-editorial text-[0.62rem] uppercase tracking-[0.24em] text-paper/35">
+          <p className="font-editorial text-[0.62rem] uppercase tracking-[0.24em] text-paper/55">
             the thing worth taking from it
           </p>
 
@@ -234,20 +234,20 @@ export function AttentionStage() {
             {saidAs(a.cheapest.seconds)} — and it is the one closest to the actual product.
           </p>
 
-          <p className="mt-4 max-w-[50ch] font-editorial text-[0.84rem] lowercase leading-relaxed tracking-wide text-paper/45">
+          <p className="mt-4 max-w-[50ch] font-editorial text-[0.84rem] lowercase leading-relaxed tracking-wide text-paper/62">
             that is the thesis agreeing with itself, and it was not arranged. the surfaces
             that could ship are cheap because a product has nothing to explain; the surfaces
             that argue are expensive because arguing is what they are for. the dearest thing
             on the site is {a.dearest.surface.path}, which talks the most.
           </p>
 
-          <p className="mt-4 max-w-[50ch] font-editorial text-[0.84rem] lowercase leading-relaxed tracking-wide text-paper/45">
+          <p className="mt-4 max-w-[50ch] font-editorial text-[0.84rem] lowercase leading-relaxed tracking-wide text-paper/62">
             spectacle is not the same axis. the camera at /zoom flies through ninety-six
             people and costs less than most of the pages that only have paragraphs, because
             it explains itself by moving.
           </p>
 
-          <p className="mt-6 max-w-[48ch] font-voice text-[1.15rem] italic leading-snug text-tungsten/80">
+          <p className="mt-6 max-w-[48ch] font-voice text-[1.15rem] italic leading-snug text-tungsten">
             the goal was never a smaller interface. it was a smaller bill for the same
             evening.
           </p>

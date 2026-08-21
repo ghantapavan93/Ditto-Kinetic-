@@ -94,13 +94,13 @@ export function DropStage() {
 
       <div className="relative flex h-full flex-col justify-between px-gutter py-[clamp(1.25rem,4vh,2.5rem)]">
         <header className="flex items-start justify-between gap-4">
-          <p className="font-mono text-[0.62rem] uppercase tracking-[0.3em] text-paper/40">
+          <p className="font-mono text-[0.62rem] uppercase tracking-[0.3em] text-paper/62">
             Westbrook · this week
           </p>
           <Link
             href="/"
             data-cursor="the other half"
-            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/40 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/62 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             first scene →
           </Link>
@@ -132,7 +132,7 @@ export function DropStage() {
               transition={{ duration: 0.8 }}
               className="col-start-1 row-start-1 max-w-[46rem]"
             >
-              <p className="font-voice text-[1.2rem] italic text-paper/45">
+              <p className="font-voice text-[1.2rem] italic text-paper/62">
                 one match. one person. one introduction.
               </p>
 
@@ -151,7 +151,7 @@ export function DropStage() {
               <button
                 onClick={open}
                 data-cursor="don't wait"
-                className="mt-8 border-b border-paper/25 pb-1 font-editorial text-[0.74rem] lowercase tracking-wide text-paper/45 transition-colors hover:border-tungsten hover:text-tungsten"
+                className="mt-8 border-b border-paper/25 pb-1 font-editorial text-[0.74rem] lowercase tracking-wide text-paper/62 transition-colors hover:border-tungsten hover:text-tungsten"
               >
                 open it early — this is a prototype
               </button>
@@ -192,16 +192,16 @@ export function DropStage() {
                     </p>
 
                     <div className="mt-7 flex flex-wrap items-baseline gap-x-6 gap-y-2 border-t border-paper/12 pt-5">
-                      <span className="font-mono text-[0.62rem] uppercase tracking-[0.24em] text-paper/35">
+                      <span className="font-mono text-[0.62rem] uppercase tracking-[0.24em] text-paper/55">
                         proposed
                       </span>
                       <span className="font-display text-[1.5rem] uppercase leading-none text-paper">
                         {scene.label}
                       </span>
-                      <span className="font-mono text-[0.9rem] tabular-nums text-tungsten/80">
+                      <span className="font-mono text-[0.9rem] tabular-nums text-tungsten">
                         {scene.time}
                       </span>
-                      <span className="font-voice text-[1.05rem] italic text-paper/45">
+                      <span className="font-voice text-[1.05rem] italic text-paper/62">
                         {scene.location}
                       </span>
                     </div>
@@ -215,7 +215,7 @@ export function DropStage() {
                       see how we chose the room
                     </Link>
 
-                    <p className="mt-5 max-w-[38ch] font-voice text-[1.05rem] italic leading-snug text-paper/35">
+                    <p className="mt-5 max-w-[38ch] font-voice text-[1.05rem] italic leading-snug text-paper/55">
                       the match is the easy half. the room is the half that decides whether
                       they actually meet.
                     </p>
@@ -270,7 +270,7 @@ function Countdown({
   }, [t, reduced]);
 
   if (!t) {
-    return <p className="mt-7 font-mono text-[1.1rem] text-paper/25">syncing…</p>;
+    return <p className="mt-7 font-mono text-[1.1rem] text-paper/55">syncing…</p>;
   }
 
   const cells: [number, string][] = [
@@ -290,7 +290,7 @@ function Countdown({
           >
             {String(value).padStart(2, '0')}
           </span>
-          <span className="font-editorial text-[0.66rem] lowercase tracking-[0.18em] text-paper/30">
+          <span className="font-editorial text-[0.66rem] lowercase tracking-[0.18em] text-paper/55">
             {label}
           </span>
         </div>

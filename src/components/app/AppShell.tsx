@@ -55,7 +55,7 @@ export function AppShell() {
         <div aria-hidden className="relative h-[30px] shrink-0">
           <div className="absolute left-1/2 top-[5px] h-[20px] w-[96px] -translate-x-1/2 rounded-full bg-ink" />
           <div className="flex items-center justify-between px-5 pt-[9px]">
-            <span className="font-mono text-[0.55rem] tabular-nums text-paper/45">7:00</span>
+            <span className="font-mono text-[0.55rem] tabular-nums text-paper/62">7:00</span>
             <span className="flex items-center gap-1">
               <span className="block h-[6px] w-[2px] rounded-[1px] bg-paper/40" />
               <span className="block h-[8px] w-[2px] rounded-[1px] bg-paper/40" />
@@ -99,7 +99,7 @@ export function AppShell() {
               onClick={() => setTab(key)}
               aria-current={tab === key ? 'page' : undefined}
               className={`relative flex-1 py-3.5 font-editorial text-[0.72rem] lowercase tracking-wide transition-colors ${
-                tab === key ? 'text-paper' : 'text-paper/35 hover:text-paper/70'
+                tab === key ? 'text-paper' : 'text-paper/55 hover:text-paper/70'
               }`}
             >
               {name}
@@ -132,7 +132,7 @@ function TabDitto({ pair }: { pair: (typeof PAIRS)[number] }) {
 
   return (
     <div className="pt-2">
-      <p className="font-mono text-[0.55rem] uppercase tracking-[0.26em] text-paper/30">
+      <p className="font-mono text-[0.55rem] uppercase tracking-[0.26em] text-paper/55">
         wednesday · 7:00 pm
       </p>
 
@@ -148,13 +148,13 @@ function TabDitto({ pair }: { pair: (typeof PAIRS)[number] }) {
       </p>
 
       <div className="mt-5 border-t border-paper/12 pt-4">
-        <p className="font-mono text-[0.55rem] uppercase tracking-[0.24em] text-paper/30">
+        <p className="font-mono text-[0.55rem] uppercase tracking-[0.24em] text-paper/55">
           proposed
         </p>
         <p className="mt-1.5 font-display text-[1.25rem] uppercase leading-none text-paper">
           {scene.label}
         </p>
-        <p className="mt-1.5 font-voice text-[0.95rem] italic text-paper/45">
+        <p className="mt-1.5 font-voice text-[0.95rem] italic text-paper/62">
           {scene.location}
         </p>
       </div>
@@ -169,7 +169,7 @@ function TabDitto({ pair }: { pair: (typeof PAIRS)[number] }) {
       <Link
         href="/wednesday"
         data-cursor="the full drop"
-        className="mt-6 inline-block font-editorial text-[0.72rem] lowercase tracking-wide text-paper/35 underline-offset-4 hover:text-paper hover:underline"
+        className="mt-6 inline-block font-editorial text-[0.72rem] lowercase tracking-wide text-paper/55 underline-offset-4 hover:text-paper hover:underline"
       >
         see this arrive properly →
       </Link>
@@ -192,7 +192,7 @@ function TabWhere({ pair }: { pair: (typeof PAIRS)[number] }) {
 
   return (
     <div className="pt-2">
-      <p className="font-mono text-[0.55rem] uppercase tracking-[0.26em] text-paper/30">
+      <p className="font-mono text-[0.55rem] uppercase tracking-[0.26em] text-paper/55">
         where · six rooms
       </p>
 
@@ -211,17 +211,17 @@ function TabWhere({ pair }: { pair: (typeof PAIRS)[number] }) {
                 chosen ? 'border-mint/35 bg-mint/[0.05]' : 'border-paper/10 bg-paper/[0.02]'
               }`}
             >
-              <span className="font-mono text-[0.55rem] tabular-nums text-paper/25">
+              <span className="font-mono text-[0.55rem] tabular-nums text-paper/55">
                 {i + 1}
               </span>
               <span
                 className={`flex-1 font-display text-[0.95rem] uppercase leading-none ${
-                  sendable ? 'text-paper' : 'text-paper/40'
+                  sendable ? 'text-paper' : 'text-paper/62'
                 }`}
               >
                 {r.scene.label}
               </span>
-              <span className="font-mono text-[0.62rem] tabular-nums text-paper/40">
+              <span className="font-mono text-[0.62rem] tabular-nums text-paper/62">
                 {r.utility.toFixed(3)}
               </span>
             </li>
@@ -229,13 +229,13 @@ function TabWhere({ pair }: { pair: (typeof PAIRS)[number] }) {
         })}
       </ul>
 
-      <p className="mt-3 font-editorial text-[0.68rem] lowercase leading-relaxed tracking-wide text-paper/35">
+      <p className="mt-3 font-editorial text-[0.68rem] lowercase leading-relaxed tracking-wide text-paper/55">
         the bar is {SEND_THRESHOLD}. {belowBar} of these {ranked.length} would not be sent
         at all.
       </p>
 
       <div className="mt-5 border-t border-paper/12 pt-4">
-        <p className="font-mono text-[0.55rem] uppercase tracking-[0.24em] text-paper/30">
+        <p className="font-mono text-[0.55rem] uppercase tracking-[0.24em] text-paper/55">
           how it got decided
         </p>
         <p className="mt-2 font-voice text-[1rem] leading-snug text-paper/75">
@@ -244,7 +244,7 @@ function TabWhere({ pair }: { pair: (typeof PAIRS)[number] }) {
             : 'the lens about the two of them prefers a room.'}{' '}
           {disagree ? 'the other two disagree, and the weights side with the moment.' : ''}
         </p>
-        <p className="mt-3 font-editorial text-[0.7rem] lowercase leading-relaxed tracking-wide text-paper/40">
+        <p className="mt-3 font-editorial text-[0.7rem] lowercase leading-relaxed tracking-wide text-paper/62">
           {cloud.agreeing} of {CLOUD_COUNT}{' '}
           versions of this night land in the same place. when it doesn&rsquo;t:{' '}
           {cloud.likeliestDrift}.
@@ -254,7 +254,7 @@ function TabWhere({ pair }: { pair: (typeof PAIRS)[number] }) {
       <Link
         href="/"
         data-cursor="open the stage"
-        className="mt-6 inline-block font-editorial text-[0.72rem] lowercase tracking-wide text-paper/35 underline-offset-4 hover:text-paper hover:underline"
+        className="mt-6 inline-block font-editorial text-[0.72rem] lowercase tracking-wide text-paper/55 underline-offset-4 hover:text-paper hover:underline"
       >
         open the room properly →
       </Link>
@@ -277,7 +277,7 @@ function TabYou() {
 
   return (
     <div className="pt-2">
-      <p className="font-mono text-[0.55rem] uppercase tracking-[0.26em] text-paper/30">
+      <p className="font-mono text-[0.55rem] uppercase tracking-[0.26em] text-paper/55">
         you · three questions in
       </p>
 
@@ -296,7 +296,7 @@ function TabYou() {
                   style={{ width: `${t.confidence * 100}%` }}
                 />
               </div>
-              <span className="font-mono text-[0.55rem] tabular-nums text-paper/35">
+              <span className="font-mono text-[0.55rem] tabular-nums text-paper/55">
                 {t.confidence.toFixed(2)}
               </span>
             </div>
@@ -306,14 +306,14 @@ function TabYou() {
 
       {gaps.length > 0 && (
         <div className="mt-5 border-t border-dashed border-paper/15 pt-3">
-          <p className="font-mono text-[0.55rem] uppercase tracking-[0.24em] text-paper/25">
+          <p className="font-mono text-[0.55rem] uppercase tracking-[0.24em] text-paper/55">
             still no view on
           </p>
           <ul className="mt-2 grid gap-1">
             {gaps.map((t) => (
               <li
                 key={t.id}
-                className="font-editorial text-[0.74rem] lowercase leading-relaxed tracking-wide text-paper/28"
+                className="font-editorial text-[0.74rem] lowercase leading-relaxed tracking-wide text-paper/55"
               >
                 {t.label}
               </li>
@@ -327,7 +327,7 @@ function TabYou() {
       <Link
         href="/profile"
         data-cursor="answer them yourself"
-        className="mt-6 inline-block font-editorial text-[0.72rem] lowercase tracking-wide text-paper/35 underline-offset-4 hover:text-paper hover:underline"
+        className="mt-6 inline-block font-editorial text-[0.72rem] lowercase tracking-wide text-paper/55 underline-offset-4 hover:text-paper hover:underline"
       >
         answer them yourself →
       </Link>

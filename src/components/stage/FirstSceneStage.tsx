@@ -286,16 +286,16 @@ export function FirstSceneStage() {
             aria-label="The range of outcomes"
             className="pointer-events-none absolute right-gutter top-[24%] z-overlay max-w-[22rem] rounded-artifact border border-paper/10 bg-ink/70 px-5 py-4 text-right backdrop-blur-md"
           >
-            <p className="font-mono text-[0.6rem] uppercase tracking-[0.28em] text-paper/35">
+            <p className="font-mono text-[0.6rem] uppercase tracking-[0.28em] text-paper/55">
               what could happen
             </p>
             <p className="mt-2 font-voice text-[clamp(1.3rem,2.6vw,1.8rem)] leading-tight text-paper">
               {cloud.agreeing} of {CLOUD_COUNT} versions land in the same place.
             </p>
-            <p className="ml-auto mt-2 max-w-[28ch] font-editorial text-[0.8rem] lowercase leading-relaxed tracking-wide text-tungsten/75">
+            <p className="ml-auto mt-2 max-w-[28ch] font-editorial text-[0.8rem] lowercase leading-relaxed tracking-wide text-tungsten">
               when it doesn&rsquo;t: {cloud.likeliestDrift}.
             </p>
-            <p className="ml-auto mt-3 max-w-[30ch] font-editorial text-[0.68rem] lowercase leading-relaxed tracking-wide text-paper/30">
+            <p className="ml-auto mt-3 max-w-[30ch] font-editorial text-[0.68rem] lowercase leading-relaxed tracking-wide text-paper/55">
               seven is a way of drawing a range, not a number of anything that was
               run. the spread is what we don&rsquo;t know yet, not a forecast.
             </p>
@@ -329,7 +329,7 @@ export function FirstSceneStage() {
             {/* top bar */}
             <div className="pointer-events-auto flex flex-col gap-4">
               <div className="flex items-start justify-end gap-2">
-                <p className="mr-auto font-mono text-[0.62rem] uppercase tracking-[0.3em] text-paper/40 md:hidden">
+                <p className="mr-auto font-mono text-[0.62rem] uppercase tracking-[0.3em] text-paper/62 md:hidden">
                   wed 7:00 pm · {pair.personA.name} × {pair.personB.name}
                 </p>
                 <button
@@ -466,7 +466,7 @@ export function FirstSceneStage() {
 
                 <button
                   onClick={openDecision}
-                  className="min-h-[44px] px-2 py-2 font-mono text-micro uppercase text-paper/40 underline-offset-4 transition-colors hover:text-paper/80 hover:underline"
+                  className="min-h-[44px] px-2 py-2 font-mono text-micro uppercase text-paper/62 underline-offset-4 transition-colors hover:text-paper/80 hover:underline"
                 >
                   see the decision
                 </button>
@@ -474,14 +474,14 @@ export function FirstSceneStage() {
                   onClick={() => setCloudOpen((v) => !v)}
                   data-cursor="see every version"
                   className={`min-h-[44px] px-2 py-2 font-mono text-micro uppercase underline-offset-4 transition-colors hover:underline ${
-                    cloudOpen ? 'text-tungsten underline' : 'text-paper/40 hover:text-paper/80'
+                    cloudOpen ? 'text-tungsten underline' : 'text-paper/62 hover:text-paper/80'
                   }`}
                 >
                   what could happen
                 </button>
                 <button
                   onClick={toggleHearMeOut}
-                  className="min-h-[44px] px-2 py-2 font-mono text-micro uppercase text-paper/40 underline-offset-4 transition-colors hover:text-acid hover:underline"
+                  className="min-h-[44px] px-2 py-2 font-mono text-micro uppercase text-paper/62 underline-offset-4 transition-colors hover:text-acid hover:underline"
                 >
                   hear me out
                 </button>
@@ -494,7 +494,7 @@ export function FirstSceneStage() {
                 the plan is withdrawn rather than downgraded.
               */}
               <div className="order-3 flex flex-wrap items-center gap-x-3 gap-y-1.5 sm:order-3 sm:w-full sm:justify-start">
-                <span className="font-mono text-micro uppercase text-paper/25">break it:</span>
+                <span className="font-mono text-micro uppercase text-paper/55">break it:</span>
                 {(Object.keys(DISRUPTION_LABELS) as Disruption[]).map((d) => {
                   const spent =
                     d === 'venue'
@@ -506,18 +506,18 @@ export function FirstSceneStage() {
                       onClick={() => applyDisruption(d)}
                       disabled={spent}
                       title={DISRUPTION_LABELS[d].effect}
-                      className="min-h-[44px] px-1 py-2 font-mono text-micro uppercase text-paper/35 underline-offset-4 transition-colors hover:text-acid hover:underline disabled:text-paper/15 disabled:no-underline"
+                      className="min-h-[44px] px-1 py-2 font-mono text-micro uppercase text-paper/55 underline-offset-4 transition-colors hover:text-acid hover:underline disabled:text-paper/55 disabled:no-underline"
                     >
                       {DISRUPTION_LABELS[d].label}
                     </button>
                   );
                 })}
-                <span className="text-paper/15">·</span>
+                <span className="text-paper/55">·</span>
                 <button
                   onClick={() => setWeek(conditions.week === 'normal' ? 'strained' : 'normal')}
                   aria-pressed={conditions.week === 'strained'}
                   className={`min-h-[44px] px-1 py-2 font-mono text-micro uppercase underline-offset-4 transition-colors hover:underline ${
-                    conditions.week === 'strained' ? 'text-acid' : 'text-paper/35 hover:text-acid'
+                    conditions.week === 'strained' ? 'text-acid' : 'text-paper/55 hover:text-acid'
                   }`}
                   title="Exam week. Nobody's calendar changes; everybody's capacity does."
                 >
@@ -528,7 +528,7 @@ export function FirstSceneStage() {
                   conditions.week !== 'normal') && (
                   <button
                     onClick={resetConditions}
-                    className="min-h-[44px] px-1 py-2 font-mono text-micro uppercase text-paper/35 underline-offset-4 transition-colors hover:text-paper hover:underline"
+                    className="min-h-[44px] px-1 py-2 font-mono text-micro uppercase text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
                   >
                     reset
                   </button>
@@ -548,11 +548,11 @@ export function FirstSceneStage() {
                 aria-label="Other surfaces"
                 className="order-4 flex flex-wrap items-center gap-x-3 gap-y-1.5 sm:w-full"
               >
-                <span className="font-mono text-micro uppercase text-paper/25">also:</span>
+                <span className="font-mono text-micro uppercase text-paper/55">also:</span>
                 <Link
                   href="/all"
                   data-cursor="see all of it"
-                  className="min-h-[44px] px-1 py-2 font-mono text-micro uppercase text-tungsten/70 underline-offset-4 transition-colors hover:text-tungsten hover:underline"
+                  className="min-h-[44px] px-1 py-2 font-mono text-micro uppercase text-tungsten underline-offset-4 transition-colors hover:text-tungsten hover:underline"
                 >
                   everything
                 </Link>
@@ -587,7 +587,7 @@ export function FirstSceneStage() {
                     key={link.href}
                     href={link.href}
                     data-cursor="go there"
-                    className="min-h-[44px] px-1 py-2 font-mono text-micro uppercase text-paper/35 underline-offset-4 transition-colors hover:text-paper hover:underline"
+                    className="min-h-[44px] px-1 py-2 font-mono text-micro uppercase text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
                   >
                     {link.label}
                   </Link>
@@ -651,7 +651,7 @@ export function FirstSceneStage() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4, transition: { duration: 0.2 } }}
             transition={{ duration: 0.28 }}
-            className="pointer-events-none absolute left-1/2 top-[14%] z-overlay -translate-x-1/2 font-hand text-[1.35rem] text-acid/80"
+            className="pointer-events-none absolute left-1/2 top-[14%] z-overlay -translate-x-1/2 font-hand text-[1.35rem] text-acid"
           >
             okay cute
           </motion.p>

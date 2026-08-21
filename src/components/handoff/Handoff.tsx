@@ -130,7 +130,7 @@ export function Handoff({
                       in
                     </motion.span>
                   ) : (
-                    <span className="font-mono text-[0.9rem] text-paper/25">
+                    <span className="font-mono text-[0.9rem] text-paper/55">
                       <span className="animate-caret">…</span>
                     </span>
                   )}
@@ -179,7 +179,7 @@ export function Handoff({
             className="col-start-1 row-start-1 w-[min(20rem,82vw)]"
           >
             <div className="u-paper u-torn-bottom relative px-6 pb-9 pt-6">
-              <p className="font-mono text-[0.6rem] uppercase tracking-[0.28em] text-ink/45">
+              <p className="font-mono text-[0.6rem] uppercase tracking-[0.28em] text-ink/62">
                 Ditto · one introduction
               </p>
 
@@ -189,7 +189,7 @@ export function Handoff({
 
               <div className="my-4 border-t border-dashed border-ink/25" />
 
-              <p className="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-ink/50">
+              <p className="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-ink/62">
                 thursday
               </p>
               <p className="font-display text-[3.2rem] leading-[0.9] text-ink">{scene.time}</p>
@@ -202,7 +202,7 @@ export function Handoff({
                 {(scene.location.split('→')[1] ?? 'and see').trim()}
               </p>
 
-              <p className="mt-5 font-hand text-[1.2rem] leading-tight text-ink/55">
+              <p className="mt-5 font-hand text-[1.2rem] leading-tight text-ink/62">
                 less pressure. more chance.
               </p>
 
@@ -214,14 +214,14 @@ export function Handoff({
               <button
                 onClick={capture}
                 data-cursor="keep it"
-                className="font-editorial text-[0.78rem] lowercase tracking-wide text-paper/45 underline-offset-4 transition-colors hover:text-paper hover:underline"
+                className="font-editorial text-[0.78rem] lowercase tracking-wide text-paper/62 underline-offset-4 transition-colors hover:text-paper hover:underline"
               >
                 {captured ? 'kept.' : 'capture this'}
               </button>
               {captured && (
                 <button
                   onClick={() => setStage('sent')}
-                  className="font-editorial text-[0.78rem] lowercase tracking-wide text-paper/45 underline-offset-4 transition-colors hover:text-paper hover:underline"
+                  className="font-editorial text-[0.78rem] lowercase tracking-wide text-paper/62 underline-offset-4 transition-colors hover:text-paper hover:underline"
                 >
                   send it →
                 </button>
@@ -241,7 +241,7 @@ export function Handoff({
             transition={SPRING.copy}
             className="col-start-1 row-start-1 w-full max-w-[23rem]"
           >
-            <p className="mb-2.5 text-center font-mono text-[0.62rem] uppercase tracking-[0.28em] text-paper/30">
+            <p className="mb-2.5 text-center font-mono text-[0.62rem] uppercase tracking-[0.28em] text-paper/55">
               Ditto
             </p>
 
@@ -266,7 +266,7 @@ export function Handoff({
             </div>
 
             <motion.p
-              className="mt-2 text-right font-mono text-[0.6rem] uppercase tracking-[0.2em] text-paper/25"
+              className="mt-2 text-right font-mono text-[0.6rem] uppercase tracking-[0.2em] text-paper/55"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8 }}
@@ -284,13 +284,13 @@ export function Handoff({
             transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
             className="col-start-1 row-start-1 flex flex-col items-center text-center"
           >
-            <p className="mb-5 font-voice text-[1.15rem] italic text-paper/40">
+            <p className="mb-5 font-voice text-[1.15rem] italic text-paper/62">
               you two take it from here.
             </p>
             <h2 className="font-display text-[clamp(2rem,7vw,4.5rem)] uppercase leading-none text-paper">
               go have a real life.
             </h2>
-            <p className="mt-4 font-editorial text-[0.8rem] lowercase tracking-wide text-paper/30">
+            <p className="mt-4 font-editorial text-[0.8rem] lowercase tracking-wide text-paper/55">
               Ditto will be quiet now.
             </p>
 
@@ -300,7 +300,7 @@ export function Handoff({
               transition={{ delay: 2.6, duration: 0.8 }}
               onClick={onFeedback}
               data-cursor="later"
-              className="mt-14 border-b border-paper/20 pb-0.5 font-voice text-[1.05rem] italic text-paper/35 transition-colors hover:border-paper/60 hover:text-paper/80"
+              className="mt-14 border-b border-paper/20 pb-0.5 font-voice text-[1.05rem] italic text-paper/55 transition-colors hover:border-paper/60 hover:text-paper/80"
             >
               — later that night —
             </motion.button>

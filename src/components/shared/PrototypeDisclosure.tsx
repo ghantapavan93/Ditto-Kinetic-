@@ -9,7 +9,7 @@
  */
 export function PrototypeDisclosure({ className = '' }: { className?: string }) {
   return (
-    <p className={`font-mono text-micro leading-relaxed text-paper/28 ${className}`}>
+    <p className={`font-mono text-label leading-relaxed text-paper/55 ${className}`}>
       Unofficial Ditto interaction concept. Synthetic people and simulated signals.
       <br className="hidden sm:block" /> No access to Ditto systems.
     </p>

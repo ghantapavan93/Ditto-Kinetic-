@@ -59,13 +59,13 @@ export function MutualStage() {
 
       <div className="relative mx-auto flex min-h-screen max-w-[64rem] flex-col gap-8 px-gutter py-[clamp(1.5rem,5vh,3rem)]">
         <header className="flex items-baseline justify-between gap-4">
-          <p className="font-mono text-[0.62rem] uppercase tracking-[0.3em] text-tungsten/60">
+          <p className="font-mono text-[0.62rem] uppercase tracking-[0.3em] text-tungsten">
             mutuality, not compatibility
           </p>
           <Link
             href="/"
             data-cursor="back to the stage"
-            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/35 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             first scene →
           </Link>
@@ -98,7 +98,7 @@ export function MutualStage() {
               <p className="font-display text-[1.15rem] uppercase leading-none text-tungsten">
                 {row.scene.label}
               </p>
-              <p className="mt-1 font-mono text-[0.56rem] uppercase tracking-[0.2em] text-paper/30">
+              <p className="mt-1 font-mono text-[0.56rem] uppercase tracking-[0.2em] text-paper/55">
                 {row.scene.time}
               </p>
             </div>
@@ -139,7 +139,7 @@ export function MutualStage() {
                 }}
                 data-cursor="read it from both sides"
                 className={`min-h-[32px] font-mono text-[0.62rem] uppercase tracking-[0.14em] transition-colors ${
-                  i === at ? 'text-tungsten' : 'text-paper/30 hover:text-paper/70'
+                  i === at ? 'text-tungsten' : 'text-paper/55 hover:text-paper/70'
                 }`}
               >
                 {r.scene.label}
@@ -151,12 +151,12 @@ export function MutualStage() {
         {/* the reading */}
         <section className="grid gap-6 sm:grid-cols-2">
           <div>
-            <p className="font-mono text-[0.56rem] uppercase tracking-[0.24em] text-paper/30">
+            <p className="font-mono text-[0.56rem] uppercase tracking-[0.24em] text-paper/55">
               what the two models say
             </p>
             <div className="mt-3 grid gap-2 font-mono text-[0.72rem]">
               <div className="flex items-baseline justify-between border-t border-paper/[0.07] pt-2">
-                <span className="text-paper/45">what ships today</span>
+                <span className="text-paper/62">what ships today</span>
                 <span className="text-paper/70">{row.shipped.toFixed(3)}</span>
               </div>
               <div className="flex items-baseline justify-between border-t border-paper/[0.07] pt-2">
@@ -164,7 +164,7 @@ export function MutualStage() {
                 <span className="text-tungsten">{row.mutual.toFixed(3)}</span>
               </div>
               <div className="flex items-baseline justify-between border-t border-paper/[0.07] pt-2">
-                <span className="text-paper/45">overstated by</span>
+                <span className="text-paper/62">overstated by</span>
                 <span className="text-paper/70">
                   {overstatement(row) >= 0 ? '+' : ''}
                   {overstatement(row).toFixed(3)}
@@ -180,7 +180,7 @@ export function MutualStage() {
           </div>
 
           <div>
-            <p className="font-mono text-[0.56rem] uppercase tracking-[0.24em] text-paper/30">
+            <p className="font-mono text-[0.56rem] uppercase tracking-[0.24em] text-paper/55">
               where their weights come from
             </p>
             <div className="mt-3 grid gap-3">
@@ -193,7 +193,7 @@ export function MutualStage() {
                     {person.name}
                   </p>
                   {disp.length === 0 ? (
-                    <p className="mt-1.5 font-voice text-[0.92rem] leading-snug text-paper/40">
+                    <p className="mt-1.5 font-voice text-[0.92rem] leading-snug text-paper/62">
                       nothing they said re-weights anything. they get the base model.
                     </p>
                   ) : (
@@ -226,7 +226,7 @@ export function MutualStage() {
           the one the mistake was hiding, which is usually how this goes.
         */}
         <section className="max-w-[54ch] border-t border-paper/[0.09] pt-5">
-          <p className="font-mono text-[0.56rem] uppercase tracking-[0.24em] text-paper/30">
+          <p className="font-mono text-[0.56rem] uppercase tracking-[0.24em] text-paper/55">
             what this changes
           </p>
 
@@ -265,7 +265,7 @@ export function MutualStage() {
             keener.
           </p>
 
-          <p className="mt-4 font-voice text-[clamp(1rem,2.2vw,1.18rem)] italic leading-snug text-paper/45">
+          <p className="mt-4 font-voice text-[clamp(1rem,2.2vw,1.18rem)] italic leading-snug text-paper/62">
             this page said the opposite until recently. it compared the new model
             against itself, found the tie it had guaranteed, and called that an
             honest negative result.
@@ -282,7 +282,7 @@ export function MutualStage() {
           somebody behaves in a room, not from what they asked for.
         */}
         <section aria-label="What each person said, and what the model used" className="border-t border-paper/[0.09] pt-5">
-          <p className="font-mono text-[0.56rem] uppercase tracking-[0.24em] text-paper/30">
+          <p className="font-mono text-[0.56rem] uppercase tracking-[0.24em] text-paper/55">
             what they asked for &mdash; and what actually moved a weight
           </p>
 
@@ -293,7 +293,7 @@ export function MutualStage() {
                   {b.person.name}
                 </p>
 
-                <p className="mt-2.5 font-mono text-[0.54rem] uppercase tracking-[0.2em] text-paper/25">
+                <p className="mt-2.5 font-mono text-[0.54rem] uppercase tracking-[0.2em] text-paper/55">
                   told us
                 </p>
                 {b.told.map((t) => (
@@ -302,23 +302,23 @@ export function MutualStage() {
                   </p>
                 ))}
 
-                <p className="mt-2.5 font-mono text-[0.54rem] uppercase tracking-[0.2em] text-paper/25">
+                <p className="mt-2.5 font-mono text-[0.54rem] uppercase tracking-[0.2em] text-paper/55">
                   we suspect
                 </p>
                 {b.suspected.map((t) => (
-                  <p key={t} className="font-voice text-[0.95rem] leading-snug text-paper/45">
+                  <p key={t} className="font-voice text-[0.95rem] leading-snug text-paper/62">
                     {t}
                   </p>
                 ))}
 
-                <p className="mt-2.5 font-mono text-[0.54rem] uppercase tracking-[0.2em] text-tungsten/50">
+                <p className="mt-2.5 font-mono text-[0.54rem] uppercase tracking-[0.2em] text-tungsten">
                   moved a weight
                 </p>
                 {b.used.length === 0 ? (
-                  <p className="font-voice text-[0.95rem] leading-snug text-paper/30">nothing did.</p>
+                  <p className="font-voice text-[0.95rem] leading-snug text-paper/55">nothing did.</p>
                 ) : (
                   b.used.map((t) => (
-                    <p key={t} className="font-voice text-[0.95rem] leading-snug text-tungsten/80">
+                    <p key={t} className="font-voice text-[0.95rem] leading-snug text-tungsten">
                       &ldquo;{t}&rdquo;
                     </p>
                   ))
@@ -339,7 +339,7 @@ export function MutualStage() {
           <Link
             href="/held-back"
             data-cursor="what it did not send"
-            className="font-editorial text-[0.72rem] lowercase tracking-wide text-paper/35 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="font-editorial text-[0.72rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             what it didn&rsquo;t send →
           </Link>

@@ -170,7 +170,7 @@ export function MomentsStage() {
           <Link
             href="/"
             data-cursor="back to the stage"
-            className="pointer-events-auto font-editorial text-[0.7rem] lowercase tracking-wide text-paper/40 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="pointer-events-auto font-editorial text-[0.7rem] lowercase tracking-wide text-paper/62 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             first scene →
           </Link>
@@ -192,7 +192,7 @@ export function MomentsStage() {
                 </motion.p>
               )}
             </AnimatePresence>
-            <p className="mt-2 font-editorial text-[0.68rem] lowercase tracking-wide text-paper/30">
+            <p className="mt-2 font-editorial text-[0.68rem] lowercase tracking-wide text-paper/55">
               click, arrows, or space to hold. every person here is synthetic.
             </p>
           </div>

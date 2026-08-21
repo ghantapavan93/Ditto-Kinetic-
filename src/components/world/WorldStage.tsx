@@ -53,13 +53,13 @@ export function WorldStage() {
 
       <div className="relative mx-auto flex min-h-screen max-w-[64rem] flex-col justify-between gap-8 px-gutter py-[clamp(1.5rem,5vh,3rem)]">
         <header className="flex items-baseline justify-between gap-4">
-          <p className="font-mono text-[0.62rem] uppercase tracking-[0.3em] text-tungsten/60">
+          <p className="font-mono text-[0.62rem] uppercase tracking-[0.3em] text-tungsten">
             every campus at once
           </p>
           <Link
             href="/network"
             data-cursor="back to one campus"
-            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/35 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             ← one campus
           </Link>
@@ -132,7 +132,7 @@ export function WorldStage() {
                 transition={{ duration: 0.6, delay: 0.35 }}
               >
                 <div className="grid gap-1.5">
-                  <div className="flex items-baseline gap-3 font-mono text-[0.56rem] uppercase tracking-[0.22em] text-paper/25">
+                  <div className="flex items-baseline gap-3 font-mono text-[0.56rem] uppercase tracking-[0.22em] text-paper/55">
                     <span className="w-[13rem] shrink-0">school</span>
                     <span className="w-14 text-right">trip</span>
                     <span className="w-14 text-right">bar</span>
@@ -144,7 +144,7 @@ export function WorldStage() {
                       <div
                         key={school.id}
                         className={`flex min-h-[26px] items-baseline gap-3 border-t border-paper/[0.06] pt-1.5 font-mono text-[0.66rem] ${
-                          alive ? 'text-paper/70' : 'text-paper/22'
+                          alive ? 'text-paper/70' : 'text-paper/55'
                         }`}
                       >
                         <span className="w-[13rem] shrink-0 truncate lowercase">{school.name}</span>
@@ -200,7 +200,7 @@ export function WorldStage() {
                   <Link
                     href="/vision"
                     data-cursor="where this goes"
-                    className="mt-6 inline-block font-editorial text-[0.72rem] lowercase tracking-wide text-paper/35 underline-offset-4 transition-colors hover:text-paper hover:underline"
+                    className="mt-6 inline-block font-editorial text-[0.72rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
                   >
                     then the city →
                   </Link>

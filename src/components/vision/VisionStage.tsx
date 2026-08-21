@@ -203,13 +203,13 @@ export function VisionStage() {
 
       <div className="relative flex h-full flex-col justify-between px-gutter py-[clamp(1.25rem,4vh,2.25rem)]">
         <header className="flex items-baseline justify-between gap-4">
-          <p className="font-mono text-[0.66rem] uppercase tracking-[0.2em] text-paper/40">
+          <p className="font-mono text-[0.66rem] uppercase tracking-[0.2em] text-paper/62">
             the future vision
           </p>
           <Link
             href="/"
             data-cursor="back to the stage"
-            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/35 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             first scene →
           </Link>
@@ -229,7 +229,7 @@ export function VisionStage() {
               <p className="mt-4 max-w-[38ch] font-voice text-[clamp(1.1rem,2.4vw,1.45rem)] leading-snug text-paper/70">
                 {COPY.opener.sub}
               </p>
-              <p className="mt-6 font-editorial text-[0.72rem] lowercase tracking-wide text-paper/30">
+              <p className="mt-6 font-editorial text-[0.72rem] lowercase tracking-wide text-paper/55">
                 scroll or drag to fly. it stops at every station.
               </p>
             </motion.section>
@@ -247,7 +247,7 @@ export function VisionStage() {
                 exit={{ opacity: 0, y: -8, transition: { duration: 0.2 } }}
                 transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
               >
-                <p className="font-mono text-[0.58rem] uppercase tracking-[0.28em] text-paper/30">
+                <p className="font-mono text-[0.58rem] uppercase tracking-[0.28em] text-paper/55">
                   {station.key === 'quiet' ? 'last stop' : `stop ${STATIONS.findIndex((s) => s.key === station.key) + 1} of ${STATIONS.length}`}
                 </p>
                 <h2 className="mt-2.5 font-display text-[clamp(1.6rem,4.4vw,2.7rem)] uppercase leading-[0.95] text-paper">
@@ -271,7 +271,7 @@ export function VisionStage() {
                   {termsFor(station.key).map((term) => (
                     <span
                       key={term.word}
-                      className="font-mono text-[0.6rem] lowercase tracking-[0.14em] text-tungsten/60"
+                      className="font-mono text-[0.6rem] lowercase tracking-[0.14em] text-tungsten"
                     >
                       {term.word}
                     </span>
@@ -309,7 +309,7 @@ export function VisionStage() {
                   transition={{ delay: 6, duration: 1.2 }}
                   onClick={() => setGlossary((g) => !g)}
                   data-cursor="the words"
-                  className="mt-8 font-editorial text-[0.72rem] lowercase tracking-wide text-paper/30 underline-offset-4 hover:text-paper/70 hover:underline"
+                  className="mt-8 font-editorial text-[0.72rem] lowercase tracking-wide text-paper/55 underline-offset-4 hover:text-paper/70 hover:underline"
                 >
                   {glossary ? 'put the words away' : 'the language this built \u2192'}
                 </motion.button>
@@ -334,7 +334,7 @@ export function VisionStage() {
               aria-label="The language this project built"
               className="pointer-events-auto absolute right-gutter top-[12%] max-h-[70vh] w-full max-w-[26rem] overflow-y-auto rounded-artifact border border-paper/12 bg-ink/85 p-5 backdrop-blur-md"
             >
-              <p className="font-mono text-[0.58rem] uppercase tracking-[0.26em] text-paper/35">
+              <p className="font-mono text-[0.58rem] uppercase tracking-[0.26em] text-paper/55">
                 the language, and where each word lives
               </p>
               <ul className="mt-4 grid gap-3.5">
@@ -346,7 +346,7 @@ export function VisionStage() {
                     <p className="mt-1.5 font-voice text-[0.92rem] leading-snug text-paper/75">
                       {term.says}
                     </p>
-                    <p className="mt-1 font-mono text-[0.56rem] lowercase tracking-wide text-paper/25">
+                    <p className="mt-1 font-mono text-[0.56rem] lowercase tracking-wide text-paper/55">
                       {term.file} · {term.symbol}
                     </p>
                   </li>
@@ -370,7 +370,7 @@ export function VisionStage() {
                     }}
                     data-cursor="fly here"
                     className={`font-editorial text-[0.7rem] lowercase tracking-wide transition-colors ${
-                      near ? 'text-tungsten' : 'text-paper/30 hover:text-paper/70'
+                      near ? 'text-tungsten' : 'text-paper/55 hover:text-paper/70'
                     }`}
                   >
                     {/* Fixed nouns, not the letter's first words — those are

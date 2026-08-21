@@ -67,7 +67,7 @@ export function IntroCurtain({ onBegin }: { onBegin: () => void }) {
             exit={{ opacity: 0, y: -14, scale: 0.97, filter: 'blur(4px)' }}
             transition={{ delay: 0.4, type: 'spring', stiffness: 260, damping: 30 }}
           >
-            <p className="mb-2 font-mono text-micro uppercase text-paper/35">Ditto</p>
+            <p className="mb-2 font-mono text-micro uppercase text-paper/55">Ditto</p>
             <p className="rounded-[1.2rem] rounded-bl-md bg-cobalt px-5 py-3 font-editorial text-lede font-medium text-paper-bright shadow-lift">
               found someone.
             </p>
@@ -104,7 +104,7 @@ export function IntroCurtain({ onBegin }: { onBegin: () => void }) {
               </motion.p>
 
               <motion.p
-                className="mt-2 font-editorial text-[0.95rem] text-paper/40"
+                className="mt-2 font-editorial text-[0.95rem] text-paper/62"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.5, duration: 0.6 }}

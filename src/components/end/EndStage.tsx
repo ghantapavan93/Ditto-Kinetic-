@@ -133,7 +133,7 @@ export function EndStage() {
                 }}
                 aria-label="What kind of life do you want more of"
                 placeholder="or say it yourself"
-                className="mt-10 w-full max-w-[34rem] border-b border-paper/12 bg-transparent pb-2 font-voice text-[1.15rem] text-paper outline-none transition-colors placeholder:text-paper/20 focus:border-paper/50"
+                className="mt-10 w-full max-w-[34rem] border-b border-paper/12 bg-transparent pb-2 font-voice text-[1.15rem] text-paper outline-none transition-colors placeholder:text-paper/55 focus:border-paper/50"
               />
             </motion.section>
           )}
@@ -147,7 +147,7 @@ export function EndStage() {
               exit={{ opacity: 0, transition: { duration: 0.9 } }}
               transition={{ duration: 1 }}
             >
-              <p className="font-voice text-[clamp(1.2rem,3vw,1.8rem)] italic leading-snug text-paper/45">
+              <p className="font-voice text-[clamp(1.2rem,3vw,1.8rem)] italic leading-snug text-paper/62">
                 {sentence}
               </p>
               <motion.span
@@ -178,7 +178,7 @@ export function EndStage() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 2.4, duration: 1.4 }}
-                  className="mt-8 max-w-[44ch] font-editorial text-[0.78rem] lowercase leading-relaxed tracking-wide text-paper/30"
+                  className="mt-8 max-w-[44ch] font-editorial text-[0.78rem] lowercase leading-relaxed tracking-wide text-paper/55"
                 >
                   {/*
                     Both figures, because a claim about restraint with no number
@@ -239,7 +239,7 @@ export function EndStage() {
               <Link
                 href="/"
                 data-cursor="from the beginning"
-                className="font-editorial text-[0.72rem] lowercase tracking-wide text-paper/20 underline-offset-4 transition-colors hover:text-paper/60 hover:underline"
+                className="font-editorial text-[0.72rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper/60 hover:underline"
               >
                 start again
               </Link>

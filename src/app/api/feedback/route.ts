@@ -39,7 +39,49 @@ Rules:
 Respond with JSON only, matching exactly:
 {"preserve":string[],"increase":string[],"decrease":string[],"inferredHypotheses":[{"hypothesis":string,"evidence":string,"confidence":"low"|"medium"|"high"}],"uncertainty":string[]}`;
 
+/*
+ * A small, honest throttle.
+ *
+ * With no ANTHROPIC_API_KEY this route is a local interpreter and costs
+ * nothing. With one configured it becomes a public, unauthenticated gateway to
+ * a paid API on whoever deployed it -- and it had no limit of any kind, so a
+ * single loop could spend somebody's month.
+ *
+ * In-memory and per-IP: it resets on redeploy and does not survive multiple
+ * instances, which is the correct amount of machinery for a concept site and
+ * is stated here rather than implied. It is a cost ceiling, not a security
+ * boundary; anything that needs a real one needs a real one.
+ */
+const WINDOW_MS = 60_000;
+const MAX_PER_WINDOW = 8;
+const seen = new Map<string, { count: number; resetAt: number }>();
+
+function overLimit(request: Request): boolean {
+  const ip =
+    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
+    request.headers.get('x-real-ip') ??
+    'unknown';
+  const now = Date.now();
+  const entry = seen.get(ip);
+
+  if (!entry || now > entry.resetAt) {
+    seen.set(ip, { count: 1, resetAt: now + WINDOW_MS });
+    // Opportunistic sweep so the map cannot grow without bound.
+    if (seen.size > 5_000) {
+      for (const [key, value] of seen) if (now > value.resetAt) seen.delete(key);
+    }
+    return false;
+  }
+
+  entry.count += 1;
+  return entry.count > MAX_PER_WINDOW;
+}
+
 export async function POST(request: Request) {
+  if (overLimit(request)) {
+    return NextResponse.json({ ok: false, error: 'slow_down' }, { status: 429 });
+  }
+
   let text = '';
   try {
     const parsed = RequestBody.safeParse(await request.json());

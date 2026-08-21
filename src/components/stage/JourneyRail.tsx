@@ -90,9 +90,9 @@ export function JourneyRail({ phase }: { phase: Phase }) {
       </nav>
 
       {/* narrow: the same fact, one line, tucked under the top bar */}
-      <p className="pointer-events-none absolute left-1/2 top-[clamp(0.9rem,2.6vh,1.6rem)] z-artifacts -translate-x-1/2 font-mono text-micro uppercase tabular-nums text-paper/25 lg:hidden">
+      <p className="pointer-events-none absolute left-1/2 top-[clamp(0.9rem,2.6vh,1.6rem)] z-artifacts -translate-x-1/2 font-mono text-micro uppercase tabular-nums text-paper/55 lg:hidden">
         {String(activeIndex + 1).padStart(2, '0')} / {String(STOPS.length).padStart(2, '0')}
-        <span className="ml-2 text-tungsten/50">{STOPS[activeIndex]?.label}</span>
+        <span className="ml-2 text-tungsten">{STOPS[activeIndex]?.label}</span>
       </p>
     </>
   );

@@ -54,6 +54,7 @@ import {
 import { buildThread, silenceFor } from '../src/lib/thread';
 import { WAYS_IN, costOfWay, shortestWay } from '../src/lib/waysIn';
 import { PROOF } from '../src/data/proof';
+import { CONTRAST } from '../src/data/contrastReport';
 import {
   SITTING_MINUTES,
   clashes,
@@ -123,6 +124,7 @@ const HEADING33 = "\nClaim 33 \u2014 the front door recommends, and admits:";
 const HEADING34 = "\nClaim 34 \u2014 the model is what it says it is:";
 const HEADING35 = "\nClaim 35 \u2014 a plan is not a ranking:";
 const HEADING36 = "\nClaim 36 \u2014 one card, one evening; one ranking, one partition:";
+const HEADING37 = "\nClaim 37 — everything on this site can actually be read:";
 
 const HEADING7 = '\nClaim 7 — last week changes this week:';
 
@@ -2461,6 +2463,55 @@ console.log(HEADING36);
   const surface = readSourceFile(join(process.cwd(), 'src/components/mutual/MutualStage.tsx'), 'utf8');
   expect('and a surface says so out loud', surface.includes('beliefsFor'), true);
 }
+
+/* ---- claim 37: everything on this site can actually be read --------------- */
+
+console.log(HEADING37);
+{
+  /*
+   * An accessibility review counted 406 text usages below the WCAG AA minimum
+   * on the ink stage -- including the disclosure naming this project as
+   * unofficial, which shipped at 2.23:1 and 10px on all thirty-five of its
+   * mounts. The one sentence this project treats as non-negotiable was the
+   * least readable text on the site, and its own doc comment claimed otherwise.
+   *
+   * 406 call sites is not a thing to fix once. Somebody types `text-paper/30`
+   * because it looked right on their display and it is back. So it is measured
+   * the way everything else here is measured, and `npm run check` fails on a
+   * regression: scripts/contrast.mjs composites every Tailwind text token
+   * against the surface it belongs on and computes the real ratio.
+   */
+  console.log(
+    `  ${CONTRAST.checked} text usages measured, ${CONTRAST.failing} below ${4.5}:1`,
+  );
+  expect('nothing on this site is below AA', CONTRAST.failing, 0);
+  expect('and the sweep really looked at everything', CONTRAST.checked > 800, true);
+
+  // The disclosure specifically, because it is the one that matters most and
+  // the one that was worst.
+  const disclosure = readSourceFile(
+    join(process.cwd(), 'src/components/shared/PrototypeDisclosure.tsx'),
+    'utf8',
+  );
+  expect('the disclosure is not the quietest thing here', disclosure.includes('text-paper/28'), false);
+  expect('and it is set at a legible size', disclosure.includes('text-label'), true);
+
+  // The WebGL fallback exists to be reached. It was unreachable for months
+  // because `onError` on <Canvas> is forwarded to a div, where React's DOM
+  // onError never fires.
+  const spatial = readSourceFile(
+    join(process.cwd(), 'src/components/three/SpatialStage.tsx'),
+    'utf8',
+  );
+  expect('context loss is heard from the canvas', spatial.includes('webglcontextlost'), true);
+  expect('and not from a div that cannot speak', /onError=\{\(\) =>/.test(spatial), false);
+
+  // The feedback proxy is a paid API on the deployer's key when configured.
+  const route = readSourceFile(join(process.cwd(), 'src/app/api/feedback/route.ts'), 'utf8');
+  expect('the proxy is throttled', route.includes('overLimit'), true);
+  expect('and says so with the right status', route.includes('429'), true);
+}
+
 
 console.log(failures ? `\n${failures} assertion(s) FAILED` : '\nall assertions passed');
 process.exit(failures ? 1 : 0);

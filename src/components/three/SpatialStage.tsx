@@ -246,10 +246,26 @@ export function SpatialStage(props: StageProps & { onFragment?: (f: Fragment | n
       resize={{ scroll: false, debounce: { scroll: 0, resize: 0 } }}
       onCreated={({ gl }) => {
         gl.setClearColor('#0B0907', 0);
-      }}
-      onError={() => {
-        track('webgl_unavailable');
-        setFailed(true);
+
+        /*
+         * Context loss, heard from the canvas itself.
+         *
+         * This used to rely on `onError` on <Canvas>. R3F forwards unknown
+         * props to the wrapper <div>, and React's DOM `onError` only fires for
+         * media elements -- never for a div -- so it could not fire, and
+         * `FlatFallback` was unreachable on any real GPU failure. The flat
+         * version was written, tested by eye, and then never reachable.
+         *
+         * `webglcontextlost` is the event that actually happens when a driver
+         * resets or a laptop switches GPUs, and it comes from the canvas.
+         */
+        const canvas = gl.domElement;
+        const onLost = (event: Event) => {
+          event.preventDefault();
+          track('webgl_unavailable');
+          setFailed(true);
+        };
+        canvas.addEventListener('webglcontextlost', onLost);
       }}
       // Frameloop stays 'always' — the idle drift and settling motion are part
       // of how a weak scene communicates that it has not resolved.

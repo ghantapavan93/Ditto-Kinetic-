@@ -78,14 +78,14 @@ export function DecisionView({
               <span className="font-mono text-[1.05rem] font-bold text-paper">
                 {pair.pairSignal.toFixed(2)}
               </span>
-              <span className="font-mono text-micro uppercase text-paper/40">
+              <span className="font-mono text-micro uppercase text-paper/62">
                 identical in every row — it is the same two people
               </span>
             </div>
 
             {/* The send bar, and whether anything cleared it. */}
             <div className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-2">
-              <span className="font-mono text-micro uppercase text-paper/35">send bar</span>
+              <span className="font-mono text-micro uppercase text-paper/55">send bar</span>
               <span className="font-mono text-[0.9rem] tabular-nums text-paper/80">
                 {SEND_THRESHOLD.toFixed(2)}
               </span>
@@ -97,7 +97,7 @@ export function DecisionView({
                   : 'nothing clears it — the system is declining to send'}
               </span>
               {conditions.week === 'strained' && (
-                <span className="font-mono text-micro uppercase text-acid/70">exam week applied</span>
+                <span className="font-mono text-micro uppercase text-acid">exam week applied</span>
               )}
             </div>
 
@@ -118,7 +118,7 @@ export function DecisionView({
                         ${clears ? '' : 'opacity-55'}`}
                     >
                       <span
-                        className={`font-mono text-[0.72rem] font-bold ${isSelected ? 'text-acid' : 'text-paper/35'}`}
+                        className={`font-mono text-[0.72rem] font-bold ${isSelected ? 'text-acid' : 'text-paper/55'}`}
                       >
                         {String(entry.rank).padStart(2, '0')}
                       </span>
@@ -128,14 +128,14 @@ export function DecisionView({
                           <span className="font-mono text-[0.82rem] uppercase tracking-wider text-paper">
                             {entry.scene.label}
                           </span>
-                          <span className="font-mono text-micro uppercase text-paper/35">
+                          <span className="font-mono text-micro uppercase text-paper/55">
                             {entry.scene.time}
                           </span>
                           {isSelected && (
                             <span className="font-mono text-micro uppercase text-acid">selected</span>
                           )}
                           {!clears && (
-                            <span className="font-mono text-micro uppercase text-paper/30">
+                            <span className="font-mono text-micro uppercase text-paper/55">
                               under the bar
                             </span>
                           )}
@@ -185,7 +185,7 @@ export function DecisionView({
                                 >
                                   <span
                                     className={`truncate font-mono text-micro uppercase ${
-                                      c.key === 'pairSignal' ? 'text-mint' : 'text-paper/45'
+                                      c.key === 'pairSignal' ? 'text-mint' : 'text-paper/62'
                                     }`}
                                   >
                                     {c.label}
@@ -195,7 +195,7 @@ export function DecisionView({
                                   </span>
                                   <span
                                     className={`text-right font-mono text-[0.72rem] tabular-nums ${
-                                      isCost ? 'text-acid/80' : 'text-paper/85'
+                                      isCost ? 'text-acid' : 'text-paper/85'
                                     }`}
                                   >
                                     {c.signed >= 0 ? '+' : ''}
@@ -231,19 +231,19 @@ export function DecisionView({
             </ol>
 
             <footer className="mt-6 border-t border-paper/10 pt-4">
-              <p className="font-mono text-micro uppercase text-paper/35">synthetic prototype logic</p>
+              <p className="font-mono text-micro uppercase text-paper/55">synthetic prototype logic</p>
               <p className="mt-2 max-w-[70ch] font-editorial text-[0.86rem] leading-relaxed text-paper/50">
                 Deterministic linear utility. No model call, no randomness — the same six rooms
                 score identically on every machine, every reload. Costs enter negatively, and
                 uncertainty is one of them, so the system is penalised for what it doesn’t know
                 rather than allowed to round it away.
               </p>
-              <p className="mt-3 font-mono text-[0.68rem] leading-relaxed text-paper/30">
+              <p className="mt-3 font-mono text-[0.68rem] leading-relaxed text-paper/55">
                 {(Object.keys(WEIGHTS) as WeightKey[])
                   .map((k) => `${WEIGHTS[k] > 0 ? '+' : ''}${WEIGHTS[k]}·${k}`)
                   .join('  ')}
               </p>
-              <p className="mt-3 font-mono text-micro uppercase text-acid/60">
+              <p className="mt-3 font-mono text-micro uppercase text-acid">
                 these weights are invented for this prototype. they are not Ditto’s model.
               </p>
             </footer>

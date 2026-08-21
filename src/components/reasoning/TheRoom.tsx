@@ -91,10 +91,10 @@ export function TheRoom({
                     : 'border-mint/25 bg-mint/[0.04]'
               }`}
             >
-              <p className="font-editorial text-[0.62rem] uppercase tracking-[0.24em] text-paper/35">
+              <p className="font-editorial text-[0.62rem] uppercase tracking-[0.24em] text-paper/55">
                 {lens.label}
               </p>
-              <p className="mt-1.5 font-voice text-[0.98rem] italic leading-snug text-paper/45">
+              <p className="mt-1.5 font-voice text-[0.98rem] italic leading-snug text-paper/62">
                 {lens.question}
               </p>
 
@@ -102,7 +102,7 @@ export function TheRoom({
                 {reading.abstains ? 'no view' : reading.prefers?.label}
               </p>
 
-              <p className="mt-2 font-editorial text-[0.68rem] lowercase leading-relaxed tracking-wide text-paper/40">
+              <p className="mt-2 font-editorial text-[0.68rem] lowercase leading-relaxed tracking-wide text-paper/62">
                 {reading.abstains
                   ? 'identical in every room — this lens is about them, not about the evening'
                   : isOutvoted
@@ -121,14 +121,14 @@ export function TheRoom({
         transition={{ delay: 0.35, duration: 0.5 }}
         className="mt-5 flex flex-wrap items-baseline gap-x-4 gap-y-2 border-t border-paper/12 pt-4"
       >
-        <span className="font-editorial text-[0.62rem] uppercase tracking-[0.24em] text-paper/35">
+        <span className="font-editorial text-[0.62rem] uppercase tracking-[0.24em] text-paper/55">
           {disagree ? 'they disagree · resolved to' : 'agreed on'}
         </span>
         <span className="font-display text-[1.35rem] uppercase leading-none text-tungsten">
           {resolved?.label ?? 'nothing'}
         </span>
         {resolved && (
-          <span className="font-mono text-[0.85rem] tabular-nums text-paper/45">
+          <span className="font-mono text-[0.85rem] tabular-nums text-paper/62">
             {resolved.time}
           </span>
         )}
@@ -144,7 +144,7 @@ export function TheRoom({
 
       {/* challenge it */}
       <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2">
-        <span className="font-editorial text-[0.62rem] uppercase tracking-[0.2em] text-paper/25">
+        <span className="font-editorial text-[0.62rem] uppercase tracking-[0.2em] text-paper/55">
           challenge it
         </span>
         {challengeable.map((scene) => (
@@ -155,7 +155,7 @@ export function TheRoom({
             className={`font-editorial text-[0.72rem] lowercase tracking-wide underline-offset-4 transition-colors ${
               challenging === scene.id
                 ? 'text-tungsten underline'
-                : 'text-paper/40 hover:text-paper hover:underline'
+                : 'text-paper/62 hover:text-paper hover:underline'
             }`}
           >
             why not {scene.label.toLowerCase()}?
@@ -205,11 +205,11 @@ export function TheRoom({
                 <span className="font-mono text-[0.78rem] tabular-nums text-paper/60">
                   {challenge.utility.toFixed(3)}
                 </span>
-                <span className="font-editorial text-[0.68rem] lowercase tracking-wide text-paper/35">
+                <span className="font-editorial text-[0.68rem] lowercase tracking-wide text-paper/55">
                   {challenge.gap.toFixed(3)} behind {challenge.winner?.label.toLowerCase()}
                 </span>
                 {challenge.belowBar && (
-                  <span className="font-editorial text-[0.68rem] lowercase tracking-wide text-acid/75">
+                  <span className="font-editorial text-[0.68rem] lowercase tracking-wide text-acid">
                     below the send bar — it would not have been sent at all
                   </span>
                 )}
@@ -224,7 +224,7 @@ export function TheRoom({
                 )}
               </div>
 
-              <p className="mt-4 font-hand text-[1.15rem] leading-snug text-tungsten/60">
+              <p className="mt-4 font-hand text-[1.15rem] leading-snug text-tungsten">
                 the people were never the problem.
               </p>
             </div>

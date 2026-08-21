@@ -43,12 +43,12 @@ export function SceneHeadline({
           </h2>
 
           <p className="mt-2 flex flex-wrap items-baseline gap-x-3">
-            <span className="font-mono text-[0.82rem] tabular-nums text-tungsten/80">{clock}</span>
+            <span className="font-mono text-[0.82rem] tabular-nums text-tungsten">{clock}</span>
             <span className="font-voice text-[1.05rem] italic text-paper/50">
               {scene.location}
             </span>
             {timeShift !== 0 && (
-              <span className="font-mono text-micro uppercase text-paper/30">
+              <span className="font-mono text-micro uppercase text-paper/55">
                 {timeShift < 0 ? 'earlier' : 'later'} than planned
               </span>
             )}
@@ -76,7 +76,7 @@ export function SceneHeadline({
           )}
 
           <motion.p
-            className="mt-5 max-w-[32ch] font-hand text-[1.12rem] leading-snug text-tungsten/55"
+            className="mt-5 max-w-[32ch] font-hand text-[1.12rem] leading-snug text-tungsten"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.22, duration: DUR.settle, ease: EASE.settle }}

@@ -69,20 +69,20 @@ export function NextWednesday() {
 
       <div className="relative mx-auto flex min-h-screen max-w-[62rem] flex-col gap-9 px-gutter py-[clamp(1.5rem,5vh,3rem)]">
         <header className="flex items-baseline justify-between gap-4">
-          <p className="font-mono text-[0.62rem] uppercase tracking-[0.3em] text-tungsten/60">
+          <p className="font-mono text-[0.62rem] uppercase tracking-[0.3em] text-tungsten">
             + 7 days
           </p>
           <Link
             href="/after"
             data-cursor="last week"
-            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/35 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             ← last week
           </Link>
           <Link
             href="/wednesday"
             data-cursor="the next drop"
-            className="font-editorial text-[0.72rem] lowercase tracking-wide text-tungsten/70 underline-offset-4 transition-colors hover:text-tungsten hover:underline"
+            className="font-editorial text-[0.72rem] lowercase tracking-wide text-tungsten underline-offset-4 transition-colors hover:text-tungsten hover:underline"
           >
             next wednesday, 7pm →
           </Link>
@@ -106,17 +106,17 @@ export function NextWednesday() {
         {/* this week's answer */}
         {nowSends.send && (
           <section className="border-y border-paper/12 py-6">
-            <p className="font-editorial text-[0.64rem] uppercase tracking-[0.24em] text-paper/30">
+            <p className="font-editorial text-[0.64rem] uppercase tracking-[0.24em] text-paper/55">
               proposed
             </p>
             <div className="mt-2 flex flex-wrap items-baseline gap-x-6 gap-y-2">
               <span className="font-display text-[1.9rem] uppercase leading-none text-paper">
                 {nowSends.scene.label}
               </span>
-              <span className="font-mono text-[0.95rem] tabular-nums text-tungsten/80">
+              <span className="font-mono text-[0.95rem] tabular-nums text-tungsten">
                 {nowSends.scene.time}
               </span>
-              <span className="font-voice text-[1.05rem] italic text-paper/45">
+              <span className="font-voice text-[1.05rem] italic text-paper/62">
                 {nowSends.scene.location}
               </span>
             </div>
@@ -135,7 +135,7 @@ export function NextWednesday() {
                 track('next_wednesday_counterfactual_opened');
               }}
               data-cursor="check it"
-              className="font-editorial text-[0.76rem] lowercase tracking-wide text-paper/40 underline-offset-4 transition-colors hover:text-tungsten hover:underline"
+              className="font-editorial text-[0.76rem] lowercase tracking-wide text-paper/62 underline-offset-4 transition-colors hover:text-tungsten hover:underline"
             >
               what would last week&rsquo;s model have said?
             </button>
@@ -176,14 +176,14 @@ export function NextWednesday() {
                     )}
                   </p>
 
-                  <p className="mt-4 font-editorial text-[0.8rem] leading-relaxed text-paper/45">
+                  <p className="mt-4 font-editorial text-[0.8rem] leading-relaxed text-paper/62">
                     One term changed weight: social pressure, {Math.abs(oldWeight).toFixed(2)} →{' '}
                     {Math.abs(newWeight).toFixed(2)}. Nothing was added, no dimension was invented,
                     and none of the six rooms changed. The café is still the easiest thing to
                     organise — it just costs more than it used to.
                   </p>
 
-                  <p className="mt-4 font-hand text-[1.2rem] leading-snug text-tungsten/70">
+                  <p className="mt-4 font-hand text-[1.2rem] leading-snug text-tungsten">
                     still a hypothesis. one evening is one evening.
                   </p>
                 </div>
@@ -213,10 +213,10 @@ function Column({
 }) {
   return (
     <div className={muted ? 'opacity-55' : ''}>
-      <p className="font-editorial text-[0.64rem] uppercase tracking-[0.22em] text-paper/35">
+      <p className="font-editorial text-[0.64rem] uppercase tracking-[0.22em] text-paper/55">
         {label}
       </p>
-      <p className="mt-1 font-mono text-[0.62rem] text-paper/25">
+      <p className="mt-1 font-mono text-[0.62rem] text-paper/55">
         social pressure {weight.toFixed(2)}
       </p>
 
@@ -233,20 +233,20 @@ function Column({
             >
               <span
                 className={`font-editorial text-[0.78rem] lowercase tracking-wide ${
-                  isTop ? 'text-tungsten' : clears ? 'text-paper/75' : 'text-paper/30'
+                  isTop ? 'text-tungsten' : clears ? 'text-paper/75' : 'text-paper/55'
                 }`}
               >
                 {r.scene.label.toLowerCase()}
               </span>
               <span className="flex items-baseline gap-2">
                 {!clears && (
-                  <span className="font-editorial text-[0.62rem] lowercase text-paper/25">
+                  <span className="font-editorial text-[0.62rem] lowercase text-paper/55">
                     under bar
                   </span>
                 )}
                 <span
                   className={`font-mono text-[0.76rem] tabular-nums ${
-                    isTop ? 'text-tungsten' : 'text-paper/45'
+                    isTop ? 'text-tungsten' : 'text-paper/62'
                   }`}
                 >
                   {r.utility.toFixed(3)}

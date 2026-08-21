@@ -96,13 +96,13 @@ export function CompilerStage() {
 
       <div className="relative mx-auto flex min-h-screen max-w-[62rem] flex-col gap-9 px-gutter py-[clamp(1.5rem,5vh,3rem)]">
         <header className="flex items-baseline justify-between gap-4">
-          <p className="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-paper/45">
+          <p className="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-paper/62">
             the compiler
           </p>
           <Link
             href="/"
             data-cursor="back to the stage"
-            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/35 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             first scene →
           </Link>
@@ -134,7 +134,7 @@ export function CompilerStage() {
           <section>
             <label
               htmlFor="sentence"
-              className="font-mono text-[0.6rem] uppercase tracking-[0.28em] text-paper/30"
+              className="font-mono text-[0.6rem] uppercase tracking-[0.28em] text-paper/55"
             >
               in
             </label>
@@ -143,7 +143,7 @@ export function CompilerStage() {
               value={sentence}
               onChange={(e) => setSentence(e.target.value)}
               rows={2}
-              className="mt-3 w-full resize-none border-b border-paper/20 bg-transparent pb-3 font-voice text-[clamp(1.3rem,3.2vw,2rem)] leading-snug text-paper outline-none transition-colors placeholder:text-paper/20 focus:border-tungsten"
+              className="mt-3 w-full resize-none border-b border-paper/20 bg-transparent pb-3 font-voice text-[clamp(1.3rem,3.2vw,2rem)] leading-snug text-paper outline-none transition-colors placeholder:text-paper/55 focus:border-tungsten"
               placeholder="say it however you would say it"
             />
 
@@ -156,7 +156,7 @@ export function CompilerStage() {
                   className={`font-editorial text-[0.72rem] lowercase tracking-wide underline-offset-4 transition-colors ${
                     sentence === p
                       ? 'text-tungsten underline'
-                      : 'text-paper/30 hover:text-paper hover:underline'
+                      : 'text-paper/55 hover:text-paper hover:underline'
                   }`}
                 >
                   {p.length > 34 ? `${p.slice(0, 32)}…` : p}
@@ -186,10 +186,10 @@ export function CompilerStage() {
                   className="grid gap-1 border-t border-paper/10 py-3 sm:grid-cols-[10rem_1fr] sm:gap-6"
                 >
                   <div className="flex items-baseline gap-2">
-                    <span className="font-mono text-[0.55rem] tabular-nums text-paper/20">
+                    <span className="font-mono text-[0.55rem] tabular-nums text-paper/55">
                       {String(i + 1).padStart(2, '0')}
                     </span>
-                    <span className="font-mono text-[0.58rem] uppercase tracking-[0.16em] text-paper/35">
+                    <span className="font-mono text-[0.58rem] uppercase tracking-[0.16em] text-paper/55">
                       {s.label}
                     </span>
                   </div>
@@ -206,13 +206,13 @@ export function CompilerStage() {
                       */}
                       <span
                         className={`font-mono text-[0.52rem] uppercase tracking-[0.16em] ${
-                          s.derived ? 'text-mint/60' : 'text-tungsten/60'
+                          s.derived ? 'text-mint' : 'text-tungsten'
                         }`}
                       >
                         {s.derived ? 'derived' : 'read'}
                       </span>
                     </div>
-                    <p className="mt-1.5 max-w-[62ch] font-editorial text-[0.76rem] lowercase leading-relaxed tracking-wide text-paper/40">
+                    <p className="mt-1.5 max-w-[62ch] font-editorial text-[0.76rem] lowercase leading-relaxed tracking-wide text-paper/62">
                       {s.detail}
                     </p>
                   </div>
@@ -231,7 +231,7 @@ export function CompilerStage() {
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
               className={phase === 'quiet' ? 'fixed inset-0 z-overlay grid place-content-center px-gutter' : ''}
             >
-              <p className="font-mono text-[0.6rem] uppercase tracking-[0.28em] text-paper/30">
+              <p className="font-mono text-[0.6rem] uppercase tracking-[0.28em] text-paper/55">
                 out
               </p>
 
@@ -245,7 +245,7 @@ export function CompilerStage() {
 
               {phase === 'landed' && (
                 <>
-                  <p className="mt-5 max-w-[46ch] font-editorial text-[0.8rem] lowercase leading-relaxed tracking-wide text-paper/40">
+                  <p className="mt-5 max-w-[46ch] font-editorial text-[0.8rem] lowercase leading-relaxed tracking-wide text-paper/62">
                     one sentence in. nine stages, six of them computed by machinery that is
                     asserted elsewhere on this site. one evening out.
                   </p>
@@ -261,14 +261,14 @@ export function CompilerStage() {
                     >
                       now get out of the way
                     </button>
-                    <span className="max-w-[30ch] font-editorial text-[0.72rem] lowercase leading-relaxed tracking-wide text-paper/25">
+                    <span className="max-w-[30ch] font-editorial text-[0.72rem] lowercase leading-relaxed tracking-wide text-paper/55">
                       their words, not ours — make the introduction, then get out of the way.
                     </span>
                   </div>
 
                   {/* the shape this project cannot produce */}
                   <div className="mt-9 max-w-[46ch] border-t border-paper/12 pt-5">
-                    <p className="font-mono text-[0.58rem] uppercase tracking-[0.24em] text-paper/30">
+                    <p className="font-mono text-[0.58rem] uppercase tracking-[0.24em] text-paper/55">
                       one shape it cannot offer
                     </p>
                     <p className="mt-2 font-display text-[1.1rem] uppercase leading-none text-paper/70">
@@ -277,7 +277,7 @@ export function CompilerStage() {
                     <p className="mt-2 font-voice text-[1rem] leading-snug text-paper/55">
                       {MISSING_SHAPE.how}
                     </p>
-                    <p className="mt-2 font-editorial text-[0.74rem] lowercase leading-relaxed tracking-wide text-paper/35">
+                    <p className="mt-2 font-editorial text-[0.74rem] lowercase leading-relaxed tracking-wide text-paper/55">
                       {MISSING_SHAPE.why}
                     </p>
                   </div>
@@ -290,7 +290,7 @@ export function CompilerStage() {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 2.4, duration: 1.2 }}
                   onClick={() => setPhase('landed')}
-                  className="mt-10 font-editorial text-[0.7rem] lowercase tracking-wide text-paper/20 underline-offset-4 hover:text-paper/60 hover:underline"
+                  className="mt-10 font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 hover:text-paper/60 hover:underline"
                 >
                   show me the working again
                 </motion.button>

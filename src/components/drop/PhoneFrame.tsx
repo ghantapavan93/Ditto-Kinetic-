@@ -68,7 +68,7 @@ export function PhoneFrame({
           <div className="absolute left-1/2 top-[7px] h-[22px] w-[104px] -translate-x-1/2 rounded-full bg-ink" />
           {/* status bar */}
           <div className="flex items-center justify-between px-5 pt-[11px]">
-            <span className="font-mono text-[0.58rem] tabular-nums text-paper/45">7:00</span>
+            <span className="font-mono text-[0.58rem] tabular-nums text-paper/62">7:00</span>
             <span className="flex items-center gap-1">
               <span className="block h-[7px] w-[3px] rounded-[1px] bg-paper/40" />
               <span className="block h-[9px] w-[3px] rounded-[1px] bg-paper/40" />

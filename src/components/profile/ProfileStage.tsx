@@ -91,13 +91,13 @@ export function ProfileStage() {
 
       <div className="relative mx-auto flex min-h-screen max-w-[68rem] flex-col gap-10 px-gutter py-[clamp(1.5rem,5vh,3rem)]">
         <header className="flex items-baseline justify-between gap-4">
-          <p className="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-paper/45">
+          <p className="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-paper/62">
             setting up · {Math.min(step, QUESTIONS.length)} of {QUESTIONS.length}
           </p>
           <Link
             href="/"
             data-cursor="back to the stage"
-            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/35 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             first scene →
           </Link>
@@ -150,7 +150,7 @@ export function ProfileStage() {
                     it is not a finished person, and the version of this that showed you one
                     would be making it up.
                   </p>
-                  <p className="mt-4 max-w-[42ch] font-editorial text-[0.8rem] lowercase leading-relaxed tracking-wide text-paper/40">
+                  <p className="mt-4 max-w-[42ch] font-editorial text-[0.8rem] lowercase leading-relaxed tracking-wide text-paper/62">
                     the rest gets filled in by what actually happens on a wednesday, which is
                     slower and worth more. nothing here ever reaches certainty —{' '}
                     {CONFIDENCE_CEILING} is the ceiling, and evidence only ever closes part of
@@ -177,7 +177,7 @@ export function ProfileStage() {
                   exit={{ opacity: 0 }}
                   transition={{ delay: 0.45, duration: 0.5 }}
                   className={`mt-7 max-w-[38ch] font-editorial text-[0.82rem] lowercase leading-relaxed tracking-wide ${
-                    wasUseless ? 'text-acid/80' : 'text-mint/70'
+                    wasUseless ? 'text-acid' : 'text-mint'
                   }`}
                 >
                   {tally && tally.moved > 0 && (
@@ -195,12 +195,12 @@ export function ProfileStage() {
 
           {/* what it believes */}
           <section aria-label="What Ditto believes so far">
-            <p className="font-mono text-[0.6rem] uppercase tracking-[0.28em] text-paper/30">
+            <p className="font-mono text-[0.6rem] uppercase tracking-[0.28em] text-paper/55">
               what we think we know
             </p>
 
             {known.length === 0 && (
-              <p className="mt-4 font-voice text-[1.1rem] italic leading-snug text-paper/35">
+              <p className="mt-4 font-voice text-[1.1rem] italic leading-snug text-paper/55">
                 nothing yet. that is the honest starting state.
               </p>
             )}
@@ -213,14 +213,14 @@ export function ProfileStage() {
 
             {unknown.length > 0 && (
               <div className="mt-8 border-t border-dashed border-paper/15 pt-5">
-                <p className="font-mono text-[0.6rem] uppercase tracking-[0.28em] text-paper/25">
+                <p className="font-mono text-[0.6rem] uppercase tracking-[0.28em] text-paper/55">
                   still no view on
                 </p>
                 <ul className="mt-3 grid gap-2">
                   {unknown.map((trait) => (
                     <li
                       key={trait.id}
-                      className="font-editorial text-[0.82rem] lowercase leading-relaxed tracking-wide text-paper/28"
+                      className="font-editorial text-[0.82rem] lowercase leading-relaxed tracking-wide text-paper/55"
                     >
                       {trait.label}
                     </li>
@@ -232,7 +232,7 @@ export function ProfileStage() {
                   between what a system knows and what it appears to know is
                   where every overconfident recommendation comes from.
                 */}
-                <p className="mt-4 max-w-[36ch] font-editorial text-[0.7rem] lowercase leading-relaxed tracking-wide text-paper/25">
+                <p className="mt-4 max-w-[36ch] font-editorial text-[0.7rem] lowercase leading-relaxed tracking-wide text-paper/55">
                   these stay on the page. a profile that only shows what it knows looks
                   finished, and looking finished is the problem.
                 </p>
@@ -281,16 +281,16 @@ function TraitRow({ trait, justMoved }: { trait: Trait; justMoved: boolean }) {
             style={{ left: `${CONFIDENCE_CEILING * 100}%` }}
           />
         </div>
-        <span className="font-mono text-[0.62rem] tabular-nums text-paper/40">
+        <span className="font-mono text-[0.62rem] tabular-nums text-paper/62">
           {trait.confidence.toFixed(2)}
         </span>
-        <span className="font-mono text-[0.55rem] uppercase tracking-[0.14em] text-paper/28">
+        <span className="font-mono text-[0.55rem] uppercase tracking-[0.14em] text-paper/55">
           {PROVENANCE_LABEL[trait.provenance]}
         </span>
       </div>
 
       {trait.confidence < ACTIONABLE && (
-        <p className="mt-2 font-editorial text-[0.68rem] lowercase tracking-wide text-paper/30">
+        <p className="mt-2 font-editorial text-[0.68rem] lowercase tracking-wide text-paper/55">
           too thin to act on
         </p>
       )}

@@ -30,10 +30,10 @@ export function FrostedSignals({ personId, name }: { personId: string; name: str
   return (
     <section aria-label={`What Ditto is holding about ${name}`} className="mt-10">
       <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
-        <p className="font-mono text-[0.6rem] uppercase tracking-[0.28em] text-paper/30">
+        <p className="font-mono text-[0.6rem] uppercase tracking-[0.28em] text-paper/55">
           what we know about {name.toLowerCase()}
         </p>
-        <p className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/25">
+        <p className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55">
           {signals.length} reads · none of them yours
         </p>
       </div>
@@ -52,7 +52,7 @@ export function FrostedSignals({ personId, name }: { personId: string; name: str
               <p className="font-editorial text-[0.78rem] lowercase tracking-wide text-paper/55">
                 {signal.kind}
               </p>
-              <span className="font-mono text-[0.6rem] tabular-nums text-paper/45">
+              <span className="font-mono text-[0.6rem] tabular-nums text-paper/62">
                 {signal.confidence.toFixed(2)}
               </span>
             </div>
@@ -105,7 +105,7 @@ export function FrostedSignals({ personId, name }: { personId: string; name: str
       <button
         onClick={() => setTried(true)}
         data-cursor="try it"
-        className="mt-5 font-editorial text-[0.74rem] lowercase tracking-wide text-paper/40 underline-offset-4 transition-colors hover:text-paper hover:underline"
+        className="mt-5 font-editorial text-[0.74rem] lowercase tracking-wide text-paper/62 underline-offset-4 transition-colors hover:text-paper hover:underline"
       >
         why can&rsquo;t i see these?
       </button>
@@ -122,11 +122,11 @@ export function FrostedSignals({ personId, name }: { personId: string; name: str
               <p className="font-voice text-[1.15rem] leading-snug text-paper/85">
                 because they are not about you.
               </p>
-              <p className="mt-3 font-editorial text-[0.8rem] lowercase leading-relaxed tracking-wide text-paper/45">
+              <p className="mt-3 font-editorial text-[0.8rem] lowercase leading-relaxed tracking-wide text-paper/62">
                 they gave us those to be matched well, not to be described to a stranger. the
                 same wall is standing on the other side of this, with your four behind it.
               </p>
-              <p className="mt-4 font-editorial text-[0.74rem] lowercase leading-relaxed tracking-wide text-paper/30">
+              <p className="mt-4 font-editorial text-[0.74rem] lowercase leading-relaxed tracking-wide text-paper/55">
                 and there is nothing behind the blur to find. no text was rendered — those are
                 generated word-shaped widths, so there is nothing to select, inspect, or read
                 out. a redaction you can highlight was never a redaction.

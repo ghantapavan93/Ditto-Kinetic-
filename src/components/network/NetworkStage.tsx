@@ -91,14 +91,14 @@ export function NetworkStage() {
 
       <div className="relative mx-auto flex min-h-screen max-w-[72rem] flex-col gap-8 px-gutter py-[clamp(1.5rem,5vh,3rem)]">
         <header className="flex items-baseline justify-between gap-4">
-          <p className="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-paper/45">
+          <p className="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-paper/62">
             {campus.nodes.length} people · {net.totalEdges} threads · {net.weakTies} of them
             crossing
           </p>
           <Link
             href="/"
             data-cursor="back to the stage"
-            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/35 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             first scene →
           </Link>
@@ -121,7 +121,7 @@ export function NetworkStage() {
 
         {/* the two rankings */}
         <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
-          <span className="font-mono text-[0.6rem] uppercase tracking-[0.24em] text-paper/25">
+          <span className="font-mono text-[0.6rem] uppercase tracking-[0.24em] text-paper/55">
             rank the same candidates by
           </span>
           {(
@@ -137,7 +137,7 @@ export function NetworkStage() {
               className={`font-editorial text-[0.78rem] lowercase tracking-wide underline-offset-4 transition-colors ${
                 mode === key
                   ? 'text-tungsten underline'
-                  : 'text-paper/35 hover:text-paper hover:underline'
+                  : 'text-paper/55 hover:text-paper hover:underline'
               }`}
             >
               {label}
@@ -154,25 +154,25 @@ export function NetworkStage() {
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             className="max-w-[46rem] rounded-artifact border border-paper/12 bg-ink/70 px-6 py-5 backdrop-blur-md"
           >
-            <p className="font-mono text-[0.58rem] uppercase tracking-[0.24em] text-paper/35">
+            <p className="font-mono text-[0.58rem] uppercase tracking-[0.24em] text-paper/55">
               {mode === 'affinity' ? 'what a recommender picks' : 'the missing edge'}
             </p>
 
             <p className="mt-3 font-display text-[clamp(1.3rem,3vw,1.9rem)] uppercase leading-none text-paper">
-              {name(highlight.a)} <span className="text-paper/30">×</span> {name(highlight.b)}
+              {name(highlight.a)} <span className="text-paper/55">×</span> {name(highlight.b)}
             </p>
-            <p className="mt-2 font-editorial text-[0.76rem] lowercase tracking-wide text-paper/40">
+            <p className="mt-2 font-editorial text-[0.76rem] lowercase tracking-wide text-paper/62">
               {where(highlight.a)}
               {where(highlight.a) === where(highlight.b) ? ' — both of them' : ` → ${where(highlight.b)}`}
             </p>
 
             <div className="mt-4 flex flex-wrap gap-x-8 gap-y-2 font-mono text-[0.7rem] tabular-nums">
-              <span className="text-paper/45">
-                <span className="text-paper/25">mutual friends </span>
+              <span className="text-paper/62">
+                <span className="text-paper/55">mutual friends </span>
                 {highlight.mutuals.length}
               </span>
-              <span className="text-paper/45">
-                <span className="text-paper/25">newly reachable </span>
+              <span className="text-paper/62">
+                <span className="text-paper/55">newly reachable </span>
                 {highlight.consequence}
               </span>
             </div>
@@ -199,7 +199,7 @@ export function NetworkStage() {
             </p>
 
             {mode === 'consequence' && (
-              <p className="mt-3 max-w-[48ch] font-editorial text-[0.8rem] lowercase leading-relaxed tracking-wide text-tungsten/75">
+              <p className="mt-3 max-w-[48ch] font-editorial text-[0.8rem] lowercase leading-relaxed tracking-wide text-tungsten">
                 which is the whole argument. the introduction that would change the most is
                 the one no human can make, and the one a compatibility ranker will never
                 surface — because it scores zero on every signal those rankers use.
@@ -211,19 +211,19 @@ export function NetworkStage() {
         {/* who the ranking cannot see */}
         <section className="mt-auto max-w-[44rem] rounded-artifact border border-paper/10 bg-ink/60 px-5 py-4 backdrop-blur-sm">
           <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
-            <p className="font-mono text-[0.58rem] uppercase tracking-[0.24em] text-paper/30">
+            <p className="font-mono text-[0.58rem] uppercase tracking-[0.24em] text-paper/55">
               who this campus cannot see
             </p>
-            <p className="font-mono text-[0.7rem] tabular-nums text-paper/40">
+            <p className="font-mono text-[0.7rem] tabular-nums text-paper/62">
               {net.isolated.length} of {campus.nodes.length}
             </p>
           </div>
-          <p className="mt-2.5 max-w-[52ch] font-editorial text-[0.8rem] lowercase leading-relaxed tracking-wide text-paper/45">
+          <p className="mt-2.5 max-w-[52ch] font-editorial text-[0.8rem] lowercase leading-relaxed tracking-wide text-paper/62">
             {net.isolated.length} people here have one connection or fewer. they are the
             hardest to rank, because ranking needs signal and they generate almost none — and
             they are the people for whom one introduction would matter most.
           </p>
-          <p className="mt-2 font-editorial text-[0.74rem] lowercase leading-relaxed tracking-wide text-paper/28">
+          <p className="mt-2 font-editorial text-[0.74rem] lowercase leading-relaxed tracking-wide text-paper/55">
             drawn smaller and colder above. a product optimising for engagement is structurally
             incapable of noticing them.
           </p>

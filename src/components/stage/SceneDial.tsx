@@ -230,7 +230,7 @@ export function SceneDial({ scenes }: { scenes: Scene[] }) {
 
         {/* hub */}
         <div className="absolute inset-[30%] rounded-full border border-paper/10 bg-ink-soft/70 backdrop-blur-sm">
-          <span className="absolute inset-0 grid place-items-center font-mono text-micro uppercase text-paper/45">
+          <span className="absolute inset-0 grid place-items-center font-mono text-micro uppercase text-paper/62">
             {activeIndex + 1}/{SCENE_ORDER.length}
           </span>
         </div>
@@ -239,7 +239,7 @@ export function SceneDial({ scenes }: { scenes: Scene[] }) {
       <p className="u-micro text-center">
         <span className="hidden sm:inline">drag the first scene</span>
         <span className="sm:hidden">swipe the dial</span>
-        <span className="mx-2 text-paper/20">·</span>
+        <span className="mx-2 text-paper/55">·</span>
         <span aria-hidden>← →</span>
       </p>
     </div>

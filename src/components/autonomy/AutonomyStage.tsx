@@ -64,13 +64,13 @@ export function AutonomyStage() {
 
       <div className="relative mx-auto flex min-h-screen max-w-[68rem] flex-col gap-9 px-gutter py-[clamp(1.5rem,5vh,3rem)]">
         <header className="flex items-baseline justify-between gap-4">
-          <p className="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-paper/45">
+          <p className="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-paper/62">
             level {rung.level.n} of {rungs.length - 1}
           </p>
           <Link
             href="/"
             data-cursor="back to the stage"
-            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/35 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             first scene →
           </Link>
@@ -105,14 +105,14 @@ export function AutonomyStage() {
             >
               <span
                 className={`block font-mono text-[0.6rem] tabular-nums ${
-                  r.level.n === level ? 'text-tungsten' : 'text-paper/30'
+                  r.level.n === level ? 'text-tungsten' : 'text-paper/55'
                 }`}
               >
                 {r.level.n}
               </span>
               <span
                 className={`mt-0.5 block font-editorial text-[0.68rem] lowercase leading-tight tracking-wide ${
-                  r.level.n === level ? 'text-paper' : 'text-paper/30'
+                  r.level.n === level ? 'text-paper' : 'text-paper/55'
                 }`}
               >
                 {r.level.name}
@@ -138,7 +138,7 @@ export function AutonomyStage() {
 
                 <div className="mt-6 flex flex-wrap gap-x-10 gap-y-4">
                   <div>
-                    <p className="font-editorial text-[0.6rem] uppercase tracking-[0.24em] text-paper/35">
+                    <p className="font-editorial text-[0.6rem] uppercase tracking-[0.24em] text-paper/55">
                       costs you a week
                     </p>
                     <p className="mt-1.5 font-display text-[1.9rem] leading-none text-paper">
@@ -146,7 +146,7 @@ export function AutonomyStage() {
                     </p>
                   </div>
                   <div>
-                    <p className="font-editorial text-[0.6rem] uppercase tracking-[0.24em] text-paper/35">
+                    <p className="font-editorial text-[0.6rem] uppercase tracking-[0.24em] text-paper/55">
                       still yours
                     </p>
                     <p className="mt-1.5 font-display text-[1.9rem] leading-none text-paper">
@@ -154,7 +154,7 @@ export function AutonomyStage() {
                     </p>
                   </div>
                   <div>
-                    <p className="font-editorial text-[0.6rem] uppercase tracking-[0.24em] text-paper/35">
+                    <p className="font-editorial text-[0.6rem] uppercase tracking-[0.24em] text-paper/55">
                       asks you first
                     </p>
                     <p
@@ -168,7 +168,7 @@ export function AutonomyStage() {
                 </div>
 
                 {rung.boughtPerDecision !== null && (
-                  <p className="mt-5 max-w-[40ch] font-editorial text-[0.8rem] lowercase leading-relaxed tracking-wide text-paper/45">
+                  <p className="mt-5 max-w-[40ch] font-editorial text-[0.8rem] lowercase leading-relaxed tracking-wide text-paper/62">
                     this rung bought {saidAs(rung.boughtPerDecision)} a week for each decision
                     it took. the first rung bought{' '}
                     {saidAs(rungs[1].boughtPerDecision ?? 0)} for each of its two.
@@ -176,7 +176,7 @@ export function AutonomyStage() {
                 )}
 
                 {rung.level.unbuilt && (
-                  <p className="mt-5 max-w-[42ch] font-editorial text-[0.8rem] lowercase leading-relaxed tracking-wide text-acid/70">
+                  <p className="mt-5 max-w-[42ch] font-editorial text-[0.8rem] lowercase leading-relaxed tracking-wide text-acid">
                     this is the one level nothing here was built for, and the reason is on the
                     right.
                   </p>
@@ -188,10 +188,10 @@ export function AutonomyStage() {
           {/* the nine decisions, crossing over */}
           <section aria-label="Who decides what">
             <div className="flex items-baseline justify-between gap-4">
-              <p className="font-editorial text-[0.6rem] uppercase tracking-[0.24em] text-paper/35">
+              <p className="font-editorial text-[0.6rem] uppercase tracking-[0.24em] text-paper/55">
                 yours
               </p>
-              <p className="font-editorial text-[0.6rem] uppercase tracking-[0.24em] text-paper/35">
+              <p className="font-editorial text-[0.6rem] uppercase tracking-[0.24em] text-paper/55">
                 theirs
               </p>
             </div>
@@ -215,9 +215,9 @@ export function AutonomyStage() {
                       transition={{ type: 'spring', stiffness: 190, damping: 24 }}
                       className={`absolute inset-y-0 flex w-1/2 items-center px-2 font-editorial text-[0.66rem] lowercase leading-tight tracking-wide sm:text-[0.72rem] sm:leading-none ${
                         locked
-                          ? 'justify-start border-l-2 border-mint/60 text-mint/80'
+                          ? 'justify-start border-l-2 border-mint/60 text-mint'
                           : gone
-                            ? 'justify-end border-r-2 border-acid/40 text-paper/45'
+                            ? 'justify-end border-r-2 border-acid/40 text-paper/62'
                             : 'justify-start border-l-2 border-paper/30 text-paper/80'
                       }`}
                     >
@@ -228,7 +228,7 @@ export function AutonomyStage() {
               })}
             </ul>
 
-            <p className="mt-4 max-w-[36ch] font-editorial text-[0.72rem] lowercase leading-relaxed tracking-wide text-paper/30">
+            <p className="mt-4 max-w-[36ch] font-editorial text-[0.72rem] lowercase leading-relaxed tracking-wide text-paper/55">
               the one in mint never crosses. a system that took it would not be arranging an
               evening any more — it would be arranging a person.
             </p>
@@ -258,12 +258,12 @@ export function AutonomyStage() {
                   are identical — watch the list, nothing moved. what it removes is the
                   asking.
                 </p>
-                <p className="mt-4 max-w-[50ch] font-editorial text-[0.84rem] lowercase leading-relaxed tracking-wide text-paper/45">
+                <p className="mt-4 max-w-[50ch] font-editorial text-[0.84rem] lowercase leading-relaxed tracking-wide text-paper/62">
                   so it is the first rung that costs something and buys nothing. and it is
                   also, on both attention measures, the cheapest thing here — eight seconds a
                   week, and the least of all to explain, because there is nothing to look at.
                 </p>
-                <p className="mt-5 max-w-[46ch] font-voice text-[1.15rem] italic leading-snug text-tungsten/85">
+                <p className="mt-5 max-w-[46ch] font-voice text-[1.15rem] italic leading-snug text-tungsten">
                   which is the whole reason attention cannot be the only number. optimise for
                   it alone and this is where you land.
                 </p>
@@ -275,7 +275,7 @@ export function AutonomyStage() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, transition: { duration: 0.15 } }}
               >
-                <p className="font-editorial text-[0.62rem] uppercase tracking-[0.24em] text-paper/35">
+                <p className="font-editorial text-[0.62rem] uppercase tracking-[0.24em] text-paper/55">
                   the last rung worth climbing
                 </p>
                 <p className="mt-3 font-display text-[clamp(1.4rem,3.4vw,2.1rem)] uppercase leading-none text-paper">
@@ -300,7 +300,7 @@ export function AutonomyStage() {
           <Link
             href="/attention"
             data-cursor="the other half"
-            className="mt-8 inline-block font-editorial text-[0.74rem] lowercase tracking-wide text-paper/35 underline-offset-4 hover:text-paper hover:underline"
+            className="mt-8 inline-block font-editorial text-[0.74rem] lowercase tracking-wide text-paper/55 underline-offset-4 hover:text-paper hover:underline"
           >
             the other half of this trade →
           </Link>

@@ -64,13 +64,13 @@ export function EndingStage() {
 
       <div className="relative mx-auto flex min-h-screen max-w-[68rem] flex-col gap-10 px-gutter py-[clamp(1.5rem,5vh,3rem)]">
         <header className="flex items-baseline justify-between gap-4">
-          <p className="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-paper/45">
+          <p className="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-paper/62">
             the twelfth dimension
           </p>
           <Link
             href="/"
             data-cursor="back to the stage"
-            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/35 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             first scene →
           </Link>
@@ -93,7 +93,7 @@ export function EndingStage() {
         </section>
 
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-          <span className="font-mono text-[0.6rem] uppercase tracking-[0.24em] text-paper/25">
+          <span className="font-mono text-[0.6rem] uppercase tracking-[0.24em] text-paper/55">
             for
           </span>
           {PAIRS.map((p, i) => (
@@ -104,7 +104,7 @@ export function EndingStage() {
               className={`font-editorial text-[0.76rem] lowercase tracking-wide underline-offset-4 transition-colors ${
                 which === i
                   ? 'text-tungsten underline'
-                  : 'text-paper/35 hover:text-paper hover:underline'
+                  : 'text-paper/55 hover:text-paper hover:underline'
               }`}
             >
               {p.personA.name} &amp; {p.personB.name}
@@ -125,7 +125,7 @@ export function EndingStage() {
           transition={{ delay: 0.5, duration: 0.8 }}
           className="max-w-[56ch] border-t border-paper/12 pt-8"
         >
-          <p className="font-editorial text-[0.62rem] uppercase tracking-[0.24em] text-paper/35">
+          <p className="font-editorial text-[0.62rem] uppercase tracking-[0.24em] text-paper/55">
             what the twelfth dimension changed
           </p>
           <p className="mt-3 font-display text-[clamp(1.4rem,3.4vw,2.1rem)] uppercase leading-none text-paper">
@@ -145,7 +145,7 @@ export function EndingStage() {
                 heavier than schedule fit and travel friction; if it were going
                 to move the ranking, it had the room to.
               */}
-              <p className="mt-3 font-editorial text-[0.8rem] lowercase leading-relaxed tracking-wide text-paper/40">
+              <p className="mt-3 font-editorial text-[0.8rem] lowercase leading-relaxed tracking-wide text-paper/62">
                 and it was not given a token weight to fail at. {EXIT_WEIGHT} is heavier
                 than schedule fit and heavier than travel friction — deliberately generous,
                 so that if it were going to change anything it had the room to.
@@ -161,7 +161,7 @@ export function EndingStage() {
           */}
           {verdict.worstBlindSpot && verdict.worstBlindSpot.blindSpot > 0.3 && (
             <div className="mt-7 border-l-2 border-acid/50 pl-4">
-              <p className="font-editorial text-[0.62rem] uppercase tracking-[0.24em] text-paper/35">
+              <p className="font-editorial text-[0.62rem] uppercase tracking-[0.24em] text-paper/55">
                 except here
               </p>
               <p className="mt-2 font-display text-[1.3rem] uppercase leading-none text-paper">
@@ -184,7 +184,7 @@ export function EndingStage() {
           <p className="mt-8 max-w-[46ch] font-voice text-[1.3rem] italic leading-snug text-tungsten">
             so the ending is not a ranking problem. it is a delivery problem.
           </p>
-          <p className="mt-3 max-w-[50ch] font-editorial text-[0.84rem] lowercase leading-relaxed tracking-wide text-paper/45">
+          <p className="mt-3 max-w-[50ch] font-editorial text-[0.84rem] lowercase leading-relaxed tracking-wide text-paper/62">
             you do not fix it by sending them somewhere else — the choice was right. you fix
             it by saying how it ends before anybody has to ask, and where the room will not
             end itself, by giving it one.
@@ -241,7 +241,7 @@ export function EndingStage() {
                 )}
               </Bubble>
 
-              <p className="sm:col-span-2 max-w-[48ch] font-editorial text-[0.82rem] lowercase leading-relaxed tracking-wide text-paper/45">
+              <p className="sm:col-span-2 max-w-[48ch] font-editorial text-[0.82rem] lowercase leading-relaxed tracking-wide text-paper/62">
                 same match, same room, same hour. the difference is that saying yes now
                 costs a known amount of the evening instead of an unknown one — which is
                 the cheapest thing on this entire site to ship.
@@ -267,7 +267,7 @@ function Bubble({
 }) {
   return (
     <div>
-      <p className="mb-2 font-mono text-[0.58rem] uppercase tracking-[0.22em] text-paper/30">
+      <p className="mb-2 font-mono text-[0.58rem] uppercase tracking-[0.22em] text-paper/55">
         {title}
       </p>
       <div
@@ -308,23 +308,23 @@ function RoomExit({ read, index }: { read: ExitRead; index: number }) {
       <p className="mt-2.5 max-w-[58ch] font-voice text-[1.02rem] leading-snug text-paper/75">
         {read.how}
       </p>
-      <p className="mt-1.5 max-w-[58ch] font-editorial text-[0.76rem] lowercase leading-relaxed tracking-wide text-paper/40">
+      <p className="mt-1.5 max-w-[58ch] font-editorial text-[0.76rem] lowercase leading-relaxed tracking-wide text-paper/62">
         if it goes well — {read.ifItGoesWell}
       </p>
 
       {read.needsAnEnding && read.supplied && (
-        <p className="mt-3 max-w-[58ch] border-l-2 border-mint/40 pl-3 font-voice text-[0.98rem] leading-snug text-mint/80">
+        <p className="mt-3 max-w-[58ch] border-l-2 border-mint/40 pl-3 font-voice text-[0.98rem] leading-snug text-mint">
           {read.supplied}
         </p>
       )}
 
-      <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 font-mono text-[0.58rem] tabular-nums text-paper/30">
+      <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 font-mono text-[0.58rem] tabular-nums text-paper/55">
         <span>{read.base.toFixed(3)} today</span>
-        <span className="text-mint/55">
+        <span className="text-mint">
           {read.withExit.toFixed(3)} with the ending counted
         </span>
         {read.blindSpot > 0.3 && (
-          <span className="text-acid/70">
+          <span className="text-acid">
             blind spot {read.blindSpot.toFixed(2)}
           </span>
         )}
@@ -335,7 +335,7 @@ function RoomExit({ read, index }: { read: ExitRead; index: number }) {
 
 function Meter({ label, value }: { label: string; value: number }) {
   return (
-    <span className="flex items-center gap-1.5 text-paper/30">
+    <span className="flex items-center gap-1.5 text-paper/55">
       {label}
       <span className="relative block h-[3px] w-[42px] rounded-[1px] bg-paper/12">
         <motion.span

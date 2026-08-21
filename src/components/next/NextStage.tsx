@@ -59,13 +59,13 @@ export function NextStage() {
 
       <div className="relative mx-auto flex min-h-screen max-w-[70rem] flex-col gap-12 px-gutter py-[clamp(1.5rem,5vh,3rem)]">
         <header className="flex items-baseline justify-between gap-4">
-          <p className="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-paper/45">
+          <p className="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-paper/62">
             what happens next
           </p>
           <Link
             href="/"
             data-cursor="back to the stage"
-            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/35 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             first scene →
           </Link>
@@ -88,7 +88,7 @@ export function NextStage() {
 
         {/* the bet */}
         <section className="max-w-[52rem] border-t border-paper/12 pt-8">
-          <p className="font-editorial text-[0.62rem] uppercase tracking-[0.24em] text-paper/35">
+          <p className="font-editorial text-[0.62rem] uppercase tracking-[0.24em] text-paper/55">
             the bet, as a number
           </p>
 
@@ -103,7 +103,7 @@ export function NextStage() {
 
           <div className="mt-5 flex flex-wrap gap-x-8 gap-y-2">
             {spread.map((s) => (
-              <span key={s.pair} className="font-mono text-[0.72rem] tabular-nums text-paper/40">
+              <span key={s.pair} className="font-mono text-[0.72rem] tabular-nums text-paper/62">
                 {s.pair.toLowerCase()} · {s.spread.toFixed(3)}
               </span>
             ))}
@@ -114,7 +114,7 @@ export function NextStage() {
             by weights that were chosen to make a point is evidence about the
             point, not about the world.
           */}
-          <p className="mt-6 max-w-[50ch] font-editorial text-[0.84rem] lowercase leading-relaxed tracking-wide text-paper/45">
+          <p className="mt-6 max-w-[50ch] font-editorial text-[0.84rem] lowercase leading-relaxed tracking-wide text-paper/62">
             that is either the largest untouched lever in the funnel, or an artefact of
             weights picked to make an argument legible. it is synthetic either way. the only
             thing that separates those two readings is a measurement nobody here can run.
@@ -123,7 +123,7 @@ export function NextStage() {
 
         {/* the order */}
         <section aria-label="What to ship, cheapest first">
-          <p className="font-editorial text-[0.62rem] uppercase tracking-[0.24em] text-paper/35">
+          <p className="font-editorial text-[0.62rem] uppercase tracking-[0.24em] text-paper/55">
             in this order, because this is the order of what it costs
           </p>
 
@@ -138,7 +138,7 @@ export function NextStage() {
               >
                 <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
                   <h2 className="font-display text-[1.35rem] uppercase leading-none text-paper">
-                    <span className="mr-3 font-mono text-[0.7rem] text-paper/25">
+                    <span className="mr-3 font-mono text-[0.7rem] text-paper/55">
                       {String(step.n).padStart(2, '0')}
                     </span>
                     {step.title}
@@ -146,10 +146,10 @@ export function NextStage() {
                   <span
                     className={`font-mono text-[0.6rem] uppercase tracking-[0.16em] ${
                       step.effort === 'days'
-                        ? 'text-mint/70'
+                        ? 'text-mint'
                         : step.effort === 'weeks'
-                          ? 'text-tungsten/70'
-                          : 'text-acid/70'
+                          ? 'text-tungsten'
+                          : 'text-acid'
                     }`}
                   >
                     {step.effort}
@@ -161,12 +161,12 @@ export function NextStage() {
                 </p>
 
                 <div className="mt-3 grid gap-1">
-                  <p className="font-editorial text-[0.74rem] lowercase leading-relaxed tracking-wide text-paper/40">
-                    <span className="text-paper/25">costs — </span>
+                  <p className="font-editorial text-[0.74rem] lowercase leading-relaxed tracking-wide text-paper/62">
+                    <span className="text-paper/55">costs — </span>
                     {step.cost}
                   </p>
-                  <p className="font-editorial text-[0.74rem] lowercase leading-relaxed tracking-wide text-paper/40">
-                    <span className="text-paper/25">touches — </span>
+                  <p className="font-editorial text-[0.74rem] lowercase leading-relaxed tracking-wide text-paper/62">
+                    <span className="text-paper/55">touches — </span>
                     {step.touches}
                   </p>
                 </div>
@@ -174,7 +174,7 @@ export function NextStage() {
             ))}
           </ol>
 
-          <p className="mt-5 max-w-[50ch] font-editorial text-[0.84rem] lowercase leading-relaxed tracking-wide text-paper/45">
+          <p className="mt-5 max-w-[50ch] font-editorial text-[0.84rem] lowercase leading-relaxed tracking-wide text-paper/62">
             the two cheapest change no model, no data and no screen. they are a week of work
             and they are aimed at the same number as the expensive one.
           </p>
@@ -182,7 +182,7 @@ export function NextStage() {
 
         {/* how it loses */}
         <section aria-label="What would make this wrong" className="border-t border-paper/12 pt-8">
-          <p className="font-editorial text-[0.62rem] uppercase tracking-[0.24em] text-paper/35">
+          <p className="font-editorial text-[0.62rem] uppercase tracking-[0.24em] text-paper/55">
             and here is how it loses
           </p>
           <p className="mt-3 max-w-[46ch] font-voice text-[1.3rem] leading-snug text-paper">
@@ -208,7 +208,7 @@ export function NextStage() {
 
         {/* declined */}
         <section aria-label="Deliberately not attempted" className="border-t border-paper/12 pt-8">
-          <p className="font-editorial text-[0.62rem] uppercase tracking-[0.24em] text-paper/35">
+          <p className="font-editorial text-[0.62rem] uppercase tracking-[0.24em] text-paper/55">
             not attempted, on purpose
           </p>
 
@@ -218,7 +218,7 @@ export function NextStage() {
                 <p className="font-display text-[1.1rem] uppercase leading-none text-paper/70">
                   {o.title}
                 </p>
-                <p className="mt-2.5 font-editorial text-[0.78rem] lowercase leading-relaxed tracking-wide text-paper/40">
+                <p className="mt-2.5 font-editorial text-[0.78rem] lowercase leading-relaxed tracking-wide text-paper/62">
                   {o.why}
                 </p>
               </li>
@@ -230,7 +230,7 @@ export function NextStage() {
           <p className="font-voice text-[1.35rem] italic leading-snug text-tungsten">
             the right person can still get the wrong first date.
           </p>
-          <p className="mt-3 font-editorial text-[0.84rem] lowercase leading-relaxed tracking-wide text-paper/45">
+          <p className="mt-3 font-editorial text-[0.84rem] lowercase leading-relaxed tracking-wide text-paper/62">
             that is the whole claim. everything here exists to make it specific enough to
             be tested, and the next honest move is somebody testing it.
           </p>

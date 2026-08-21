@@ -102,12 +102,12 @@ function MemoryRow({
           )}
         </p>
 
-        <span className="shrink-0 font-mono text-[0.6rem] uppercase tracking-[0.16em] text-paper/25">
+        <span className="shrink-0 font-mono text-[0.6rem] uppercase tracking-[0.16em] text-paper/55">
           {card.since}
         </span>
       </div>
 
-      <p className="mt-1.5 font-editorial text-[0.7rem] lowercase tracking-wide text-paper/35">
+      <p className="mt-1.5 font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55">
         {card.source}
       </p>
 
@@ -117,7 +117,7 @@ function MemoryRow({
           animate={{ opacity: 1 }}
           transition={{ delay: 0.7 }}
           className={`mt-2 inline-block font-mono text-[0.6rem] uppercase tracking-[0.18em] ${
-            struck ? 'text-acid/70' : 'text-mint/70'
+            struck ? 'text-acid' : 'text-mint'
           }`}
         >
           {STANDING_LABEL[card.standing]}
