@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { clockToMinutes, replanAfter } from '@/lib/booking';
 import Link from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
 import { SpatialStage } from '@/components/three/SpatialStage';
@@ -65,6 +66,26 @@ export function FirstSceneStage() {
   const soundOn = usePrototype((s) => s.soundOn);
   const conditions = useConditions();
   const decision = useSendDecision();
+
+  /*
+   * What losing a venue actually leaves you, once the clock is honoured.
+   *
+   * The panel below used to say "context replanned" without checking whether a
+   * replan was possible in time. It was not always: re-sorting by score and
+   * ignoring `scene.time` could answer an 8:32 PM cancellation with a 5:18 PM
+   * errand -- three hours earlier, a plan for an evening that had already
+   * happened. `replanAfter` refuses anything starting before the hour the lost
+   * plan was due, and returns null when nothing survives, which is a real and
+   * sayable answer rather than a scheduling error rendered as reassurance.
+   */
+  const replan = useMemo(() => {
+    const lostId = conditions.excluded[0];
+    if (!lostId) return undefined;
+    const lost = pair.scenes.find((sc) => sc.id === lostId);
+    const floor = lost ? clockToMinutes(lost.time) : null;
+    if (floor === null) return undefined;
+    return replanAfter(pair, lostId, floor, conditions);
+  }, [pair, conditions]);
   const timeShift = useTimeShift();
   const intimacy = useIntimacy();
   const swap = useSwap();
@@ -363,7 +384,22 @@ export function FirstSceneStage() {
                       <br />
                     </span>
                   ))}
-                  <span className="text-mint">pair held · context replanned · nobody rematched</span>
+                  {replan === undefined ? (
+                    <span className="text-mint">pair held · context replanned · nobody rematched</span>
+                  ) : replan ? (
+                    <span className="text-mint">
+                      pair held · moved to {replan.scene.label.toLowerCase()}, {replan.scene.time}
+                      <br />
+                      nobody rematched
+                    </span>
+                  ) : (
+                    /* The honest answer, and the one the old copy could not give. */
+                    <span className="text-acid">
+                      pair held · nothing left late enough tonight
+                      <br />
+                      no replacement rather than a worse one
+                    </span>
+                  )}
                 </motion.p>
               )}
             </div>

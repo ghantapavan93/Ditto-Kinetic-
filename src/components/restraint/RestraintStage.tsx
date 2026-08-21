@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useMemo } from 'react';
+import { planWeek } from '@/lib/booking';
+import { WEEK_TWO } from '@/data/weekTwo';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { HELD_BACK } from '@/data/heldBack';
@@ -34,6 +36,22 @@ import { track } from '@/lib/analytics';
 export function RestraintStage() {
   const held = useMemo(() => heldBack(HELD_BACK), []);
   const sent = useMemo(() => PAIRS.filter((p) => sendDecision(p).send), []);
+
+  /*
+   * The other reason a pair does not get the room it earned.
+   *
+   * Every score on this site is computed for one pair as though no other pair
+   * exists, which is fine for arguing about rooms and wrong the moment the
+   * product has more than one couple in it. Planned together, Priya and Theo's
+   * cafe at 3:40 and Noor and Sam's cafe at 4:15 overlap by twenty-five
+   * minutes -- one room, two first dates, adjacent tables, and nothing was
+   * looking at both bookings at once.
+   *
+   * This page is already about what the engine refused to send. A pair moved
+   * off its best evening because somebody else was in the room belongs here:
+   * it is the same restraint, applied to the week rather than to the pair.
+   */
+  const week = useMemo(() => planWeek([...PAIRS, WEEK_TWO]), []);
 
   useEffect(() => {
     track('held_back_viewed', { held: held.length, sent: sent.length });
@@ -94,6 +112,47 @@ export function RestraintStage() {
             <HeldBackCard key={restraint.pair.id} restraint={restraint} index={i} />
           ))}
         </section>
+
+        {/* what the week took away, as opposed to what the score did */}
+        {week.displaced.length > 0 && (
+          <section aria-label="Pairs moved because a room was taken" className="mt-10">
+            <p className="font-mono text-[0.56rem] uppercase tracking-[0.24em] text-paper/30">
+              and what the week took
+            </p>
+            <p className="mt-3 max-w-[52ch] font-voice text-[1.05rem] leading-snug text-paper/65">
+              scores are computed one pair at a time. rooms are not. planned together,{' '}
+              {week.booked.length} evenings fit without two couples landing in the same room
+              at the same hour &mdash; but only because somebody moved.
+            </p>
+
+            <div className="mt-4 grid gap-2">
+              {week.displaced.map((d) => (
+                <div
+                  key={d.pairId}
+                  className="border-t border-paper/[0.07] pt-2.5 font-mono text-[0.68rem]"
+                >
+                  <p className="text-paper/70">
+                    {d.pairId} &mdash; {d.from.label.toLowerCase()}
+                    <span className="text-paper/30"> &rarr; </span>
+                    <span className={d.to ? 'text-tungsten' : 'text-acid'}>
+                      {d.to ? d.to.label.toLowerCase() : 'nothing this week'}
+                    </span>
+                  </p>
+                  <p className="mt-1 font-editorial text-[0.85rem] lowercase text-paper/35">
+                    {d.reason}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            <p className="mt-4 max-w-[52ch] font-voice text-[1.02rem] leading-snug text-paper/45">
+              the pair the engine was more confident about keeps the table. the other is
+              offered a different evening rather than the same one at an awkward angle,
+              and if there is nothing left it is held &mdash; which is the same answer this
+              page is already about, arrived at from the other direction.
+            </p>
+          </section>
+        )}
 
         <motion.section
           initial={{ opacity: 0 }}

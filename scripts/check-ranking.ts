@@ -52,7 +52,15 @@ import {
 import { buildThread, silenceFor } from '../src/lib/thread';
 import { WAYS_IN, costOfWay, shortestWay } from '../src/lib/waysIn';
 import { PROOF } from '../src/data/proof';
-import type { Scene } from '../src/lib/types';
+import {
+  SITTING_MINUTES,
+  clashes,
+  clockToMinutes,
+  planWeek,
+  replanAfter,
+} from '../src/lib/booking';
+import type { MatchPair, Scene } from '../src/lib/types';
+import type { SendDecision } from '../src/lib/rankScenes';
 import { existsSync, readFileSync as readSourceFile, readdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { join } from 'node:path';
@@ -111,6 +119,7 @@ const HEADING31 = "\nClaim 31 \u2014 an introduction is only as good as the relu
 const HEADING32 = "\nClaim 32 \u2014 the thread says what the engine decided:";
 const HEADING33 = "\nClaim 33 \u2014 the front door recommends, and admits:";
 const HEADING34 = "\nClaim 34 \u2014 the model is what it says it is:";
+const HEADING35 = "\nClaim 35 \u2014 a plan is not a ranking:";
 
 const HEADING7 = '\nClaim 7 — last week changes this week:';
 
@@ -2224,6 +2233,113 @@ console.log(HEADING34);
   console.log(`  floor ${SAFETY_FLOOR}; lowest room on the site ${lowest}; excluded today: ${excluded}`);
   expect('the floor excludes nothing here, and that is stated', excluded, 0);
   expect('and it sits below every room that ships', lowest > SAFETY_FLOOR, true);
+}
+
+
+/* ---- claim 35: a plan is not a ranking ------------------------------------ */
+
+console.log(HEADING35);
+{
+  const everyone = [...PAIRS, WEEK_TWO];
+
+  /*
+   * Two rooms, one evening.
+   *
+   * Scored in isolation, Priya x Theo take the campus cafe at 3:40 and Noor x
+   * Sam take the same cafe at 4:15. A sitting is an hour, so those overlap by
+   * twenty-five minutes: one room, two first dates, adjacent tables. Nothing
+   * caught it because nothing was looking at two pairs at once.
+   */
+  const naive = everyone
+    .map((pair) => ({ pair, decision: sendDecision(pair) }))
+    .filter((c): c is { pair: MatchPair; decision: Extract<SendDecision, { send: true }> } =>
+      c.decision.send,
+    )
+    .map((c) => {
+      const from = clockToMinutes(c.decision.scene.time) ?? 0;
+      return {
+        pairId: c.pair.id,
+        scene: c.decision.scene,
+        from,
+        to: from + SITTING_MINUTES,
+        utility: c.decision.utility,
+      };
+    });
+
+  let naiveClashes = 0;
+  for (let i = 0; i < naive.length; i++) {
+    for (let j = i + 1; j < naive.length; j++) {
+      if (clashes(naive[i], naive[j])) naiveClashes++;
+    }
+  }
+  console.log(`  scoring pairs in isolation produces ${naiveClashes} double-booked room(s)`);
+  expect('the isolated ranker really does collide', naiveClashes >= 1, true);
+
+  // Planned as a week, it does not. That is the whole fix.
+  const week = planWeek(everyone);
+  let planned = 0;
+  for (let i = 0; i < week.booked.length; i++) {
+    for (let j = i + 1; j < week.booked.length; j++) {
+      if (clashes(week.booked[i], week.booked[j])) planned++;
+    }
+  }
+  console.log(
+    `  planned as a week: ${week.booked.length} booked, ${week.displaced.length} moved, ${planned} collisions`,
+  );
+  expect('no two pairs share a room at an overlapping hour', planned, 0);
+
+  // Nobody is squeezed in below the bar to make the schedule work. A room that
+  // does not clear the threshold is not a fallback, it is a worse evening.
+  for (const b of week.booked) {
+    expect(`${b.pairId}: was not squeezed in below the bar`, b.utility >= SEND_THRESHOLD, true);
+  }
+
+  // Displacement is explained, never silent. A pair moved off its best room
+  // should be able to be told why.
+  for (const d of week.displaced) {
+    expect(`${d.pairId}: the move has a stated reason`, d.reason.length > 10, true);
+  }
+
+  /*
+   * And the clock.
+   *
+   * Excluding a dead venue and re-sorting by score is correct about rooms and
+   * silent about time: losing POST SHOW WALK at 8:32 PM handed back MINI
+   * MISSION at 5:18 PM, a hundred and ninety-four minutes earlier. The score
+   * was right. The evening had already happened.
+   */
+  let backwards = 0;
+  for (const pair of everyone) {
+    const first = rankScenes(pair)[0];
+    if (!first) continue;
+    const lostAt = clockToMinutes(first.scene.time);
+    if (lostAt === null) continue;
+
+    const naiveNext = rankScenes(pair, { ...NO_CONDITIONS, excluded: [first.scene.id] })[0];
+    if (naiveNext) {
+      const naiveAt = clockToMinutes(naiveNext.scene.time);
+      if (naiveAt !== null && naiveAt < lostAt) backwards++;
+    }
+
+    // The clocked replan can return nothing -- which is a real answer, and a
+    // better one than a plan for an hour that has already passed.
+    const replanned = replanAfter(pair, first.scene.id, lostAt);
+    if (replanned) {
+      const at = clockToMinutes(replanned.scene.time);
+      expect(`${pair.id}: the replacement is not in the past`, at !== null && at >= lostAt, true);
+      expect(`${pair.id}: and it still clears the bar`, replanned.utility >= SEND_THRESHOLD, true);
+    }
+  }
+  console.log(`  re-sorting alone would send ${backwards} pair(s) backwards in time`);
+  expect('the naive replan really does travel backwards', backwards >= 1, true);
+
+  // Neither library is decorative. `venueSafety` sat authored and unread for
+  // months; a planner nothing calls would be the same defect wearing a nicer
+  // shape, so both are asserted to be reachable from a surface.
+  const stage = readSourceFile(join(process.cwd(), 'src/components/stage/FirstSceneStage.tsx'), 'utf8');
+  expect('the stage uses the clocked replan', stage.includes('replanAfter'), true);
+  const restraint = readSourceFile(join(process.cwd(), 'src/components/restraint/RestraintStage.tsx'), 'utf8');
+  expect('a surface shows the week plan', restraint.includes('planWeek'), true);
 }
 
 
