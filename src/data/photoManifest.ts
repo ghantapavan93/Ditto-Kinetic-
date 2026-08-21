@@ -30,14 +30,6 @@ export const PHOTOS: Photo[] = [
     "title": "bridgeside"
   },
   {
-    "src": "/photos/coffee-date.webp",
-    "w": 1536,
-    "h": 1024,
-    "kind": "moment",
-    "kb": 89,
-    "title": "golden hour, two coffees"
-  },
-  {
     "src": "/photos/moment-01.webp",
     "w": 1122,
     "h": 1402,
@@ -57,13 +49,6 @@ export const PHOTOS: Photo[] = [
     "h": 1402,
     "kind": "moment",
     "kb": 65
-  },
-  {
-    "src": "/photos/moment-04.webp",
-    "w": 1536,
-    "h": 1024,
-    "kind": "moment",
-    "kb": 89
   },
   {
     "src": "/photos/moment-05.webp",
@@ -106,13 +91,6 @@ export const PHOTOS: Photo[] = [
     "h": 1024,
     "kind": "moment",
     "kb": 59
-  },
-  {
-    "src": "/photos/moment-11.webp",
-    "w": 1536,
-    "h": 1024,
-    "kind": "moment",
-    "kb": 80
   },
   {
     "src": "/photos/moment-12.webp",

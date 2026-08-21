@@ -118,13 +118,30 @@ export function IntroCurtain({ onBegin }: { onBegin: () => void }) {
 
       <div className="flex items-end justify-between gap-6">
         <PrototypeDisclosure />
+        {/*
+          Keeps breathing until somebody moves.
+
+          This pulsed once and stopped, which turned the only affordance on the
+          opening screen into a caption. A visitor who reads and hesitates was
+          left with a static card and no interactive element anywhere in the
+          DOM -- measured: zero buttons, zero links, and nothing that ever
+          advances on its own. The gesture is forgiving (any pointer press
+          works, not just a drag), so the fix is to say so and to keep the
+          invitation alive rather than to take the first choice away by
+          auto-advancing. The stage is about choosing; it should not choose.
+        */}
         <motion.p
           className="shrink-0 font-mono text-label uppercase text-paper/70"
           initial={{ opacity: 0 }}
-          animate={{ opacity: beat === 'people' ? [0, 1, 0.55, 1] : 0 }}
-          transition={{ delay: 0.7, duration: 2.2, ease: 'easeInOut' }}
+          animate={{ opacity: beat === 'people' ? [0.35, 1, 0.35] : 0 }}
+          transition={{
+            delay: 0.7,
+            duration: 2.6,
+            ease: 'easeInOut',
+            repeat: beat === 'people' ? Infinity : 0,
+          }}
         >
-          drag the first scene
+          drag it &mdash; or tap anywhere
         </motion.p>
       </div>
     </motion.div>

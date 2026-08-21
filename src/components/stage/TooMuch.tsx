@@ -1,7 +1,8 @@
 'use client';
 
 import { AnimatePresence, motion } from 'framer-motion';
-import { useCurrentPair, usePrototype, useSendDecision } from '@/store/prototypeStore';
+import { useConditions, useCurrentPair, usePrototype, useSendDecision } from '@/store/prototypeStore';
+import { rankScenes } from '@/lib/rankScenes';
 
 /**
  * The escape hatch.
@@ -19,7 +20,18 @@ export function TooMuch() {
   const open = usePrototype((s) => s.tldrOpen);
   const toggle = usePrototype((s) => s.toggleTldr);
   const pair = useCurrentPair();
+  const conditions = useConditions();
   const decision = useSendDecision();
+
+  // Derived, because this card is the single most screenshot-able object on
+  // the site and it used to be three hardcoded strings: "coffee bad / post show
+  // good / go meet her". Two of those were only true for one of the two pairs
+  // the stage ships -- swap to the other and coffee WINS, which is the site's
+  // own best proof, contradicted by its own shareable. And the third misgendered
+  // a person whose data carries no pronoun. Names, and the real ranking, now.
+  const ranked = rankScenes(pair, conditions);
+  const worst = ranked[ranked.length - 1]?.scene;
+  const best = ranked[0]?.scene;
 
   return (
     <>
@@ -46,9 +58,9 @@ export function TooMuch() {
             <div className="mt-4 space-y-1 font-mono text-[clamp(1.1rem,3.6vw,2rem)] leading-tight text-ink">
               {decision.send ? (
                 <>
-                  <p>coffee bad</p>
-                  <p>post show good</p>
-                  <p>go meet her</p>
+                  <p>{worst?.label.toLowerCase()} bad</p>
+                  <p>{best?.label.toLowerCase()} good</p>
+                  <p>go meet {pair.personB.name.toLowerCase()}</p>
                 </>
               ) : (
                 <>

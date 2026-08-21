@@ -19,8 +19,12 @@ import { PHOTOS } from '@/data/photoManifest';
  *
  * The photography rides in the scene as textured planes, chosen from the
  * generated manifest by slug so the claim suite can assert that every frame
- * the flight uses actually ships. Only the named photos are placed — the
- * numbered ones have no stable identity to compose with.
+ * the flight uses actually ships. The tonight station used to fly a frame with
+ * Ditto's wordmark rendered onto a coffee cup; it does not any more, and claim
+ * 26 now checks the pixels are unique rather than trusting the filenames.
+ *
+ * Only the named photos are placed — the numbered ones have no stable identity
+ * to compose with.
  */
 
 export type Vec3 = [number, number, number];
@@ -39,7 +43,7 @@ export const STATIONS: Station[] = [
   {
     key: 'tonight',
     at: [0, 0, 0],
-    photos: ['coffee-date', 'twilight-stroll'],
+    photos: ['moment-13', 'twilight-stroll'],
     plate: '/rooms/coffee.webp',
   },
   {

@@ -89,10 +89,19 @@ and did not carry forward what failed.
 
 | Claim in those documents | Verdict |
 |---|---|
-| **Elsa Cai** is Head of Growth & Creative Director at Ditto | **VERIFIED.** LinkedIn profile, USC 2025–27, Los Angeles. |
+| A named individual holds a named senior role at Ditto | **VERIFIED**, against a public professional profile — and then removed. The claim checked out; republishing it did not. See the note below. |
 | Ditto runs **~1,000 date simulations** per match | **REPORTED, NOT FIRST-PARTY.** Appears near-verbatim across several secondary write-ups (Substack, Medium, an AI-tools blog), which indicates a single origin — most likely one press piece or deck — rather than independent confirmation. Not present on Ditto's own site. Treated as reported, never as architecture. |
 | Ditto has a **3-agent architecture** (Analysis / Matchmaking / Simulation agents) | **NOT VERIFIED.** A three-*stage* pipeline is described in secondary press; "three agents" is the concept document's own framing layered on top. No first-party source found. |
 | 163,000 students · 100+ schools · 69% match rate · $9.5M raised | **INCORRECT OR STALE.** Verified figures: 130,000 students who went on dates, $9.2M seed (reported elsewhere as "more than $9M" / "$10M backed"). The 69% match rate is unsourced. |
+
+**On that first row.** An earlier version of this file carried that person's
+name, title, university, graduating years and city, compiled from their LinkedIn
+and published in a public repository. That was wrong, and it was wrong by this
+project's own stated rule: no private information, no identifiable personal data,
+synthetic people only. A rule that applies to the students in the prototype
+applies at least as much to a real person who never agreed to appear in it.
+Verifying a claim needed the source. Shipping the source did not. The row now
+records the verification without the profile.
 
 Consequence: the strongest concept in those documents — a visual companion layer
 that renders Ditto's "three agents" at work — was **not built**, because it is

@@ -120,12 +120,19 @@ had to overturn was genuinely close (a margin of 0.0026) rather than rigged.
 Next.js 16 · React 19 · TypeScript (strict) · Tailwind · three.js ·
 @react-three/fiber · framer-motion · zustand · zod
 
-Every portrait, artifact and handwritten fragment is drawn procedurally to a
-canvas and cached — no face on this site is a photograph of anyone, real or
-generated. The shot photography is separate and deliberate: six room plates
-behind the stage and the reel at `/moments`, all synthetic, all listed in a
-generated manifest that `npm run check` verifies against the disk. Scoring is a
-deterministic linear model with no LLM in the main path.
+Every portrait, artifact and handwritten fragment **in the ranking surfaces** is
+drawn procedurally to a canvas and cached — no polaroid, profile or scene tile
+is a photograph. Nobody real appears anywhere in this project.
+
+The photography is a separate, deliberate layer and it does contain generated
+faces: the reel at `/moments` is AI-generated imagery of people who do not
+exist, and the six room plates behind the stage are empty rooms. Both are listed
+in a generated manifest that `npm run check` verifies against the disk. Saying
+otherwise would be the one lie this project cannot afford, so it is said plainly
+here: the reel is synthetic photography of synthetic people, generated, not
+shot, and not of anyone.
+
+Scoring is a deterministic linear model with no LLM in the main path.
 
 ## Honesty
 

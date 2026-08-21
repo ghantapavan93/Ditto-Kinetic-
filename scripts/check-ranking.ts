@@ -43,6 +43,7 @@ import { STATIONS, stationAt, stationOpacity, visionCameraAt } from '../src/lib/
 import { LANGUAGE, termsFor } from '../src/lib/language';
 import { SCHOOLS, barAt, buildWorld, survivorsAt } from '../src/lib/world';
 import { existsSync, readFileSync as readSourceFile, readdirSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { join } from 'node:path';
 import { SURFACES } from '../src/data/attentionInventory';
 import {
@@ -1607,7 +1608,17 @@ console.log(HEADING26);
   // The manifest is the reel's only source, so the manifest has to be true of
   // the disk. The --check pass in npm run check catches drift; these catch
   // shape.
-  expect('the reel has photos', PHOTOS.length >= 30, true);
+  // Counted off the disk, not pinned to a number. The old floor read ">= 30"
+  // and broke the moment three images were pulled for carrying a wordmark --
+  // a correct removal failing an assertion that was only ever guarding against
+  // an empty manifest. Same mistake the route audit made with ">= 16".
+  // public/photos only: the six stage plates in public/rooms are loaded by path
+  // by RoomPlate and were never manifest entries.
+  const onDisk = readdirSync(join(process.cwd(), 'public', 'photos')).filter((f) =>
+    f.endsWith('.webp'),
+  ).length;
+  expect('the manifest matches the disk exactly', PHOTOS.length, onDisk);
+  expect('and the reel is not empty', PHOTOS.length > 0, true);
   for (const p of PHOTOS) {
     const onDisk = existsSync(join(process.cwd(), 'public', p.src));
     expect(`${p.src}: exists on disk`, onDisk, true);
@@ -1617,7 +1628,7 @@ console.log(HEADING26);
   const kinds = { moment: 0, room: 0, sheet: 0 };
   for (const p of PHOTOS) kinds[p.kind]++;
   console.log(`  ${PHOTOS.length} photos -- ${kinds.moment} moments, ${kinds.room} rooms, ${kinds.sheet} sheets`);
-  expect('moments carry the reel', kinds.moment >= 20, true);
+  expect('moments carry the reel', kinds.moment >= 18, true);
   expect('the rooms are the quiet passage', kinds.room, 6);
   expect('the sheets cut fast', kinds.sheet, 4);
 
@@ -1631,8 +1642,23 @@ console.log(HEADING26);
     );
   }
 
+  // No frame ships twice. Two pairs did -- coffee-date/moment-04 and
+  // moment-11/study-picnic were byte-identical, so the reel showed the same
+  // evening twice and called it two moments. Hashing the actual bytes is the
+  // only check that catches it; distinct filenames proved nothing.
+  const seenBytes = new Map<string, string>();
+  for (const photo of PHOTOS) {
+    const bytes = readSourceFile(join(process.cwd(), 'public', photo.src));
+    const digest = createHash('sha1').update(bytes).digest('hex');
+    const twin = seenBytes.get(digest);
+    expect(`${photo.src}: is not a duplicate of ${twin ?? 'anything'}`, twin === undefined, true);
+    seenBytes.set(digest, photo.src);
+  }
+  console.log(`  ${seenBytes.size} distinct images, no frame shipped twice`);
+
   // Unofficial means unofficial: nothing shipped carries the wordmark, and the
-  // three source images that did were archived rather than converted.
+  // images that did -- including one with it rendered onto a coffee cup, which
+  // a filename check could never have caught -- were archived, not converted.
   const shipped = [
     ...readdirSync(join(process.cwd(), 'public', 'photos')),
     ...readdirSync(join(process.cwd(), 'public', 'rooms')),
