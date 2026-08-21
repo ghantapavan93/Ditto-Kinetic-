@@ -40,7 +40,8 @@ import { ALIVE, buildWeek, readWeather } from '../src/lib/weather';
 import { SCRUB_DAYS, openWorld } from '../src/lib/intersections';
 import { PHOTOS } from '../src/data/photoManifest';
 import { STATIONS, stationAt, stationOpacity, visionCameraAt } from '../src/lib/vision';
-import { existsSync, readdirSync } from 'node:fs';
+import { LANGUAGE, termsFor } from '../src/lib/language';
+import { existsSync, readFileSync as readSourceFile, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { SURFACES } from '../src/data/attentionInventory';
 import {
@@ -99,6 +100,7 @@ const HEADING24 = '\nClaim 24 — the ending runs the real thing:';
 const HEADING25 = '\nClaim 25 — an opening appears before a person does:';
 const HEADING26 = '\nClaim 26 — the reel ships only what it says it ships:';
 const HEADING27 = '\nClaim 27 — the future is flown, not asserted:';
+const HEADING28 = "\nClaim 28 — the language is the code's language:";
 
 const HEADING7 = '\nClaim 7 — last week changes this week:';
 
@@ -1689,6 +1691,44 @@ console.log(HEADING27);
   // meeting, tonight has fully faded and the meeting is fully present.
   expect('stations fade by distance', stationOpacity(0.5, 0) < 0.05, true);
   expect('and the near one is fully there', stationOpacity(0.5, 2) > 0.95, true);
+}
+
+
+/* ---- claim 28: the language is the code's language ---------------------- */
+
+console.log(HEADING28);
+{
+  // A ubiquitous language is only ubiquitous if the words in the glossary and
+  // the words in the code are the same words. Open every named file and check.
+  for (const term of LANGUAGE) {
+    const path = join(process.cwd(), term.file);
+    expect(`"${term.word}": its file exists`, existsSync(path), true);
+    const source = readSourceFile(path, 'utf8');
+    expect(`"${term.word}": ${term.symbol} really lives there`, source.includes(term.symbol), true);
+  }
+  console.log(`  ${LANGUAGE.length} words, every one resolved to a real symbol in a real file`);
+
+  // Every station of the flight coins at least one word, and the vocabulary
+  // grows along the route rather than arriving all at once.
+  for (const station of STATIONS) {
+    expect(`${station.key}: coins vocabulary`, termsFor(station.key).length >= 1, true);
+  }
+
+  // The glossary is the site's register, not a spec's: lowercase throughout.
+  for (const term of LANGUAGE) {
+    expect(
+      `"${term.word}": stays lowercase`,
+      term.word === term.word.toLowerCase() && term.says === term.says.toLowerCase(),
+      true,
+    );
+  }
+
+  // No word is defined twice. One language, one meaning per word.
+  expect(
+    'no word means two things',
+    new Set(LANGUAGE.map((t) => t.word)).size,
+    LANGUAGE.length,
+  );
 }
 
 

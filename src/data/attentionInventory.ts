@@ -137,7 +137,7 @@ export const SURFACES: Surface[] = [
   {
     "path": "/vision",
     "kind": "argument",
-    "words": 268,
-    "decisions": 3
+    "words": 304,
+    "decisions": 4
   }
 ];

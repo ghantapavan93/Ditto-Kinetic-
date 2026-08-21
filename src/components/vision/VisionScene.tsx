@@ -52,6 +52,12 @@ function PhotoPlane({
 
   return (
     <group position={position} rotation={rotation ?? [0, 0, 0]}>
+      {/* a soft dark backing, offset down-left — the cheapest honest depth cue
+          there is. unlit planes read as stickers without it. */}
+      <mesh position={[-0.09, -0.15, -0.03]}>
+        <planeGeometry args={[w + 0.3, height + 0.45]} />
+        <meshBasicMaterial color="#000000" transparent opacity={0.35} side={THREE.DoubleSide} />
+      </mesh>
       {/* the paper the photograph sits on — same object language as the stage */}
       <mesh position={[0, -0.06, -0.005]}>
         <planeGeometry args={[w + 0.12, height + 0.3]} />
@@ -143,7 +149,110 @@ function Artifacts() {
   );
 }
 
-function Flight({ t, reducedMotion }: { t: number; reducedMotion: boolean }) {
+/** Station key -> the colour its practical light burns at. The flight cools
+ *  as it goes: amber tonight, paper on campus, mint at the meeting, a cold
+ *  blue over the city, and nothing at all in the quiet. */
+const STATION_LIGHT: Record<string, string | null> = {
+  tonight: '#FFB865',
+  campus: '#F4EDE4',
+  meeting: '#2FD8A8',
+  city: '#4A6C8C',
+  quiet: null,
+};
+
+/**
+ * Dust along the whole corridor.
+ *
+ * Seven hundred points with size attenuation is the cheapest way to make
+ * eighty units of empty space read as SPACE — every camera move gets parallax
+ * from hundreds of depth cues at once. Deterministic positions, same rule as
+ * every scatter on this site.
+ */
+function Dust() {
+  const points = useRef<THREE.Points>(null);
+
+  const positions = useMemo(() => {
+    let h = 987654321 >>> 0;
+    const rand = () => {
+      h += 0x6d2b79f5;
+      let x = h;
+      x = Math.imul(x ^ (x >>> 15), x | 1);
+      x ^= x + Math.imul(x ^ (x >>> 7), x | 61);
+      return ((x ^ (x >>> 14)) >>> 0) / 4294967296;
+    };
+    const out = new Float32Array(700 * 3);
+    for (let i = 0; i < 700; i++) {
+      out[i * 3] = (rand() - 0.5) * 14;
+      out[i * 3 + 1] = (rand() - 0.5) * 7;
+      out[i * 3 + 2] = 4 - rand() * 68;
+    }
+    return out;
+  }, []);
+
+  useFrame((_, delta) => {
+    if (points.current) points.current.rotation.z += Math.min(delta, 1 / 30) * 0.004;
+  });
+
+  return (
+    <points ref={points}>
+      <bufferGeometry>
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
+      </bufferGeometry>
+      <pointsMaterial
+        color="#E8D9C4"
+        size={0.035}
+        sizeAttenuation
+        transparent
+        opacity={0.32}
+        depthWrite={false}
+        blending={THREE.AdditiveBlending}
+      />
+    </points>
+  );
+}
+
+/**
+ * The road ahead, as faint breadcrumbs sampled off the real camera path —
+ * so the flight you are about to take is visible in the world before you
+ * take it, and it is provably the same path, because it is computed from
+ * the same function the claims sample.
+ */
+function Breadcrumbs() {
+  const positions = useMemo(() => {
+    const out: number[] = [];
+    for (let i = 0; i <= 60; i++) {
+      const shot = visionCameraAt(i / 60);
+      out.push(shot.target[0], shot.target[1] - 0.9, shot.target[2]);
+    }
+    return new Float32Array(out);
+  }, []);
+
+  return (
+    <points>
+      <bufferGeometry>
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
+      </bufferGeometry>
+      <pointsMaterial
+        color="#E8913C"
+        size={0.05}
+        sizeAttenuation
+        transparent
+        opacity={0.22}
+        depthWrite={false}
+      />
+    </points>
+  );
+}
+
+function Flight({
+  t,
+  pointer,
+  reducedMotion,
+}: {
+  t: number;
+  pointer: { x: number; y: number };
+  reducedMotion: boolean;
+}) {
   const groups = useRef<(THREE.Group | null)[]>([]);
   const clock = useRef(0);
 
@@ -151,7 +260,14 @@ function Flight({ t, reducedMotion }: { t: number; reducedMotion: boolean }) {
     clock.current += Math.min(delta, 1 / 30);
 
     const shot = visionCameraAt(t);
-    camera.position.set(shot.eye[0], shot.eye[1], shot.eye[2]);
+
+    // A few degrees of pointer parallax and a slow breath. Enough to make the
+    // dust and the shadows work; never enough to hand over the framing.
+    const sway = reducedMotion ? 0 : Math.sin(clock.current * 0.35) * 0.06;
+    const px = reducedMotion ? 0 : pointer.x * 0.32;
+    const py = reducedMotion ? 0 : pointer.y * 0.18;
+
+    camera.position.set(shot.eye[0] + px + sway, shot.eye[1] - py, shot.eye[2]);
     camera.lookAt(shot.target[0], shot.target[1], shot.target[2]);
 
     STATIONS.forEach((_, i) => {
@@ -174,6 +290,8 @@ function Flight({ t, reducedMotion }: { t: number; reducedMotion: boolean }) {
 
   return (
     <>
+      <Dust />
+      <Breadcrumbs />
       {STATIONS.map((s, i) => (
         <group
           key={s.key}
@@ -231,13 +349,31 @@ function Flight({ t, reducedMotion }: { t: number; reducedMotion: boolean }) {
               <meshBasicMaterial color="#F4EDE4" transparent opacity={0.7} />
             </mesh>
           )}
+
+          {/* every station burns its own colour, and the quiet burns nothing */}
+          {STATION_LIGHT[s.key] && s.key !== 'tonight' && (
+            <pointLight
+              position={[0, 1.1, 1.6]}
+              intensity={1.5}
+              color={STATION_LIGHT[s.key]!}
+              distance={8}
+            />
+          )}
         </group>
       ))}
     </>
   );
 }
 
-export function VisionScene({ t, reducedMotion }: { t: number; reducedMotion: boolean }) {
+export function VisionScene({
+  t,
+  pointer,
+  reducedMotion,
+}: {
+  t: number;
+  pointer: { x: number; y: number };
+  reducedMotion: boolean;
+}) {
   return (
     <Canvas
       dpr={[1, 1.75]}
@@ -250,7 +386,7 @@ export function VisionScene({ t, reducedMotion }: { t: number; reducedMotion: bo
       <ambientLight intensity={0.85} />
       <directionalLight position={[3, 5, 4]} intensity={0.6} color="#FFD9A8" />
 
-      <Flight t={t} reducedMotion={reducedMotion} />
+      <Flight t={t} pointer={pointer} reducedMotion={reducedMotion} />
     </Canvas>
   );
 }

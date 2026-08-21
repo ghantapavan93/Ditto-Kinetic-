@@ -1,10 +1,11 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
 import { STATIONS, stationAt } from '@/lib/vision';
+import { termsFor } from '@/lib/language';
 import { spring, type Spring } from '@/lib/motion';
 import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
 import { NarrativeCursor } from '@/components/shared/NarrativeCursor';
@@ -101,12 +102,19 @@ const RAIL: Record<string, string> = {
 export function VisionStage() {
   const [t, setT] = useState(0);
   const [done, setDone] = useState(false);
+  const [glossary, setGlossary] = useState(false);
   const reduced = useReducedMotion();
 
   const target = useRef(0);
   const smooth = useRef<Spring>({ x: 0, v: 0 });
   const raf = useRef(0);
   const last = useRef(0);
+
+  // One stable object, mutated by the listener and read by the frame loop --
+  // a state update per mousemove would re-render the whole canvas tree for a
+  // value only the camera cares about. A memoised plain object rather than a
+  // ref: the compiler forbids reading .current during render, and it is right.
+  const pointer = useMemo(() => ({ x: 0, y: 0 }), []);
 
   const nudge = useCallback((delta: number) => {
     target.current = Math.max(0, Math.min(1, target.current + delta));
@@ -142,13 +150,19 @@ export function VisionStage() {
       else return;
       e.preventDefault();
     };
+    const onMove = (e: MouseEvent) => {
+      pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
+      pointer.y = (e.clientY / window.innerHeight) * 2 - 1;
+    };
     window.addEventListener('wheel', onWheel, { passive: false });
     window.addEventListener('keydown', onKey);
+    window.addEventListener('mousemove', onMove);
     return () => {
       window.removeEventListener('wheel', onWheel);
       window.removeEventListener('keydown', onKey);
+      window.removeEventListener('mousemove', onMove);
     };
-  }, [nudge]);
+  }, [nudge, pointer]);
 
   const station = stationAt(t);
   const copy = COPY.stations[station.key];
@@ -156,7 +170,7 @@ export function VisionStage() {
   return (
     <div className="relative h-screen overflow-hidden bg-ink">
       <div className="fixed inset-0">
-        <VisionScene t={t} reducedMotion={reduced} />
+        <VisionScene t={t} pointer={pointer} reducedMotion={reduced} />
       </div>
 
       <div
@@ -230,6 +244,22 @@ export function VisionStage() {
                     {line}
                   </p>
                 ))}
+
+                {/*
+                  The words this stop coined. A product is its language -- the
+                  glossary at the end proves each of these lives in the code,
+                  and these chips are where they entered the vocabulary.
+                */}
+                <div className="mt-5 flex flex-wrap gap-x-4 gap-y-1.5">
+                  {termsFor(station.key).map((term) => (
+                    <span
+                      key={term.word}
+                      className="font-mono text-[0.6rem] lowercase tracking-[0.14em] text-tungsten/60"
+                    >
+                      {term.word}
+                    </span>
+                  ))}
+                </div>
               </motion.div>
             )}
 
@@ -255,10 +285,59 @@ export function VisionStage() {
                     {line}
                   </motion.p>
                 ))}
+
+                <motion.button
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 6, duration: 1.2 }}
+                  onClick={() => setGlossary((g) => !g)}
+                  data-cursor="the words"
+                  className="mt-8 font-editorial text-[0.72rem] lowercase tracking-wide text-paper/30 underline-offset-4 hover:text-paper/70 hover:underline"
+                >
+                  {glossary ? 'put the words away' : 'the language this built \u2192'}
+                </motion.button>
               </motion.div>
             )}
           </AnimatePresence>
         </section>
+
+        {/*
+          The ubiquitous language, collected. Every row names the file and
+          symbol the word lives in, and claim 28 opens each file and checks --
+          a glossary whose words are not the code's words is marketing.
+        */}
+        <AnimatePresence>
+          {glossary && (
+            <motion.section
+              key="glossary"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10, transition: { duration: 0.25 } }}
+              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              aria-label="The language this project built"
+              className="pointer-events-auto absolute right-gutter top-[12%] max-h-[70vh] w-full max-w-[26rem] overflow-y-auto rounded-artifact border border-paper/12 bg-ink/85 p-5 backdrop-blur-md"
+            >
+              <p className="font-mono text-[0.58rem] uppercase tracking-[0.26em] text-paper/35">
+                the language, and where each word lives
+              </p>
+              <ul className="mt-4 grid gap-3.5">
+                {STATIONS.flatMap((st) => termsFor(st.key)).map((term) => (
+                  <li key={term.word} className="border-t border-paper/[0.07] pt-2.5">
+                    <p className="font-display text-[0.95rem] lowercase leading-none text-tungsten">
+                      {term.word}
+                    </p>
+                    <p className="mt-1.5 font-voice text-[0.92rem] leading-snug text-paper/75">
+                      {term.says}
+                    </p>
+                    <p className="mt-1 font-mono text-[0.56rem] lowercase tracking-wide text-paper/25">
+                      {term.file} · {term.symbol}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </motion.section>
+          )}
+        </AnimatePresence>
 
         <footer className="flex flex-wrap items-end justify-between gap-4">
           <div className="w-full max-w-[26rem]">
