@@ -131,28 +131,20 @@ survive being scaled to a 400px-wide thumbnail — so at most six words.
 
 ---
 
-## 3. Wiring, once files exist
+## 3. Wiring — already done
 
-Room plates are the only ones needing code. They go behind the stage at low
-opacity, keyed by `scene.id`:
+The room plates are wired. [`RoomPlate`](../src/components/stage/RoomPlate.tsx)
+sits behind the temperature wash on the stage, probes for
+`public/rooms/{scene.id}.webp`, and renders **nothing at all** when the file is
+absent — no broken request in the layout, no placeholder, no console noise.
 
-```tsx
-// mood already drives the DOM wash in src/lib/temperature.ts —
-// the plate goes underneath it, never instead of it
-<div
-  aria-hidden
-  className="pointer-events-none absolute inset-0 opacity-[0.18]"
-  style={{
-    backgroundImage: `url(/rooms/${scene.id}.webp)`,
-    backgroundSize: 'cover',
-    filter: 'saturate(0.7)',
-  }}
-/>
-```
+So the entire remaining task is:
 
-Load them with `next/image` `priority={false}` and a blur placeholder, and keep
-the procedural path as the fallback — the site must still work with the images
-missing, because it works that way today.
+> **drop the six files into `public/rooms/` with the exact names in the README
+> there. that is all.**
+
+A file appears with a slow fade the next time its room is on stage. Deleting a
+file returns the stage to exactly what ships today. Verified in both states.
 
 ---
 

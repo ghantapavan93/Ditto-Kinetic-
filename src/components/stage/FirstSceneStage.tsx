@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
 import { SpatialStage } from '@/components/three/SpatialStage';
+import { RoomPlate } from './RoomPlate';
 import { CLOUD_COUNT, possibilityCloud } from '@/lib/possibility';
 import { SceneDial } from './SceneDial';
 import { SceneHeadline } from './SceneHeadline';
@@ -196,6 +197,13 @@ export function FirstSceneStage() {
         className="pointer-events-none absolute inset-0 transition-[background] duration-scene ease-settle"
         style={{ background: temperatureFor(scene.mood).wash }}
       />
+
+      {/*
+        A photograph of the room, if one has been dropped into public/rooms.
+        Renders nothing at all when the file is absent, which is the state this
+        repo ships in — see RoomPlate.
+      */}
+      <RoomPlate scene={scene} reducedMotion={reduced} />
 
       {/* WebGL layer */}
       <div className="absolute inset-0 z-stage" data-cursor="come closer">
