@@ -62,6 +62,7 @@ export type EventName =
   | 'moments_viewed'
   | 'vision_viewed'
   | 'world_viewed'
+  | 'mutual_scene_viewed'
   | 'world_priced'
   | 'possibility_viewed'
   | 'possibility_opened'

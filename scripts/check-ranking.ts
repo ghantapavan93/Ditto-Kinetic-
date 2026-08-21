@@ -42,6 +42,7 @@ import { PHOTOS } from '../src/data/photoManifest';
 import { STATIONS, stationAt, stationOpacity, visionCameraAt } from '../src/lib/vision';
 import { LANGUAGE, termsFor } from '../src/lib/language';
 import { SCHOOLS, barAt, buildWorld, survivorsAt } from '../src/lib/world';
+import { DISPOSITIONS, mutualityOf, readMutuality, weightsOf } from '../src/lib/mutuality';
 import { existsSync, readFileSync as readSourceFile, readdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { join } from 'node:path';
@@ -71,16 +72,7 @@ import { CARD_H, CARD_W, computeStageLayout } from '../src/components/three/useS
 import { cardTarget } from '../src/components/three/cardTransform';
 import { FRAGMENT_MAX_WIDTH, FRAGMENT_SCALE, fragmentSlot } from '../src/lib/fragments';
 import { damp } from '../src/lib/motion';
-import {
-  NO_CONDITIONS,
-  SEND_THRESHOLD,
-  rankScenes,
-  scoreScene,
-  sendDecision,
-  weightsFor,
-  type Conditions,
-  type Learned,
-} from '../src/lib/rankScenes';
+import { NO_CONDITIONS, SEND_THRESHOLD, WEIGHTS, rankScenes, scoreScene, sendDecision, type Conditions, type Learned, weightsFor } from '../src/lib/rankScenes';
 
 const HEADING8 = '\nClaim 8 — the lenses are a partition, not a cast:';
 const HEADING9 = '\nClaim 9 — the possibility cloud is uncertainty made physical:';
@@ -105,6 +97,7 @@ const HEADING27 = '\nClaim 27 — the future is flown, not asserted:';
 const HEADING28 = "\nClaim 28 — the language is the code's language:";
 const HEADING29 = "\nClaim 29 — nothing ships unreachable, and no count is written:";
 const HEADING30 = "\nClaim 30 — scale does not buy what it looks like it buys:";
+const HEADING31 = "\nClaim 31 \u2014 an introduction is only as good as the reluctant one:";
 
 const HEADING7 = '\nClaim 7 — last week changes this week:';
 
@@ -1912,6 +1905,102 @@ console.log(HEADING30);
   expect('the conclusion survives re-rolling the assumption', worstMultiplier <= SCHOOLS / 2, true);
   expect('home is always over-represented', worstOver >= 2, true);
   expect('a school always goes dark', fewestDead >= 1, true);
+}
+
+
+/* ---- claim 31: an introduction is only as good as the reluctant one ------ */
+
+console.log(HEADING31);
+{
+  const everyPair = [...PAIRS, WEEK_TWO, ...HELD_BACK];
+
+  // Every disposition must trace to a phrase the person actually has. A
+  // personal weight that cannot be pointed at in that person's own record is
+  // just a number with a name on it. Same rule claim 28 holds for the glossary.
+  const allPeople = everyPair.flatMap((p) => [p.personA, p.personB]);
+  for (const d of DISPOSITIONS) {
+    const holders = allPeople.filter((person) =>
+      (d.field === 'socialEnergy' ? person.socialEnergy : person.conversationStyle).some((line) =>
+        line.includes(d.phrase),
+      ),
+    );
+    expect(`"${d.phrase}": somebody actually said it`, holders.length > 0, true);
+  }
+  console.log(`  ${DISPOSITIONS.length} dispositions, every one traceable to a real phrase`);
+
+  // Dispositions may only RE-WEIGHT. They may never add or remove a dimension,
+  // which is the same constraint `Learned` is under -- one date can change how
+  // much something counts, never what the system is looking at.
+  const baseKeys = Object.keys(WEIGHTS).sort().join(',');
+  for (const person of allPeople) {
+    expect(
+      `${person.name}: same dimensions as everyone else`,
+      Object.keys(weightsOf(person)).sort().join(','),
+      baseKeys,
+    );
+  }
+
+  // THE INVARIANT. mutual can never exceed the lower of the two readings.
+  // Nothing in the model is allowed to let one person's enthusiasm pay for the
+  // other's reluctance.
+  let readings = 0;
+  let worstOptimism = 0;
+  let pessimistic = 0;
+  let rankFlips = 0;
+  let sendFlips = 0;
+  let closestCall = Infinity;
+
+  for (const pair of everyPair) {
+    for (const scene of pair.scenes) {
+      const m = mutualityOf(pair, scene);
+      readings++;
+      expect(`${pair.id}/${scene.id}: never better than the reluctant one`, m.mutual <= Math.min(m.a, m.b) + 1e-12, true);
+
+      // A mean can never sit below its own minimum, so averaging is structurally
+      // incapable of being pessimistic. Asserted rather than assumed.
+      if (m.pooled < m.mutual - 1e-12) pessimistic++;
+      worstOptimism = Math.max(worstOptimism, m.pooled - m.mutual);
+      if (m.pooled >= SEND_THRESHOLD && m.mutual < SEND_THRESHOLD) sendFlips++;
+      if (m.pooled >= SEND_THRESHOLD) closestCall = Math.min(closestCall, m.mutual - SEND_THRESHOLD);
+
+      // The optimism is never an arbitrary quantity: mean(a,b) - min(a,b) is
+      // exactly |a-b|/2, always. The average splits the difference between two
+      // people and then reports the better half of it.
+      expect(
+        `${pair.id}/${scene.id}: the optimism is exactly half the disagreement`,
+        Math.abs(m.pooled - m.mutual - m.gap / 2) < 1e-12,
+        true,
+      );
+    }
+    const byMutual = readMutuality(pair)[0];
+    const byPooled = pair.scenes
+      .map((s) => mutualityOf(pair, s))
+      .sort((x, y) => y.pooled - x.pooled)[0];
+    if (byMutual.scene.id !== byPooled.scene.id) rankFlips++;
+  }
+
+  console.log(`  ${everyPair.length} pairs, ${readings} two-sided readings`);
+  expect('averaging is never pessimistic', pessimistic, 0);
+  console.log(`  averaging was optimistic by up to ${worstOptimism.toFixed(3)}`);
+  expect('and the optimism is real, not rounding', worstOptimism > 0.05, true);
+
+  /*
+   * The negative result, asserted so it cannot quietly become a claim.
+   *
+   * The interesting version of this page would show averaging sending two
+   * people somewhere one of them did not want to go. That case was searched
+   * for across every pair this project ships and it is not there: no ranking
+   * moved, no send was overturned. The surface says so in as many words, and
+   * these two assertions make sure the surface stays right. If a future pair
+   * ever DOES trip it, these fail loudly and the copy has to be rewritten --
+   * which is the correct outcome, not a regression.
+   */
+  expect('no ranking moved (and /mutual says so)', rankFlips, 0);
+  expect('no send was overturned (and /mutual says so)', sendFlips, 0);
+  console.log(
+    `  closest a sent room came to failing on the reluctant reading: +${closestCall.toFixed(4)}`,
+  );
+  expect('the margin is thin enough to be worth guarding', closestCall < 0.1, true);
 }
 
 

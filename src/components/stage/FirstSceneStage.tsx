@@ -508,6 +508,7 @@ export function FirstSceneStage() {
                 </Link>
                 {[
                   { href: '/wednesday', label: 'the drop, 7pm' },
+                  { href: '/mutual', label: 'both sides, separately' },
                   { href: '/gravity', label: 'forces, not scores' },
                   { href: '/zoom', label: 'one camera, all of it' },
                   { href: '/network', label: 'the whole campus' },
