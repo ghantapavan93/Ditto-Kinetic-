@@ -1,4 +1,4 @@
-import { WEIGHTS, type WeightKey } from '@/lib/rankScenes';
+import { WEIGHTS, scoreScene, type WeightKey } from '@/lib/rankScenes';
 import type { MatchPair, Person, Scene, SceneEvaluation } from '@/lib/types';
 
 /**
@@ -6,7 +6,7 @@ import type { MatchPair, Person, Scene, SceneEvaluation } from '@/lib/types';
  *
  * This is a correction to something the rest of the engine got wrong, quietly,
  * from the first commit. `rankScenes` scores a scene with one weight vector and
- * calls the result the pair's utility. But nine of its eleven dimensions are
+ * calls the result the pair's utility. But nine of its ten weighted dimensions are
  * things two people experience *separately* — how much pressure a room carries,
  * how far it is, whether the first fifteen minutes will go well, whether they
  * will actually show up. A single score for those is an average, and an average
@@ -16,7 +16,7 @@ import type { MatchPair, Person, Scene, SceneEvaluation } from '@/lib/types';
  * half-want an evening. The other is one person who badly wants it and one who
  * does not — which is not a date, it is an obligation with a start time.
  *
- * So the fix is not another dimension. It is the same eleven dimensions, scored
+ * So the fix is not another dimension. It is the same ten weighted terms, scored
  * twice, with weights belonging to each person:
  *
  *     mutual = min(hers, his)
@@ -323,8 +323,20 @@ export type Mutuality = {
    * because an evening cannot be better than that.
    */
   mutual: number;
-  /** What a single pooled weight vector would have said. */
-  pooled: number;
+  /**
+   * What the model that ACTUALLY SHIPS says about this room.
+   *
+   * This used to be `(a + b) / 2` -- the mean of the two personalised readings
+   * -- and comparing that against `min(a, b)` was comparing this file to
+   * itself. It could only ever produce `mean >= min`, which is arithmetic, not
+   * a finding, and it made the page report that mutuality changed nothing.
+   *
+   * The honest comparison is against `scoreScene`, the single-weight-vector
+   * ranker running on `/` and `/thread`. A reviewer who owns matching caught
+   * this; they were right, and the real answer is more interesting than the
+   * one the mistake was hiding.
+   */
+  shipped: number;
   /** How far apart the two people are on this scene. */
   gap: number;
   /** Whose reading is lower — the person the evening actually depends on. */
@@ -355,7 +367,7 @@ export function mutualityOf(pair: MatchPair, scene: Scene): Mutuality {
     a,
     b,
     mutual: Math.min(a, b),
-    pooled: (a + b) / 2,
+    shipped: scoreScene(metrics),
     gap,
     reluctant: Math.abs(a - b) < 1e-9 ? 'neither' : a < b ? 'a' : 'b',
     oneSided: gap >= RECIPROCITY_GAP,
@@ -370,15 +382,20 @@ export function readMutuality(pair: MatchPair): Mutuality[] {
 }
 
 /**
- * The scene a pooled score would have picked, against the one mutuality picks.
+ * Rooms the shipping model would send that the reluctant person refuses.
  *
- * When these differ, the averaged model was about to send two people somewhere
- * one of them did not want to go. That disagreement is the entire point of this
- * layer, and it is the thing worth showing rather than describing.
+ * This is the whole layer in one function, and it is not empty: GROUP LANDING
+ * scores 0.494 for Maya and Jonah, clears the 0.48 bar, and would go out --
+ * while Maya's own reading of the same room is 0.430. The single-vector model
+ * cannot see that, because it never asked her separately.
  */
-export function disagreement(pair: MatchPair): { pooledPick: Mutuality; mutualPick: Mutuality; differs: boolean } {
-  const all = pair.scenes.map((scene) => mutualityOf(pair, scene));
-  const pooledPick = [...all].sort((x, y) => y.pooled - x.pooled)[0];
-  const mutualPick = [...all].sort((x, y) => y.mutual - x.mutual)[0];
-  return { pooledPick, mutualPick, differs: pooledPick.scene.id !== mutualPick.scene.id };
+export function overruled(pair: MatchPair, threshold: number): Mutuality[] {
+  return pair.scenes
+    .map((scene) => mutualityOf(pair, scene))
+    .filter((m) => m.shipped >= threshold && m.mutual < threshold);
+}
+
+/** By how much the shipping score overstates the reluctant person's reading. */
+export function overstatement(m: Mutuality): number {
+  return m.shipped - m.mutual;
 }

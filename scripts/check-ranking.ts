@@ -42,8 +42,17 @@ import { PHOTOS } from '../src/data/photoManifest';
 import { STATIONS, stationAt, stationOpacity, visionCameraAt } from '../src/lib/vision';
 import { LANGUAGE, termsFor } from '../src/lib/language';
 import { SCHOOLS, barAt, buildWorld, survivorsAt } from '../src/lib/world';
-import { DISPOSITIONS, mutualityOf, readMutuality, weightsOf } from '../src/lib/mutuality';
+import {
+  DISPOSITIONS,
+  mutualityOf,
+  overruled,
+  overstatement,
+  weightsOf,
+} from '../src/lib/mutuality';
 import { buildThread, silenceFor } from '../src/lib/thread';
+import { WAYS_IN, costOfWay, shortestWay } from '../src/lib/waysIn';
+import { PROOF } from '../src/data/proof';
+import type { Scene } from '../src/lib/types';
 import { existsSync, readFileSync as readSourceFile, readdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { join } from 'node:path';
@@ -73,7 +82,7 @@ import { CARD_H, CARD_W, computeStageLayout } from '../src/components/three/useS
 import { cardTarget } from '../src/components/three/cardTransform';
 import { FRAGMENT_MAX_WIDTH, FRAGMENT_SCALE, fragmentSlot } from '../src/lib/fragments';
 import { damp } from '../src/lib/motion';
-import { NO_CONDITIONS, SEND_THRESHOLD, WEIGHTS, rankScenes, scoreScene, sendDecision, type Conditions, type Learned, weightsFor } from '../src/lib/rankScenes';
+import { NO_CONDITIONS, SAFETY_FLOOR, SCORED_FIELDS, SEND_THRESHOLD, WEIGHTS, belowSafetyFloor, rankScenes, scoreScene, sendDecision, type Conditions, type Learned, weightsFor } from '../src/lib/rankScenes';
 
 const HEADING8 = '\nClaim 8 — the lenses are a partition, not a cast:';
 const HEADING9 = '\nClaim 9 — the possibility cloud is uncertainty made physical:';
@@ -100,6 +109,8 @@ const HEADING29 = "\nClaim 29 — nothing ships unreachable, and no count is wri
 const HEADING30 = "\nClaim 30 — scale does not buy what it looks like it buys:";
 const HEADING31 = "\nClaim 31 \u2014 an introduction is only as good as the reluctant one:";
 const HEADING32 = "\nClaim 32 \u2014 the thread says what the engine decided:";
+const HEADING33 = "\nClaim 33 \u2014 the front door recommends, and admits:";
+const HEADING34 = "\nClaim 34 \u2014 the model is what it says it is:";
 
 const HEADING7 = '\nClaim 7 — last week changes this week:';
 
@@ -1946,63 +1957,62 @@ console.log(HEADING31);
   // Nothing in the model is allowed to let one person's enthusiasm pay for the
   // other's reluctance.
   let readings = 0;
-  let worstOptimism = 0;
-  let pessimistic = 0;
-  let rankFlips = 0;
-  let sendFlips = 0;
-  let closestCall = Infinity;
+  let overstated = 0;
+  let worstOverstatement = 0;
+  const flips: string[] = [];
 
   for (const pair of everyPair) {
     for (const scene of pair.scenes) {
       const m = mutualityOf(pair, scene);
       readings++;
-      expect(`${pair.id}/${scene.id}: never better than the reluctant one`, m.mutual <= Math.min(m.a, m.b) + 1e-12, true);
-
-      // A mean can never sit below its own minimum, so averaging is structurally
-      // incapable of being pessimistic. Asserted rather than assumed.
-      if (m.pooled < m.mutual - 1e-12) pessimistic++;
-      worstOptimism = Math.max(worstOptimism, m.pooled - m.mutual);
-      if (m.pooled >= SEND_THRESHOLD && m.mutual < SEND_THRESHOLD) sendFlips++;
-      if (m.pooled >= SEND_THRESHOLD) closestCall = Math.min(closestCall, m.mutual - SEND_THRESHOLD);
-
-      // The optimism is never an arbitrary quantity: mean(a,b) - min(a,b) is
-      // exactly |a-b|/2, always. The average splits the difference between two
-      // people and then reports the better half of it.
       expect(
-        `${pair.id}/${scene.id}: the optimism is exactly half the disagreement`,
-        Math.abs(m.pooled - m.mutual - m.gap / 2) < 1e-12,
+        `${pair.id}/${scene.id}: never better than the reluctant one`,
+        m.mutual <= Math.min(m.a, m.b) + 1e-12,
         true,
       );
+
+      /*
+       * The comparison that matters, and the one this claim originally got
+       * wrong. It used to measure `min(a, b)` against `(a + b) / 2` -- two
+       * numbers this file computes itself -- which can only ever yield
+       * `mean >= min`. That is arithmetic wearing the costume of a finding, and
+       * it made the surface report that mutuality changed nothing.
+       *
+       * The real comparison is against `scoreScene`: the single-weight-vector
+       * model actually running on `/` and `/thread`.
+       */
+      const gapToShipped = overstatement(m);
+      if (gapToShipped > 1e-12) overstated++;
+      worstOverstatement = Math.max(worstOverstatement, gapToShipped);
     }
-    const byMutual = readMutuality(pair)[0];
-    const byPooled = pair.scenes
-      .map((s) => mutualityOf(pair, s))
-      .sort((x, y) => y.pooled - x.pooled)[0];
-    if (byMutual.scene.id !== byPooled.scene.id) rankFlips++;
+
+    for (const m of overruled(pair, SEND_THRESHOLD)) {
+      const who = m.reluctant === 'a' ? pair.personA.name : pair.personB.name;
+      flips.push(
+        `${pair.id}/${m.scene.id}: ships ${m.shipped.toFixed(3)}, ${who} reads ${m.mutual.toFixed(3)}`,
+      );
+    }
   }
 
   console.log(`  ${everyPair.length} pairs, ${readings} two-sided readings`);
-  expect('averaging is never pessimistic', pessimistic, 0);
-  console.log(`  averaging was optimistic by up to ${worstOptimism.toFixed(3)}`);
-  expect('and the optimism is real, not rounding', worstOptimism > 0.05, true);
+  console.log(
+    `  the shipping model sits above the reluctant reading in ${overstated}/${readings}, by up to ${worstOverstatement.toFixed(3)}`,
+  );
+  expect('the shipping model usually overstates', overstated > readings / 2, true);
+  expect('and the overstatement is material, not rounding', worstOverstatement > 0.1, true);
 
   /*
-   * The negative result, asserted so it cannot quietly become a claim.
+   * The rooms that would go out and should not.
    *
-   * The interesting version of this page would show averaging sending two
-   * people somewhere one of them did not want to go. That case was searched
-   * for across every pair this project ships and it is not there: no ranking
-   * moved, no send was overturned. The surface says so in as many words, and
-   * these two assertions make sure the surface stays right. If a future pair
-   * ever DOES trip it, these fail loudly and the copy has to be rewritten --
-   * which is the correct outcome, not a regression.
+   * An earlier version of this claim asserted there were NONE of these, and the
+   * surface said so in as many words. That was false, and it was false because
+   * of the bug above rather than because of the data. Asserting the real number
+   * keeps the page honest in the other direction now: if this ever drops to
+   * zero, the copy claiming a case exists has to be rewritten.
    */
-  expect('no ranking moved (and /mutual says so)', rankFlips, 0);
-  expect('no send was overturned (and /mutual says so)', sendFlips, 0);
-  console.log(
-    `  closest a sent room came to failing on the reluctant reading: +${closestCall.toFixed(4)}`,
-  );
-  expect('the margin is thin enough to be worth guarding', closestCall < 0.1, true);
+  console.log(`  rooms the shipping model would send and mutuality refuses: ${flips.length}`);
+  flips.forEach((f) => console.log(`    ${f}`));
+  expect('at least one room is overruled, and the page says which', flips.length >= 1, true);
 }
 
 
@@ -2071,6 +2081,149 @@ console.log(HEADING32);
     console.log(`  the thread is ${threadCost.toFixed(0)}s against the stage's ${stageCost.toFixed(0)}s`);
     expect('the thread is the cheapest way to get the product', threadCost < stageCost, true);
   }
+}
+
+
+/* ---- claim 33: the front door recommends, and admits ---------------------- */
+
+console.log(HEADING33);
+{
+  // Every lane points at a route that exists and is billed. A front door that
+  // recommends a 404 is worse than no front door.
+  const billed = new Set(SURFACES.map((s) => s.path));
+  for (const way of WAYS_IN) {
+    expect(`${way.key}: points somewhere real`, billed.has(way.route), true);
+    expect(`${way.key}: costs a measurable amount`, costOfWay(way) > 0, true);
+
+    // The half nobody prints. A recommendation without its limit is a sales
+    // pitch, and this project does not get to make one of those.
+    expect(`${way.key}: says what it does not prove`, way.doesNot.length > 20, true);
+  }
+
+  // No two lanes send you to the same place -- five ways in, five destinations,
+  // or it is a menu pretending to be advice.
+  expect(
+    'the five ways are five different ways',
+    new Set(WAYS_IN.map((w) => w.route)).size,
+    WAYS_IN.length,
+  );
+  console.log(`  ${WAYS_IN.length} lanes, ${new Set(WAYS_IN.map((w) => w.route)).size} distinct routes`);
+
+  // The recommended shortest route really is the shortest. The page says so in
+  // words and prints a number beside it; both come from the same audit.
+  const shortest = shortestWay();
+  for (const way of WAYS_IN) {
+    expect(
+      `${shortest.route} is no slower than ${way.route}`,
+      costOfWay(shortest) <= costOfWay(way) + 1e-9,
+      true,
+    );
+  }
+  console.log(`  shortest way in: ${shortest.route} at ${Math.round(costOfWay(shortest))}s`);
+
+  // And it should genuinely be quick, or the advice is useless.
+  expect('the shortest way in is under a minute', costOfWay(shortest) < 60, true);
+
+  /*
+   * The generated proof.
+   *
+   * These three numbers are printed on the front door, which makes them the
+   * ones most worth being pedantic about -- this project has twice been caught
+   * writing a count into copy the code had outgrown. build-proof.mjs regenerates
+   * them from a real run and `npm run check` fails on drift, so these
+   * assertions only need to catch the shapes that would be absurd.
+   */
+  // Shape only. Exactness is build-proof.mjs --check's job, and asserting a
+  // floor here duplicated it into a deadlock: the generator refuses to write a
+  // proof of a failing suite, and the suite failed because the proof was stale
+  // by exactly the claim being added. Each guard does one thing now.
+  expect('the proof counts claims at all', PROOF.claims > 0, true);
+  expect('assertions outnumber claims by a lot', PROOF.assertions > PROOF.claims * 10, true);
+  expect('the route count matches the bill', PROOF.routes, SURFACES.length);
+  console.log(
+    `  proof: ${PROOF.claims} claims, ${PROOF.assertions} assertions, ${PROOF.routes} routes`,
+  );
+
+  // The ask exists. Twenty-six routes with no way to reply was the gap a
+  // growth review found first, and it is the cheapest one on the list to fix.
+  // Whitespace-normalised, because JSX wraps prose at arbitrary points and a
+  // literal substring search against source is really a search against the
+  // formatter's line-break choices. This assertion failed on its first run for
+  // exactly that reason, not because the sentence was missing.
+  const front = readSourceFile(join(process.cwd(), 'src/components/start/StartStage.tsx'), 'utf8')
+    .replace(/\s+/g, ' ');
+  expect('the front door carries an ask', front.includes('the ask'), true);
+  expect('and it asks to be corrected, not admired', front.includes('which of these is wrong'), true);
+}
+
+
+/* ---- claim 34: the model is what it says it is ---------------------------- */
+
+console.log(HEADING34);
+{
+  /*
+   * The claim suite checked arithmetic and never checked meaning.
+   *
+   * That is how `venueSafety` survived: authored on all twenty-four scenes,
+   * declared in the type as one of eleven dimensions, and absent from the
+   * utility function -- internally consistent arithmetic describing itself
+   * wrongly for months. Four independent reviewers found it before this file
+   * did. So this claim checks the code against its own description.
+   */
+
+  // Every field the scorer declares is either weighted or explicitly gated.
+  // No third category, because a third category is where dead data hides.
+  const weighted = new Set(Object.keys(WEIGHTS));
+  const gated = new Set(['venueSafety']);
+  const declared = new Set<string>(SCORED_FIELDS);
+
+  for (const field of declared) {
+    expect(
+      `${field}: is weighted or gated, never merely declared`,
+      weighted.has(field) || gated.has(field),
+      true,
+    );
+  }
+  console.log(`  ${declared.size} scored fields -- ${weighted.size} weighted, ${gated.size} gated`);
+  expect('nothing is weighted that is not declared', [...weighted].every((k) => declared.has(k)), true);
+
+  // The safety gate actually fires. A guard that has never excluded anything is
+  // indistinguishable from a comment, so it is tested against a room built to
+  // fail it rather than against the shipped data, where nothing is unsafe.
+  const template = PAIRS[0].scenes[0];
+  const unsafe: Scene = {
+    ...template,
+    id: 'synthetic-unsafe-room',
+    metrics: { ...template.metrics, venueSafety: SAFETY_FLOOR - 0.2, pairSignal: 1, contextFit: 1 },
+  };
+  expect('a room below the floor is refused', belowSafetyFloor(unsafe.metrics), true);
+
+  const withUnsafe = rankScenes({ ...PAIRS[0], scenes: [...PAIRS[0].scenes, unsafe] });
+  expect(
+    'and it cannot be ranked at any score',
+    withUnsafe.some((r) => r.scene.id === 'synthetic-unsafe-room'),
+    false,
+  );
+  // Even when it would otherwise have won outright.
+  expect('not even when it would have won', withUnsafe[0].scene.id !== 'synthetic-unsafe-room', true);
+
+  // Safety is not tradeable. If it were in WEIGHTS, a high enough novelty score
+  // could buy past it, and that exchange rate is a worse claim than silence.
+  expect('safety is a gate, not an exchange rate', weighted.has('venueSafety'), false);
+
+  // On the shipped data the floor excludes nothing, and saying so is the point:
+  // the guard was installed before it caught anything, not after.
+  let excluded = 0;
+  let lowest = 1;
+  for (const pair of [...PAIRS, WEEK_TWO, ...HELD_BACK]) {
+    for (const scene of pair.scenes) {
+      if (belowSafetyFloor(scene.metrics)) excluded++;
+      lowest = Math.min(lowest, scene.metrics.venueSafety);
+    }
+  }
+  console.log(`  floor ${SAFETY_FLOOR}; lowest room on the site ${lowest}; excluded today: ${excluded}`);
+  expect('the floor excludes nothing here, and that is stated', excluded, 0);
+  expect('and it sits below every room that ships', lowest > SAFETY_FLOOR, true);
 }
 
 

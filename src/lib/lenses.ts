@@ -12,7 +12,7 @@ import { NO_CONDITIONS } from './rankScenes';
 /**
  * Three lenses on the same decision.
  *
- * The eleven dimensions are not eleven independent opinions — they group into
+ * The ten weighted dimensions are not ten independent opinions — they group into
  * three questions that a person would actually ask in this order:
  *
  *   PERSON    should these two meet at all?

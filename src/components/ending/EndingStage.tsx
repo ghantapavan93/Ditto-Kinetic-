@@ -135,7 +135,7 @@ export function EndingStage() {
           {!verdict.reorders && (
             <>
               <p className="mt-4 font-voice text-[1.2rem] leading-snug text-paper/75">
-                same six rooms, same order, before and after. the eleven dimensions were
+                same six rooms, same order, before and after. the ten weighted dimensions were
                 already pricing the ending in through context fit — a room that hands two
                 people something to do tends to hand them a way out too.
               </p>

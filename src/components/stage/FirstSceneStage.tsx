@@ -507,6 +507,7 @@ export function FirstSceneStage() {
                   everything
                 </Link>
                 {[
+                  { href: '/start', label: 'start here' },
                   { href: '/thread', label: 'no app, just a thread' },
                   { href: '/wednesday', label: 'the drop, 7pm' },
                   { href: '/mutual', label: 'both sides, separately' },

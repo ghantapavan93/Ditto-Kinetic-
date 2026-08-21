@@ -32,6 +32,65 @@ export const WEIGHTS = {
 export type WeightKey = keyof typeof WEIGHTS;
 
 /**
+ * The floor under every room, which is not a weight.
+ *
+ * `venueSafety` was authored on all twenty-four scenes and then never read: not
+ * in WEIGHTS, not in a gate, not on screen. Four separate reviewers found it
+ * independently and all reached the same verdict, which is the correct one — a
+ * model that appears to price safety and does not is strictly worse than one
+ * that never mentioned it. The type said eleven dimensions. The utility
+ * function had ten. The missing one was the only dimension a product that sends
+ * students to meet strangers is not allowed to get wrong.
+ *
+ * The fix is deliberately NOT another weight. A weight is an exchange rate, and
+ * saying safety is tradeable against novelty at some rate is a worse claim than
+ * forgetting it. This is a gate: below the floor a room is not ranked at all,
+ * at any score, for any pair.
+ *
+ * On the number: it is a judgement, like the ninety minutes in `tripCost`, and
+ * it is stated rather than buried. Every room in this project scores between
+ * 0.80 and 0.95, so **this floor currently excludes nothing**. That is not a
+ * reason to leave it out. The failure it prevents — a room nobody checked
+ * winning on charm — is expensive, the guard is free, and it is asserted
+ * against a synthetic below-floor room so it cannot rot into decoration.
+ *
+ * It is also the honest limit of this layer: a number in a data file is not a
+ * safety assessment. Deciding what makes a room safe needs domain expertise
+ * this project does not have, which `roadmap.ts` says out loud. What the gate
+ * buys is that the answer has somewhere to go when somebody who does have it
+ * turns up.
+ */
+
+/**
+ * Every numeric field the scorer declares about a scene.
+ *
+ * The single source of truth for "what this model looks at", so that claim 34
+ * can check each one is either weighted or gated. `venueSafety` sat outside
+ * both for months precisely because no list like this existed to check against.
+ */
+export const SCORED_FIELDS = [
+  'pairSignal',
+  'contextFit',
+  'firstFifteenMinutesForecast',
+  'scheduleFit',
+  'travelFriction',
+  'venueSafety',
+  'attendanceLikelihood',
+  'socialPressure',
+  'noveltyValue',
+  'explorationValue',
+  'uncertainty',
+] as const;
+
+export const SAFETY_FLOOR = 0.75;
+
+/** True when a room is below the floor and may not be ranked at any score. */
+export function belowSafetyFloor(metrics: SceneEvaluation): boolean {
+  return metrics.venueSafety < SAFETY_FLOOR;
+}
+
+
+/**
  * A hypothesis the system has adopted from feedback.
  *
  * This is the only mechanism by which last week can change this week, and it is
@@ -199,6 +258,7 @@ function contributionsFor(metrics: SceneEvaluation, learned: readonly Learned[] 
 export function rankScenes(pair: MatchPair, conditions: Conditions = NO_CONDITIONS): RankedScene[] {
   return pair.scenes
     .filter((scene) => !conditions.excluded.includes(scene.id))
+    .filter((scene) => !belowSafetyFloor(scene.metrics))
     .map((scene) => {
       const metrics = applyConditions(scene.metrics, conditions);
       return {

@@ -58,6 +58,7 @@ const ROUTES: { path: string; dir: string; kind: 'argument' | 'product' }[] = [
   { path: '/world', dir: 'components/world', kind: 'argument' },
   { path: '/mutual', dir: 'components/mutual', kind: 'argument' },
   { path: '/thread', dir: 'components/thread', kind: 'product' },
+  { path: '/start', dir: 'components/start', kind: 'argument' },
   { path: '/zoom', dir: 'components/zoom', kind: 'argument' },
   { path: '/gravity', dir: 'components/gravity', kind: 'argument' },
   { path: '/weather', dir: 'components/weather', kind: 'argument' },

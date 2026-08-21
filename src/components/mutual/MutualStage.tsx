@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useCurrentPair } from '@/store/prototypeStore';
 import { SEND_THRESHOLD } from '@/lib/rankScenes';
-import { dispositionsOf, readMutuality } from '@/lib/mutuality';
+import { dispositionsOf, overruled, overstatement, readMutuality } from '@/lib/mutuality';
 import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
 import { NarrativeCursor } from '@/components/shared/NarrativeCursor';
 import { useReducedMotion } from '@/components/shared/useReducedMotion';
@@ -36,6 +36,7 @@ export function MutualStage() {
   const [at, setAt] = useState(0);
   const row = rows[at];
 
+  const refused = useMemo(() => overruled(pair, SEND_THRESHOLD), [pair]);
   const dispA = useMemo(() => dispositionsOf(pair.personA), [pair.personA]);
   const dispB = useMemo(() => dispositionsOf(pair.personB), [pair.personB]);
 
@@ -73,12 +74,12 @@ export function MutualStage() {
           </h1>
           <p className="mt-5 max-w-[44ch] font-voice text-[clamp(1.05rem,2.4vw,1.35rem)] leading-snug text-paper/70">
             the engine scored every room once and called it the pair&rsquo;s. but nine of
-            its eleven terms are things two people feel separately — pressure,
+            its ten weighted terms are things two people feel separately — pressure,
             distance, the first fifteen minutes, whether they&rsquo;ll actually show.
           </p>
           <p className="mt-3 max-w-[44ch] font-voice text-[clamp(1.05rem,2.4vw,1.35rem)] leading-snug text-paper/70">
-            an average of 0.9 and 0.2 looks exactly like an average of 0.55 and 0.55.
-            those are not the same evening.
+            one number for two people is not neutral. it rounds toward whichever of
+            them was keener, and the other one still has to show up.
           </p>
         </section>
 
@@ -148,16 +149,19 @@ export function MutualStage() {
             </p>
             <div className="mt-3 grid gap-2 font-mono text-[0.72rem]">
               <div className="flex items-baseline justify-between border-t border-paper/[0.07] pt-2">
-                <span className="text-paper/45">averaged</span>
-                <span className="text-paper/70">{row.pooled.toFixed(3)}</span>
+                <span className="text-paper/45">what ships today</span>
+                <span className="text-paper/70">{row.shipped.toFixed(3)}</span>
               </div>
               <div className="flex items-baseline justify-between border-t border-paper/[0.07] pt-2">
                 <span className="text-tungsten">mutual</span>
                 <span className="text-tungsten">{row.mutual.toFixed(3)}</span>
               </div>
               <div className="flex items-baseline justify-between border-t border-paper/[0.07] pt-2">
-                <span className="text-paper/45">optimism</span>
-                <span className="text-paper/70">+{(row.pooled - row.mutual).toFixed(3)}</span>
+                <span className="text-paper/45">overstated by</span>
+                <span className="text-paper/70">
+                  {overstatement(row) >= 0 ? '+' : ''}
+                  {overstatement(row).toFixed(3)}
+                </span>
               </div>
             </div>
             <p className="mt-4 max-w-[38ch] font-voice text-[1rem] leading-snug text-paper/65">
@@ -202,33 +206,62 @@ export function MutualStage() {
         </section>
 
         {/*
-          The negative result, at the same size as everything else.
+          The finding, which reversed.
 
-          The temptation on a page like this is to show the case where averaging
-          sends two people somewhere one of them did not want to go. That case
-          was searched for and is not in this data. Saying so is the only version
-          of this page worth shipping.
+          This section used to say that scoring both sides changed nothing, and
+          that was wrong -- not because of the data but because of how it was
+          measured. `pooled` was the mean of the two personalised readings, so
+          the page was comparing this model against itself, and mean >= min is
+          arithmetic rather than a result. The comparison that matters is against
+          the single-vector scorer actually running on / and /thread.
+
+          A reviewer who owns matching found it. The real answer is better than
+          the one the mistake was hiding, which is usually how this goes.
         */}
-        <section className="max-w-[52ch] border-t border-paper/[0.09] pt-5">
+        <section className="max-w-[54ch] border-t border-paper/[0.09] pt-5">
           <p className="font-mono text-[0.56rem] uppercase tracking-[0.24em] text-paper/30">
-            what this changed
+            what this changes
           </p>
-          <p className="mt-3 font-voice text-[clamp(1rem,2.2vw,1.2rem)] leading-snug text-paper/70">
-            nothing. across six pairs and twenty-four rooms, scoring both sides
-            separately never moved a ranking and never overturned a send. the
-            closest call cleared the {SEND_THRESHOLD} bar on the reluctant person&rsquo;s
-            own reading by 0.031.
+
+          {refused.length > 0 ? (
+            <>
+              <p className="mt-3 font-voice text-[clamp(1.05rem,2.3vw,1.25rem)] leading-snug text-paper/75">
+                {refused.length === 1 ? 'one room' : `${refused.length} rooms`} the model running on
+                the rest of this site would send{refused.length === 1 ? ', mutuality refuses' : ', mutuality refuses'}.
+              </p>
+              {refused.map((m) => {
+                const who = m.reluctant === 'a' ? pair.personA : pair.personB;
+                return (
+                  <p
+                    key={m.scene.id}
+                    className="mt-3 font-voice text-[clamp(1.05rem,2.3vw,1.25rem)] leading-snug text-tungsten"
+                  >
+                    {m.scene.label.toLowerCase()} scores {m.shipped.toFixed(3)} and clears the{' '}
+                    {SEND_THRESHOLD} bar. {who.name.toLowerCase()} reads the same room at{' '}
+                    {m.mutual.toFixed(3)}. one number sends it; the other says she doesn&rsquo;t want
+                    to go.
+                  </p>
+                );
+              })}
+            </>
+          ) : (
+            <p className="mt-3 font-voice text-[clamp(1.05rem,2.3vw,1.25rem)] leading-snug text-paper/75">
+              for this pair, nothing the shipping model would send gets refused. the
+              guard is still doing work: it sits under every room, every week.
+            </p>
+          )}
+
+          <p className="mt-3 font-voice text-[clamp(1.05rem,2.3vw,1.25rem)] leading-snug text-paper/65">
+            across every pair here, the shipping score sits above the reluctant
+            person&rsquo;s own reading in 21 of 24 rooms, by as much as 0.153. a single
+            number for two people is not neutral. it rounds toward the one who was
+            keener.
           </p>
-          <p className="mt-3 font-voice text-[clamp(1rem,2.2vw,1.2rem)] leading-snug text-paper/70">
-            that isn&rsquo;t a defence of averaging. six pairs is not evidence. what it
-            is: the averaged number was optimistic in every single case &mdash; it has
-            to be, a mean can never sit below its own minimum &mdash; by up to 0.081.
-            that number is never arbitrary: it is exactly half the distance
-            between the two people, every time, which is another way of saying
-            the average splits the difference and then reports the better half.
-          </p>
-          <p className="mt-3 font-voice text-[clamp(1rem,2.2vw,1.2rem)] italic leading-snug text-tungsten">
-            you install this guard before it catches something, not after.
+
+          <p className="mt-4 font-voice text-[clamp(1rem,2.2vw,1.18rem)] italic leading-snug text-paper/45">
+            this page said the opposite until recently. it compared the new model
+            against itself, found the tie it had guaranteed, and called that an
+            honest negative result.
           </p>
         </section>
 

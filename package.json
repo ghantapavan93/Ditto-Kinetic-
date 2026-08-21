@@ -2,16 +2,17 @@
   "name": "first-scene",
   "version": "1.0.0",
   "private": true,
-  "description": "DITTO // FIRST SCENE \u2014 an unofficial interaction concept. Same two people, six ways to meet.",
+  "description": "DITTO // FIRST SCENE — an unofficial interaction concept. Same two people, six ways to meet.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "check": "tsx scripts/check-ranking.ts && tsx scripts/measure-attention.ts --check && node scripts/build-photo-manifest.mjs --check",
+    "check": "tsx scripts/check-ranking.ts && tsx scripts/measure-attention.ts --check && node scripts/build-photo-manifest.mjs --check && node scripts/build-proof.mjs --check",
     "measure": "tsx scripts/measure-attention.ts",
-    "photos": "node scripts/build-photo-manifest.mjs"
+    "photos": "node scripts/build-photo-manifest.mjs",
+    "proof": "node scripts/build-proof.mjs"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.23",

@@ -189,7 +189,7 @@ export type ExitVerdict = {
   after: string[];
   /** True when adding the term actually reorders anything. */
   reorders: boolean;
-  /** The room the eleven dimensions understand least well. */
+  /** The room the ten weighted dimensions understand least well. */
   worstBlindSpot: ExitRead | null;
   /** The room you have to perform leaving. */
   hardestToLeave: ExitRead | null;

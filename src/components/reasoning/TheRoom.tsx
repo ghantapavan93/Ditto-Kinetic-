@@ -18,7 +18,7 @@ import type { MatchPair } from '@/lib/types';
  *
  * Three lenses on one decision — should these two meet, is this the right room,
  * can it actually happen. It looks like three parties negotiating, and it is
- * emphatically not: they are a *partition* of the same eleven dimensions. Every
+ * emphatically not: they are a *partition* of the same ten weighted dimensions. Every
  * weighted term belongs to exactly one lens, and the three sum back to the
  * utility exactly. They cannot say anything the scorer does not already say.
  *
