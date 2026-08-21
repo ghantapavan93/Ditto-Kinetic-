@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "check": "tsx scripts/check-ranking.ts && tsx scripts/measure-attention.ts --check && node scripts/build-photo-manifest.mjs --check && node scripts/build-proof.mjs --check && node scripts/contrast.mjs --check",
+    "check": "node scripts/check.mjs",
     "measure": "tsx scripts/measure-attention.ts",
     "photos": "node scripts/build-photo-manifest.mjs",
     "proof": "node scripts/build-proof.mjs",
