@@ -37,6 +37,7 @@ const SAYS: Record<string, string> = {
   '/autonomy': 'six rungs, and the one that takes nothing and still costs you',
   '/end': 'the same question, asked once more, with none of it shown',
   '/possibility': 'an opening appears in your life before a person does',
+  '/moments': 'the world the argument is for, cut like a film',
 };
 
 /**

@@ -38,6 +38,9 @@ import { WAYPOINTS, cameraAt, distanceToPair, levelAt } from '../src/lib/zoom';
 import { MAX_GAP, MIN_GAP, coherence, fieldFor, fieldsFor, gapFor } from '../src/lib/gravity';
 import { ALIVE, buildWeek, readWeather } from '../src/lib/weather';
 import { SCRUB_DAYS, openWorld } from '../src/lib/intersections';
+import { PHOTOS } from '../src/data/photoManifest';
+import { existsSync, readdirSync } from 'node:fs';
+import { join } from 'node:path';
 import { SURFACES } from '../src/data/attentionInventory';
 import {
   SECONDS_PER_DECISION,
@@ -93,6 +96,7 @@ const HEADING22 = '\nClaim 22 — the audit includes the auditor:';
 const HEADING23 = '\nClaim 23 — the top rung takes nothing and still costs you:';
 const HEADING24 = '\nClaim 24 — the ending runs the real thing:';
 const HEADING25 = '\nClaim 25 — an opening appears before a person does:';
+const HEADING26 = '\nClaim 26 — the reel ships only what it says it ships:';
 
 const HEADING7 = '\nClaim 7 — last week changes this week:';
 
@@ -1563,6 +1567,57 @@ console.log(HEADING25);
     JSON.stringify(openWorld(SENTENCES[0], 4)) === JSON.stringify(openWorld(SENTENCES[0], 4)),
     true,
   );
+}
+
+
+/* ---- claim 26: the reel ships only what it says it ships ---------------- */
+
+console.log(HEADING26);
+{
+  // The manifest is the reel's only source, so the manifest has to be true of
+  // the disk. The --check pass in npm run check catches drift; these catch
+  // shape.
+  expect('the reel has photos', PHOTOS.length >= 30, true);
+  for (const p of PHOTOS) {
+    const onDisk = existsSync(join(process.cwd(), 'public', p.src));
+    expect(`${p.src}: exists on disk`, onDisk, true);
+    expect(`${p.src}: is under the size budget`, p.kb <= 260, true);
+  }
+
+  const kinds = { moment: 0, room: 0, sheet: 0 };
+  for (const p of PHOTOS) kinds[p.kind]++;
+  console.log(`  ${PHOTOS.length} photos -- ${kinds.moment} moments, ${kinds.room} rooms, ${kinds.sheet} sheets`);
+  expect('moments carry the reel', kinds.moment >= 20, true);
+  expect('the rooms are the quiet passage', kinds.room, 6);
+  expect('the sheets cut fast', kinds.sheet, 4);
+
+  // The six room plates the stage keys off scene ids all exist now, so the
+  // graceful-absence path on the stage has something to find.
+  for (const room of ['coffee', 'mission', 'gallery', 'postshow', 'group', 'study']) {
+    expect(
+      `the ${room} plate exists`,
+      existsSync(join(process.cwd(), 'public', 'rooms', `${room}.webp`)),
+      true,
+    );
+  }
+
+  // Unofficial means unofficial: nothing shipped carries the wordmark, and the
+  // three source images that did were archived rather than converted.
+  const shipped = [
+    ...readdirSync(join(process.cwd(), 'public', 'photos')),
+    ...readdirSync(join(process.cwd(), 'public', 'rooms')),
+  ];
+  expect(
+    'no shipped filename carries the wordmark',
+    shipped.some((f) => f.toLowerCase().includes('ditto')),
+    false,
+  );
+
+  // Windows hid this one: public/photos and public/Photos are the same folder
+  // locally and different URLs in production. Assert the real casing.
+  const entries = readdirSync(join(process.cwd(), 'public'));
+  expect('the photos folder is lowercase', entries.includes('photos'), true);
+  expect('and the capitalised one is gone', entries.includes('Photos'), false);
 }
 
 

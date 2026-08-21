@@ -9,8 +9,9 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "check": "tsx scripts/check-ranking.ts && tsx scripts/measure-attention.ts --check",
-    "measure": "tsx scripts/measure-attention.ts"
+    "check": "tsx scripts/check-ranking.ts && tsx scripts/measure-attention.ts --check && node scripts/build-photo-manifest.mjs --check",
+    "measure": "tsx scripts/measure-attention.ts",
+    "photos": "node scripts/build-photo-manifest.mjs"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.23",

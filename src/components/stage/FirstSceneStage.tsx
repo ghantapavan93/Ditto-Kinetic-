@@ -512,6 +512,7 @@ export function FirstSceneStage() {
                   { href: '/network', label: 'the whole campus' },
                   { href: '/weather', label: 'is tonight worth it' },
                   { href: '/possibility', label: 'where openings appear' },
+                  { href: '/moments', label: 'the reel' },
                   { href: '/compiler', label: 'say it in one sentence' },
                   { href: '/app', label: 'the whole thing as an app' },
                   { href: '/profile', label: 'what it knows about you' },

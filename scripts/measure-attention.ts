@@ -64,6 +64,7 @@ const ROUTES: { path: string; dir: string; kind: 'argument' | 'product' }[] = [
   { path: '/autonomy', dir: 'components/autonomy', kind: 'argument' },
   { path: '/end', dir: 'components/end', kind: 'product' },
   { path: '/possibility', dir: 'components/possibility', kind: 'product' },
+  { path: '/moments', dir: 'components/moments', kind: 'product' },
 ];
 
 function files(dir: string): string[] {

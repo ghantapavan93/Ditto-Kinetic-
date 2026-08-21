@@ -59,6 +59,7 @@ export type EventName =
   | 'index_viewed'
   | 'autonomy_viewed'
   | 'end_answered'
+  | 'moments_viewed'
   | 'possibility_viewed'
   | 'possibility_opened'
   | 'possibility_locked'
