@@ -48,6 +48,7 @@ const ROUTES: { path: string; dir: string; kind: 'argument' | 'product' }[] = [
   { path: '/app', dir: 'components/app', kind: 'product' },
   { path: '/wednesday', dir: 'components/drop', kind: 'product' },
   { path: '/after', dir: 'components/after', kind: 'product' },
+  { path: '/next-wednesday', dir: 'components/nextwednesday', kind: 'product' },
   { path: '/profile', dir: 'components/profile', kind: 'product' },
   { path: '/held-back', dir: 'components/restraint', kind: 'argument' },
   { path: '/double', dir: 'components/double', kind: 'argument' },

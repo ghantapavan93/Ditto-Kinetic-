@@ -7,7 +7,7 @@
  * pixel into a cost rather than an achievement.
  *
  * Taking it seriously means being willing to point the instrument at yourself.
- * So the population measured here is this repository: fifteen surfaces, counted
+ * So the population measured here is this repository: every surface, counted
  * from their own source, priced in seconds, and compared against what the real
  * product actually asks of somebody in a week.
  *

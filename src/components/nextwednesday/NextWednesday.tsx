@@ -79,6 +79,13 @@ export function NextWednesday() {
           >
             ← last week
           </Link>
+          <Link
+            href="/wednesday"
+            data-cursor="the next drop"
+            className="font-editorial text-[0.72rem] lowercase tracking-wide text-tungsten/70 underline-offset-4 transition-colors hover:text-tungsten hover:underline"
+          >
+            next wednesday, 7pm →
+          </Link>
         </header>
 
         <div>

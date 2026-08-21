@@ -18,6 +18,15 @@ import type { SceneMood } from '@/lib/types';
  * that gets a warm key *and* a cobalt rim, which is why it is the one that
  * looks photographed rather than rendered.
  */
+/**
+ * One scratch colour for the whole lighting rig.
+ *
+ * Each lerp target was a fresh `new THREE.Color(...)` every frame -- four
+ * allocations and four hex parses per frame for values that are immediately
+ * discarded. `.set()` on a shared instance does the same work with none of it.
+ */
+const SCRATCH = new THREE.Color();
+
 export function SceneLighting({
   mood,
   locked,
@@ -46,12 +55,12 @@ export function SceneLighting({
 
     if (ambient.current) {
       ambient.current.intensity = damp(ambient.current.intensity, target.ambient.intensity, L, dt);
-      ambientColor.current.lerp(new THREE.Color(target.ambient.color), k);
+      ambientColor.current.lerp(SCRATCH.set(target.ambient.color), k);
       ambient.current.color.copy(ambientColor.current);
     }
     if (key.current) {
       key.current.intensity = damp(key.current.intensity, target.key.intensity, L, dt);
-      keyColor.current.lerp(new THREE.Color(target.key.color), k);
+      keyColor.current.lerp(SCRATCH.set(target.key.color), k);
       key.current.color.copy(keyColor.current);
       key.current.position.x = damp(key.current.position.x, target.key.at[0], L, dt);
       key.current.position.y = damp(key.current.position.y, target.key.at[1], L, dt);
@@ -62,14 +71,14 @@ export function SceneLighting({
       // *decision* rather than to the room.
       const boost = locked ? 1.45 : 1;
       rim.current.intensity = damp(rim.current.intensity, target.rim.intensity * boost * 6, L, dt);
-      rimColor.current.lerp(new THREE.Color(target.rim.color), k);
+      rimColor.current.lerp(SCRATCH.set(target.rim.color), k);
       rim.current.color.copy(rimColor.current);
     }
 
     if (state.scene.fog instanceof THREE.Fog) {
       state.scene.fog.near = damp(state.scene.fog.near, target.fog[0], L, dt);
       state.scene.fog.far = damp(state.scene.fog.far, target.fog[1], L, dt);
-      airColor.current.lerp(new THREE.Color(target.air), k);
+      airColor.current.lerp(SCRATCH.set(target.air), k);
       state.scene.fog.color.copy(airColor.current);
     }
   });

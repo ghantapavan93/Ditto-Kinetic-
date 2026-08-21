@@ -93,11 +93,28 @@ export function ZoomStage() {
       else return;
       e.preventDefault();
     };
+    // Touch: drag vertically to fly. The wheel listener means nothing on a
+    // phone, and a flight whose only mobile input is five tiny rail buttons
+    // is a desktop page wearing a responsive layout.
+    let touchY = 0;
+    const onTouchStart = (e: TouchEvent) => {
+      touchY = e.touches[0]?.clientY ?? 0;
+    };
+    const onTouchMove = (e: TouchEvent) => {
+      const y = e.touches[0]?.clientY ?? touchY;
+      nudge((touchY - y) * 0.0022);
+      touchY = y;
+      e.preventDefault();
+    };
     window.addEventListener('wheel', onWheel, { passive: false });
     window.addEventListener('keydown', onKey);
+    window.addEventListener('touchstart', onTouchStart, { passive: true });
+    window.addEventListener('touchmove', onTouchMove, { passive: false });
     return () => {
       window.removeEventListener('wheel', onWheel);
       window.removeEventListener('keydown', onKey);
+      window.removeEventListener('touchstart', onTouchStart);
+      window.removeEventListener('touchmove', onTouchMove);
     };
   }, [nudge]);
 
@@ -203,7 +220,7 @@ export function ZoomStage() {
             </div>
 
             <p className="mt-3 font-editorial text-[0.7rem] lowercase tracking-wide text-paper/25">
-              scroll, or use the arrow keys. nothing here is a page.
+              scroll, drag, or use the arrow keys. nothing here is a page.
             </p>
           </div>
 

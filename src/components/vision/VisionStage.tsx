@@ -154,13 +154,30 @@ export function VisionStage() {
       pointer.x = (e.clientX / window.innerWidth) * 2 - 1;
       pointer.y = (e.clientY / window.innerHeight) * 2 - 1;
     };
+    // Touch: drag vertically to fly. The wheel listener means nothing on a
+    // phone, and a flight whose only mobile input is five tiny rail buttons
+    // is a desktop page wearing a responsive layout.
+    let touchY = 0;
+    const onTouchStart = (e: TouchEvent) => {
+      touchY = e.touches[0]?.clientY ?? 0;
+    };
+    const onTouchMove = (e: TouchEvent) => {
+      const y = e.touches[0]?.clientY ?? touchY;
+      nudge((touchY - y) * 0.0022);
+      touchY = y;
+      e.preventDefault();
+    };
     window.addEventListener('wheel', onWheel, { passive: false });
     window.addEventListener('keydown', onKey);
     window.addEventListener('mousemove', onMove);
+    window.addEventListener('touchstart', onTouchStart, { passive: true });
+    window.addEventListener('touchmove', onTouchMove, { passive: false });
     return () => {
       window.removeEventListener('wheel', onWheel);
       window.removeEventListener('keydown', onKey);
       window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('touchstart', onTouchStart);
+      window.removeEventListener('touchmove', onTouchMove);
     };
   }, [nudge, pointer]);
 
@@ -213,7 +230,7 @@ export function VisionStage() {
                 {COPY.opener.sub}
               </p>
               <p className="mt-6 font-editorial text-[0.72rem] lowercase tracking-wide text-paper/30">
-                scroll to fly. it stops at every station.
+                scroll or drag to fly. it stops at every station.
               </p>
             </motion.section>
           )}

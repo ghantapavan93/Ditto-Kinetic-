@@ -4,7 +4,7 @@ import { AttentionStage } from '@/components/attention/AttentionStage';
 export const metadata: Metadata = {
   title: 'THE BILL — what this site costs to look at',
   description:
-    'A product whose purpose is to get you off it cannot count time spent as a win. Fifteen surfaces, counted from source, priced in seconds.',
+    'A product whose purpose is to get you off it cannot count time spent as a win. Every surface counted from its own source, priced in seconds.',
 };
 
 /**

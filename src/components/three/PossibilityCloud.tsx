@@ -62,7 +62,15 @@ const CLOUD_Z = -0.35;
  * image assets, and a gradient that can be described in nine lines should not
  * become a network request.
  */
+let softCard: THREE.CanvasTexture | null = null;
+
 function softCardTexture(): THREE.CanvasTexture {
+  // Cached for the session. Deferring to first call is what keeps `document`
+  // away from the server pass; building it again on every mount was never part
+  // of that -- and nothing disposed the old ones, so each visit to this scene
+  // left another 128x128 texture on the GPU.
+  if (softCard) return softCard;
+
   const S = 128;
   const canvas = document.createElement('canvas');
   canvas.width = canvas.height = S;
@@ -77,6 +85,7 @@ function softCardTexture(): THREE.CanvasTexture {
 
   const texture = new THREE.CanvasTexture(canvas);
   texture.needsUpdate = true;
+  softCard = texture;
   return texture;
 }
 

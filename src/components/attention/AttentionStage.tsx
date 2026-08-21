@@ -23,7 +23,7 @@ import { track } from '@/lib/analytics';
  * — and taking that seriously means being willing to point the instrument at
  * yourself before pointing it at anybody else.
  *
- * So this audits this site. Fifteen surfaces, counted from their own source by
+ * So this audits this site. Every surface, counted from their own source by
  * a script that `npm run check` re-runs, priced against what a real week of the
  * product actually asks for. The result is unflattering and that is the point:
  * a prototype arguing that interfaces should get out of the way costs seventeen

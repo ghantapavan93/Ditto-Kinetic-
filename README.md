@@ -74,7 +74,7 @@ For the systems version, press **break it** three times: the venue falls through
 and it replans, the shift moves and it holds, the walk doubles and it withdraws
 the plan rather than downgrading it.
 
-## Three surfaces, one loop
+## Four surfaces, one loop
 
 | | |
 |---|---|
@@ -117,11 +117,15 @@ had to overturn was genuinely close (a margin of 0.0026) rather than rigged.
 
 ## Stack
 
-Next.js 14 · React 18 · TypeScript (strict) · Tailwind · three.js ·
+Next.js 16 · React 19 · TypeScript (strict) · Tailwind · three.js ·
 @react-three/fiber · framer-motion · zustand · zod
 
-Zero image assets — every portrait, artifact and handwritten fragment is drawn
-procedurally to a canvas and cached. Scoring is a deterministic linear model with no LLM in the main path.
+Every portrait, artifact and handwritten fragment is drawn procedurally to a
+canvas and cached — no face on this site is a photograph of anyone, real or
+generated. The shot photography is separate and deliberate: six room plates
+behind the stage and the reel at `/moments`, all synthetic, all listed in a
+generated manifest that `npm run check` verifies against the disk. Scoring is a
+deterministic linear model with no LLM in the main path.
 
 ## Honesty
 

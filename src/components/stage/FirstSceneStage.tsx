@@ -507,6 +507,7 @@ export function FirstSceneStage() {
                   everything
                 </Link>
                 {[
+                  { href: '/wednesday', label: 'the drop, 7pm' },
                   { href: '/gravity', label: 'forces, not scores' },
                   { href: '/zoom', label: 'one camera, all of it' },
                   { href: '/network', label: 'the whole campus' },
@@ -519,13 +520,14 @@ export function FirstSceneStage() {
                   { href: '/held-back', label: 'what it did not send' },
                   { href: '/double', label: 'four people' },
                   { href: '/odds', label: 'your odds' },
-                  { href: '/ending', label: 'how it ends' },
+                  { href: '/ending', label: 'the exit, as a term' },
                   { href: '/autonomy', label: 'how much to hand over' },
                   { href: '/attention', label: 'what this costs you' },
                   { href: '/vision', label: 'where this goes' },
                   { href: '/next', label: 'what would have to be true' },
-                  { href: '/end', label: 'the last one' },
+                  { href: '/end', label: 'the last surface' },
                   { href: '/after', label: 'after the date' },
+                  { href: '/next-wednesday', label: 'the week after' },
                 ].map((link) => (
                   <Link
                     key={link.href}

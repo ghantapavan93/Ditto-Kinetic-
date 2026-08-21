@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo } from 'react';
+import { SURFACES } from '@/data/attentionInventory';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { OUT_OF_SCOPE, falsifiers, roadmap, roomSpread } from '@/lib/roadmap';
@@ -80,7 +81,7 @@ export function NextStage() {
           </h1>
 
           <p className="mt-7 max-w-[46ch] font-voice text-[clamp(1.15rem,2.5vw,1.55rem)] leading-snug text-paper/70">
-            fourteen surfaces arguing one idea, with no way of finding out whether the idea
+            {SURFACES.length} surfaces arguing one idea, with no way of finding out whether the idea
             is right, is the same mistake this whole site has been pointing at.
           </p>
         </section>

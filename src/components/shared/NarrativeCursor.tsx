@@ -47,13 +47,21 @@ export function NarrativeCursor() {
       raf = requestAnimationFrame(tick);
     };
 
+    // Named, so they can actually be removed. Anonymous handlers here leaked
+    // two listeners per teardown -- and this component mounts on every stage,
+    // so a session that walks the site accumulated a pair per page.
+    const onDown = () => setDown(true);
+    const onUp = () => setDown(false);
+
     window.addEventListener('pointermove', onMove, { passive: true });
-    window.addEventListener('pointerdown', () => setDown(true));
-    window.addEventListener('pointerup', () => setDown(false));
+    window.addEventListener('pointerdown', onDown);
+    window.addEventListener('pointerup', onUp);
     raf = requestAnimationFrame(tick);
 
     return () => {
       window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerdown', onDown);
+      window.removeEventListener('pointerup', onUp);
       cancelAnimationFrame(raf);
     };
   }, [coarse, reduced]);

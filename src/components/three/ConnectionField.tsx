@@ -36,6 +36,17 @@ type Props = {
  * Geometry is allocated once and its position attribute is rewritten in place;
  * no per-frame allocation.
  */
+/**
+ * The line's three colours, built once.
+ *
+ * These were `new THREE.Color('#...')` inside useFrame -- two allocations and
+ * two hex parses per frame, per line, forever, in the file whose own header
+ * says the imperative loop exists to avoid precisely this. They never change.
+ */
+const COLD = new THREE.Color('#3A4470');
+const WARM = new THREE.Color('#5C6CFF');
+const LOCKED = new THREE.Color('#FF2E88');
+
 export function ConnectionField({ magnetism, locked, exiting, reducedMotion }: Props) {
   const sag = useRef(0.55);
   const spread = useRef(1.07);
@@ -92,11 +103,7 @@ export function ConnectionField({ magnetism, locked, exiting, reducedMotion }: P
       6,
       dt,
     );
-    material.color.lerpColors(
-      new THREE.Color('#3A4470'),
-      new THREE.Color(locked ? '#FF2E88' : '#5C6CFF'),
-      magnetism,
-    );
+    material.color.lerpColors(COLD, locked ? LOCKED : WARM, magnetism);
   });
 
   return <primitive object={line} />;

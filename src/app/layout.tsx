@@ -24,7 +24,7 @@ const voice = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'),
+  metadataBase: new URL(siteUrl()),
   title: 'FIRST SCENE — same two people, six ways to meet',
   description:
     'An unofficial Ditto interaction concept. The right person can still get the wrong first date. Drag through six openings and watch the same two people work — or not.',
@@ -38,6 +38,23 @@ export const metadata: Metadata = {
     'format-detection': 'telephone=no',
   },
 };
+
+/**
+ * Where this site thinks it lives, for absolute og:image URLs.
+ *
+ * The old fallback was a bare localhost, so any deploy without
+ * NEXT_PUBLIC_SITE_URL set unfurled its share card as
+ * http://localhost:3000/opengraph-image -- a dead image in every Slack, DM and
+ * tweet the link ever landed in. The README promises no environment variables
+ * are required, so the platform's own host is read before giving up.
+ */
+function siteUrl(): string {
+  const explicit = process.env.NEXT_PUBLIC_SITE_URL;
+  if (explicit) return explicit.startsWith('http') ? explicit : `https://${explicit}`;
+  const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_URL;
+  if (vercel) return `https://${vercel}`;
+  return 'http://localhost:3000';
+}
 
 export const viewport: Viewport = {
   themeColor: '#0B0907',

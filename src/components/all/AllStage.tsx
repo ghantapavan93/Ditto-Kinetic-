@@ -22,6 +22,7 @@ const SAYS: Record<string, string> = {
   '/app': 'the whole engine in the shape it would ship in',
   '/wednesday': 'the match arriving, and the frame it arrives in breaking',
   '/after': 'the only surface allowed to change its mind',
+  '/next-wednesday': 'the week after, and whether the system learned anything',
   '/profile': 'three questions, and the gaps left visible',
   '/held-back': 'what did not get sent, and what each pair is waiting for',
   '/double': 'four people is not two pairs',
@@ -44,7 +45,7 @@ const SAYS: Record<string, string> = {
 /**
  * The index.
  *
- * Twenty surfaces and, until now, no way to see the shape of them — the only
+ * Every surface and, until now, no way to see the shape of them — the only
  * route between them was a row of small text at the bottom of the stage.
  *
  * It is built out of the audit rather than beside it, which is the only version

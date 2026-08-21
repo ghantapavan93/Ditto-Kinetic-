@@ -26,6 +26,33 @@ import { buildCampus } from '@/lib/campus';
 
 const PAPER = '#D8C7AE';
 
+/**
+ * One texture per slug, for the life of the session — the same cache pattern
+ * `portraitTexture` set. A per-mount `new TextureLoader().load()` is not
+ * tracked by R3F's auto-disposal (only JSX-declared objects are), so every
+ * visit to this page would decode and keep another copy of all ten frames.
+ * Loading here also keeps the colour-space mutation at creation time, where
+ * the compiler is happy with it.
+ */
+/**
+ * One sphere for every node in every miniature campus.
+ *
+ * Four MiniCampus mounts x 96 people meant ~384 identical SphereGeometry
+ * allocations for a shape that is the same every time. The sibling scenes all
+ * share a module-scope dot; this one now does too.
+ */
+const DOT = new THREE.SphereGeometry(0.055, 8, 8);
+
+const TEXTURES = new Map<string, THREE.Texture>();
+function photoTexture(slug: string): THREE.Texture {
+  const hit = TEXTURES.get(slug);
+  if (hit) return hit;
+  const t = new THREE.TextureLoader().load(`/photos/${slug}.webp`);
+  t.colorSpace = THREE.SRGBColorSpace;
+  TEXTURES.set(slug, t);
+  return t;
+}
+
 function PhotoPlane({
   slug,
   position,
@@ -37,15 +64,7 @@ function PhotoPlane({
   rotation?: [number, number, number];
   height?: number;
 }) {
-  // Loaded manually rather than through useLoader: the colour space has to be
-  // set on the texture, and doing that to useLoader's cached value is a render
-  // mutation the compiler rightly rejects. Here the mutation happens once, at
-  // creation, inside the memo — and the station fade covers the pop-in.
-  const texture = useMemo(() => {
-    const t = new THREE.TextureLoader().load(`/photos/${slug}.webp`);
-    t.colorSpace = THREE.SRGBColorSpace;
-    return t;
-  }, [slug]);
+  const texture = photoTexture(slug);
 
   const aspect = aspectOf(slug);
   const w = height * aspect;
@@ -98,8 +117,7 @@ function MiniCampus({ scale = 0.34, cold = false }: { scale?: number; cold?: boo
         />
       </lineSegments>
       {campus.nodes.map((n) => (
-        <mesh key={n.id} position={n.at}>
-          <sphereGeometry args={[0.055, 8, 8]} />
+        <mesh key={n.id} position={n.at} geometry={DOT}>
           <meshBasicMaterial
             color={n.known ? '#E8913C' : cold ? '#4A6C8C' : '#F4EDE4'}
             transparent
@@ -275,6 +293,10 @@ function Flight({
       if (!g) return;
       const o = stationOpacity(t, i);
       g.visible = o > 0.01;
+      // Nothing below an invisible group needs touching. Without this, four
+      // out of five stations -- hundreds of meshes -- had their materials
+      // rewritten every frame to set an opacity nobody could see.
+      if (!g.visible) return;
       if (!reducedMotion) g.position.y = STATIONS[i].at[1] + Math.sin(clock.current * 0.4 + i * 2) * 0.04;
       g.traverse((obj) => {
         const m = (obj as THREE.Mesh).material as THREE.Material | undefined;

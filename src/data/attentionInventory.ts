@@ -11,7 +11,7 @@ export const SURFACES: Surface[] = [
   {
     "path": "/",
     "kind": "argument",
-    "words": 499,
+    "words": 506,
     "decisions": 29
   },
   {
@@ -35,8 +35,14 @@ export const SURFACES: Surface[] = [
   {
     "path": "/after",
     "kind": "product",
-    "words": 226,
-    "decisions": 9
+    "words": 156,
+    "decisions": 6
+  },
+  {
+    "path": "/next-wednesday",
+    "kind": "product",
+    "words": 75,
+    "decisions": 4
   },
   {
     "path": "/profile",
@@ -77,7 +83,7 @@ export const SURFACES: Surface[] = [
   {
     "path": "/zoom",
     "kind": "argument",
-    "words": 145,
+    "words": 146,
     "decisions": 3
   },
   {
@@ -95,7 +101,7 @@ export const SURFACES: Surface[] = [
   {
     "path": "/next",
     "kind": "argument",
-    "words": 248,
+    "words": 222,
     "decisions": 1
   },
   {
@@ -107,7 +113,7 @@ export const SURFACES: Surface[] = [
   {
     "path": "/all",
     "kind": "argument",
-    "words": 242,
+    "words": 251,
     "decisions": 5
   },
   {
@@ -137,7 +143,7 @@ export const SURFACES: Surface[] = [
   {
     "path": "/vision",
     "kind": "argument",
-    "words": 304,
+    "words": 307,
     "decisions": 4
   }
 ];

@@ -10,7 +10,7 @@ const NODE = new THREE.SphereGeometry(1, 20, 20);
 /**
  * The site, as one object.
  *
- * Twenty surfaces and no way to see the shape of them. This is the index, built
+ * Every surface and no way to see the shape of them. This is the index, built
  * out of the audit rather than beside it: every node is a route, its radius is
  * what that route costs somebody to read, and the two rings are the distinction
  * the audit already makes — what could ship sits close in, what exists to argue

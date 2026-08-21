@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { NextWednesday } from '@/components/after/NextWednesday';
+import { NextWednesday } from '@/components/nextwednesday/NextWednesday';
 import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
 
 export const metadata: Metadata = {

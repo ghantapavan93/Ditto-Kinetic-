@@ -142,9 +142,15 @@ export function possibilityCloud(scene: Scene): Cloud {
   // Worst first, so the version most likely to go wrong is the one that says so.
   const ranked = [...DRIFTS].sort((a, b) => b.risk(scene.metrics) - a.risk(scene.metrics));
 
+  // Where the diverging run starts. The drift list is indexed from HERE, not
+  // from the absolute card index -- otherwise the first diverging card reads
+  // ranked[2] and the two riskiest drifts, the whole point of sorting worst
+  // first, can never appear on screen.
+  const firstOff = CLOUD_COUNT - diverging;
+
   const possibilities: Possibility[] = [];
   for (let i = 0; i < CLOUD_COUNT; i++) {
-    const off = i >= CLOUD_COUNT - diverging;
+    const off = i >= firstOff;
 
     // Versions that agree still are not identical — pinning them to the exact
     // same point would read as one card, not as several that concur.
@@ -158,7 +164,7 @@ export function possibilityCloud(scene: Scene): Cloud {
       offset: [Math.cos(theta) * reach, lift, depth],
       distance: Math.min(1, reach / 3.35),
       converges: !off,
-      drift: off ? (ranked[i % ranked.length]?.says ?? null) : null,
+      drift: off ? (ranked[(i - firstOff) % ranked.length]?.says ?? null) : null,
     });
   }
 

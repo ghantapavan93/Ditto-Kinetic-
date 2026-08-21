@@ -352,7 +352,13 @@ export const usePrototype = create<State & Actions>((set, get) => ({
       clearTimeout(timeout);
       if (res.ok) {
         const json = await res.json();
-        if (json?.ok && json.data) result = { ...json.data, source: 'model' as const };
+        // Trust the server's own label. It answers ok:true with
+        // source:'fallback' whenever there is no API key, the upstream call
+        // failed, or the response failed its schema -- and overwriting that
+        // with 'model' made this site claim a model wrote words the local
+        // interpreter wrote. On a site that shows its own source, that is the
+        // one bug that is not allowed.
+        if (json?.ok && json.data) result = json.data as FeedbackResult;
       }
     } catch {
       // Intentionally silent. The fallback already holds a complete answer.
