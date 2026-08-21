@@ -154,6 +154,30 @@ export function planWeek(pairs: MatchPair[], conditions: Conditions = NO_CONDITI
 }
 
 /**
+ * The hour a replan must not start before.
+ *
+ * The latest of every room lost so far, because each cancellation happens at
+ * that room's hour and the most recent one is when you found out. Anything
+ * earlier has already happened.
+ *
+ * This exists because the stage and the store were computing it separately and
+ * disagreeing: the stage took the maximum across `excluded`, the store used
+ * only the scene it had just removed. On a second venue break they produced
+ * different floors, so the headline and the panel could once again describe two
+ * different evenings -- which is the exact bug the clock was added to fix, back
+ * one level. One function, so there is one answer.
+ */
+export function replanFloor(pair: MatchPair, excluded: readonly string[]): number | null {
+  let latest = -1;
+  for (const id of excluded) {
+    const lost = pair.scenes.find((scene) => scene.id === id);
+    const at = lost ? clockToMinutes(lost.time) : null;
+    if (at !== null) latest = Math.max(latest, at);
+  }
+  return latest < 0 ? null : latest;
+}
+
+/**
  * Replan after a room falls through, without travelling backwards in time.
  *
  * The old behaviour excluded the dead scene and re-sorted by score, which is

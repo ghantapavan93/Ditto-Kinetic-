@@ -1,7 +1,7 @@
 'use client';
 
 import { create } from 'zustand';
-import { clockToMinutes, replanAfter } from '@/lib/booking';
+import { replanAfter, replanFloor } from '@/lib/booking';
 import { PAIRS, SCENE_ORDER, pairById } from '@/data/pairs';
 import {
   NO_CONDITIONS,
@@ -237,11 +237,16 @@ export const usePrototype = create<State & Actions>((set, get) => ({
      * been withdrawn: stay where we are and drop to 'exploring', so the
      * abstention reads as an abstention instead of a quiet downgrade.
      */
-    const lost = d === 'venue' ? pair.scenes.find((sc) => sc.id === sceneId) : undefined;
-    const floor = lost ? clockToMinutes(lost.time) : null;
-
-    const replanned =
-      floor === null || !lost ? null : replanAfter(pair, lost.id, floor, next);
+    /*
+     * The same floor the stage computes, from the same function.
+     *
+     * This used the hour of the single scene just excluded while the stage took
+     * the latest across all of them, so on a second venue break the two halves
+     * of the screen disagreed again -- the precise failure the clock was
+     * introduced to fix.
+     */
+    const floor = d === 'venue' ? replanFloor(pair, next.excluded) : null;
+    const replanned = floor === null ? null : replanAfter(pair, sceneId, floor, next);
 
     const snapped =
       d === 'venue'

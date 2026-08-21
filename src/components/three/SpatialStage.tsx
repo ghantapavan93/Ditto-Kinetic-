@@ -9,7 +9,7 @@
  * Scoped to files that own frame callbacks; the React tree elsewhere is unaffected.
  */
 
-import { Suspense, useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { Polaroid3D } from './Polaroid3D';
@@ -164,6 +164,29 @@ function StageContents({ pair, scene, magnetism, locked, exiting, reducedMotion,
 }
 
 /** Rendered instead of the canvas when WebGL is unavailable or has failed. */
+/** WebGL capability never changes within a session, so nothing to subscribe to. */
+function subscribeToNothing(): () => void {
+  return () => {};
+}
+
+let webglAnswer: boolean | null = null;
+
+function readWebglSupport(): boolean {
+  if (webglAnswer !== null) return webglAnswer;
+  try {
+    const probe = document.createElement('canvas');
+    webglAnswer = Boolean(
+      probe.getContext('webgl2') ??
+        probe.getContext('webgl') ??
+        probe.getContext('experimental-webgl'),
+    );
+  } catch {
+    webglAnswer = false;
+  }
+  if (!webglAnswer) track('webgl_unavailable');
+  return webglAnswer;
+}
+
 function FlatFallback({ pair, scene }: { pair: MatchPair; scene: Scene }) {
   return (
     <div className="absolute inset-0 flex items-center justify-center px-gutter">
@@ -193,6 +216,28 @@ function FlatFallback({ pair, scene }: { pair: MatchPair; scene: Scene }) {
 
 export function SpatialStage(props: StageProps & { onFragment?: (f: Fragment | null) => void }) {
   const [failed, setFailed] = useState(false);
+
+  /*
+   * Whether WebGL exists at all, read without an effect.
+   *
+   * The previous fix listened for `webglcontextlost`, which is the right event
+   * for a driver reset -- and registered it inside `onCreated`, which R3F only
+   * calls once a context has been created successfully. The case where there is
+   * no context to begin with (WebGL disabled, blocklisted driver) therefore
+   * still never reached the fallback, and I described it as reachable when it
+   * was reachable from one of its two directions.
+   *
+   * `useSyncExternalStore` rather than an effect: this component server-renders,
+   * so a probe in an effect means setState during hydration, and a lazy
+   * initialiser means a server/client mismatch. The server snapshot assumes
+   * WebGL exists -- the optimistic answer, since the flat version is the
+   * degraded one -- and React re-renders with the real answer after hydration.
+   */
+  const supported = useSyncExternalStore(
+    subscribeToNothing,
+    readWebglSupport,
+    () => true,
+  );
 
   /**
    * R3F sizes the canvas from a ResizeObserver and does not start its render
@@ -227,7 +272,11 @@ export function SpatialStage(props: StageProps & { onFragment?: (f: Fragment | n
     };
   }, []);
 
-  if (failed) return <FlatFallback pair={props.pair} scene={props.scene} />;
+  // Nothing until the probe answers, then the flat version if the answer is no.
+  if (!supported || failed) {
+    return <FlatFallback pair={props.pair} scene={props.scene} />;
+  }
+
 
   return (
     <Canvas

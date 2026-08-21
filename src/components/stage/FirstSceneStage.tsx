@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { clockToMinutes, replanAfter } from '@/lib/booking';
+import { replanAfter, replanFloor } from '@/lib/booking';
 import Link from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
 import { SpatialStage } from '@/components/three/SpatialStage';
@@ -90,12 +90,8 @@ export function FirstSceneStage() {
      * evening that had already started. The guard was right and it was pointed
      * at the wrong moment.
      */
-    const floor = conditions.excluded.reduce((latest, id) => {
-      const lost = pair.scenes.find((sc) => sc.id === id);
-      const at = lost ? clockToMinutes(lost.time) : null;
-      return at === null ? latest : Math.max(latest, at);
-    }, -1);
-    if (floor < 0) return undefined;
+    const floor = replanFloor(pair, conditions.excluded);
+    if (floor === null) return undefined;
 
     const mostRecent = conditions.excluded[conditions.excluded.length - 1];
     return replanAfter(pair, mostRecent, floor, conditions);
