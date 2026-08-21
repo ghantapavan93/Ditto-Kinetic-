@@ -79,12 +79,26 @@ export function FirstSceneStage() {
    * sayable answer rather than a scheduling error rendered as reassurance.
    */
   const replan = useMemo(() => {
-    const lostId = conditions.excluded[0];
-    if (!lostId) return undefined;
-    const lost = pair.scenes.find((sc) => sc.id === lostId);
-    const floor = lost ? clockToMinutes(lost.time) : null;
-    if (floor === null) return undefined;
-    return replanAfter(pair, lostId, floor, conditions);
+    if (conditions.excluded.length === 0) return undefined;
+
+    /*
+     * The floor is the LATEST room lost, not the first one.
+     *
+     * This read `excluded[0]` for exactly one commit. `excluded` accumulates,
+     * so on a second venue break the clock guard was still anchored to the
+     * first cancellation -- an earlier hour -- and would happily hand back an
+     * evening that had already started. The guard was right and it was pointed
+     * at the wrong moment.
+     */
+    const floor = conditions.excluded.reduce((latest, id) => {
+      const lost = pair.scenes.find((sc) => sc.id === id);
+      const at = lost ? clockToMinutes(lost.time) : null;
+      return at === null ? latest : Math.max(latest, at);
+    }, -1);
+    if (floor < 0) return undefined;
+
+    const mostRecent = conditions.excluded[conditions.excluded.length - 1];
+    return replanAfter(pair, mostRecent, floor, conditions);
   }, [pair, conditions]);
   const timeShift = useTimeShift();
   const intimacy = useIntimacy();

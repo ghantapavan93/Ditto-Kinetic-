@@ -54,6 +54,15 @@ export function clockToMinutes(clock: string): number | null {
   return minutes;
 }
 
+/** Render minutes-past-midnight back to a clock, wrapping properly at both ends. */
+export function minutesToClock(minutes: number): string {
+  const wrapped = ((minutes % 1440) + 1440) % 1440;
+  const hour24 = Math.floor(wrapped / 60);
+  const suffix = hour24 >= 12 ? 'pm' : 'am';
+  const hour12 = hour24 % 12 === 0 ? 12 : hour24 % 12;
+  return `${hour12}:${String(wrapped % 60).padStart(2, '0')} ${suffix}`;
+}
+
 export type Booking = {
   pairId: string;
   scene: Scene;

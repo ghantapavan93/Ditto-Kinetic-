@@ -1,5 +1,8 @@
 import { sendDecision, winningScene } from '@/lib/rankScenes';
 import { endingClock, readExits } from '@/lib/exit';
+import { readSchedule } from '@/lib/schedule';
+import { WORDS_PER_MINUTE } from '@/lib/attention';
+import { clockToMinutes, minutesToClock } from '@/lib/booking';
 import type { MatchPair, Person, Scene } from '@/lib/types';
 import { NO_CONDITIONS, type Conditions } from '@/lib/rankScenes';
 
@@ -66,8 +69,12 @@ export type Thread = {
   seconds: number;
 };
 
-/** The same reading rate the attention audit prices the rest of the site at. */
-const WORDS_PER_MINUTE = 240;
+/*
+ * Imported, not restated. This was a second literal `240` whose comment claimed
+ * it was "the same reading rate the attention audit uses" -- true only for as
+ * long as nobody changed the other one. Two copies of a number that must agree
+ * is the same defect as a count written into copy, in a quieter place.
+ */
 
 /**
  * The copy, with holes in it.
@@ -141,12 +148,24 @@ export function buildThread(pair: MatchPair, conditions: Conditions = NO_CONDITI
     ? endingLine(scene, forScene.how, forScene.needsAnEnding)
     : 'it ends when it ends.';
 
+  /*
+   * The day, from the schedule engine that already exists.
+   *
+   * This was the string literal 'thursday'. For Priya and Theo it named a day
+   * they have no mutual window on at all -- their overlaps are wednesday,
+   * friday and sunday -- on the one surface whose own header promises that the
+   * name, the hour and the place are read out of the same engine as everything
+   * else. It is now read out of that engine.
+   */
+  const schedule = readSchedule(pair.personA, pair.personB);
+  const day = schedule.best?.dayName ?? 'wednesday';
+
   const detail = detailFor(scene);
   const values: Record<string, string> = {
     NAME: other.name,
     TIME: scene.time.toLowerCase(),
     PLACE: scene.location,
-    DAY: 'thursday',
+    DAY: day,
     DETAIL: detail ?? '',
     ENDING: ending,
   };
@@ -199,8 +218,18 @@ export function buildThread(pair: MatchPair, conditions: Conditions = NO_CONDITI
 
   push({ sender: 'ditto', text: values.ENDING, at: '7:05 pm', day: 'wednesday' });
 
-  push({ sender: 'ditto', text: fill(SCRIPT.dayOf, values), at: '5:30 pm', day: 'thursday' });
-  push({ sender: 'ditto', text: SCRIPT.after, at: '9:12 am', day: 'friday' });
+  /*
+   * Three hours before the thing it is reminding you about.
+   *
+   * This was pinned at '5:30 pm' whatever the plan was, so for a 3:40 pm coffee
+   * the product sent "3:40 pm tonight" a hundred and ten minutes after the date
+   * had started. Only the 8:32 pm walk read correctly, which is exactly why it
+   * survived: the pair on screen by default was the one it happened to suit.
+   */
+  const sceneStart = clockToMinutes(scene.time);
+  const remindAt = sceneStart === null ? '9:00 am' : minutesToClock(sceneStart - 180);
+  push({ sender: 'ditto', text: fill(SCRIPT.dayOf, values), at: remindAt, day });
+  push({ sender: 'ditto', text: SCRIPT.after, at: '9:12 am', day: `the morning after` });
   push({
     sender: 'ditto',
     text: SCRIPT.momentum,

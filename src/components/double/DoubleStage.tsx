@@ -4,20 +4,25 @@ import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { PAIRS } from '@/data/pairs';
-import { WEEK_TWO } from '@/data/weekTwo';
 import { rankDoubles, type DoubleDate, type Side } from '@/lib/doubleDate';
 import { SEND_THRESHOLD } from '@/lib/rankScenes';
 import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
 import { NarrativeCursor } from '@/components/shared/NarrativeCursor';
 import { track } from '@/lib/analytics';
 
-const ALL = [...PAIRS, WEEK_TWO];
+/*
+ * This week only.
+ *
+ * `WEEK_TWO` is next Wednesday -- its own file says so and /next-wednesday
+ * frames it that way -- and it used to sit in this array alongside the two
+ * week-one pairs. Two of the three combinations therefore staged a double date
+ * between people seven days apart, and every term the model computes about them
+ * (cover, eclipse, dilution) is a claim about four people in one room at one
+ * time. None of those can happen across a week.
+ */
+const ALL = [...PAIRS];
 
-const COMBINATIONS = [
-  [0, 1],
-  [0, 2],
-  [1, 2],
-] as const;
+const COMBINATIONS: [number, number][] = [[0, 1]];
 
 /**
  * Four people.

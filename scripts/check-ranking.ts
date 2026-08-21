@@ -1974,11 +1974,23 @@ console.log(HEADING31);
     for (const scene of pair.scenes) {
       const m = mutualityOf(pair, scene);
       readings++;
-      expect(
-        `${pair.id}/${scene.id}: never better than the reluctant one`,
-        m.mutual <= Math.min(m.a, m.b) + 1e-12,
-        true,
-      );
+      /*
+       * `mutual <= min(a, b)` cannot fail, because `mutual` IS `min(a, b)` --
+       * an assertion comparing a value to the expression that produced it,
+       * which is the same shape this suite already caught itself making in
+       * claim 20 and in the old `pooled` comparison.
+       *
+       * What is worth pinning is that it is the MINIMUM and not some softer
+       * combination. So: equal to the lower side exactly, and -- whenever the
+       * two disagree -- strictly below the higher one. A mean would pass the
+       * first and fail the second.
+       */
+      const lower = Math.min(m.a, m.b);
+      const higher = Math.max(m.a, m.b);
+      expect(`${pair.id}/${scene.id}: is exactly the reluctant reading`, Math.abs(m.mutual - lower) < 1e-12, true);
+      if (higher - lower > 1e-9) {
+        expect(`${pair.id}/${scene.id}: and strictly below the keener one`, m.mutual < higher, true);
+      }
 
       /*
        * The comparison that matters, and the one this claim originally got
@@ -2068,6 +2080,34 @@ console.log(HEADING32);
       // Abstention has to survive all the way to the thread. A product that
       // texts you every week regardless is a newsletter.
       expect(`${pair.id}: the thread abstains too`, text.includes('rather send nothing'), true);
+    }
+
+    /*
+     * The day and the reminder, which were both invented.
+     *
+     * `DAY` was the literal 'thursday' and the day-of reminder fired at a fixed
+     * '5:30 pm'. For Priya and Theo that named a weekday they share no window on
+     * at all, and sent "3:40 pm tonight" a hundred and ten minutes after the
+     * coffee had started. Only the 8:32 pm walk read correctly, which is exactly
+     * why it survived -- the default pair was the one it happened to suit.
+     */
+    const days = readSchedule(pair.personA, pair.personB).windows.map((w) => w.dayName);
+    const planLine = t.beats.find((b) => b.text.includes(t.scene.location));
+    expect(
+      `${pair.id}: the day is one they actually share`,
+      days.some((d) => planLine?.text.startsWith(String(d))),
+      true,
+    );
+
+    const sceneStart = clockToMinutes(t.scene.time);
+    const reminder = t.beats.find((b) => b.text.includes('tonight'));
+    if (reminder && sceneStart !== null) {
+      const remindAt = clockToMinutes(reminder.at.toUpperCase());
+      expect(
+        `${pair.id}: the reminder arrives before the date does`,
+        remindAt !== null && remindAt < sceneStart,
+        true,
+      );
     }
 
     // The whole product, priced the same way the rest of the site is priced.
