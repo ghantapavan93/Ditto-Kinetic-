@@ -92,6 +92,44 @@ export function DropStage() {
 
       <NarrativeCursor />
 
+      {/*
+        Last Wednesday, while you wait for this one.
+
+        The emptiness of the waiting screen is the argument, so the one image
+        allowed on it is small, still, and about memory rather than browsing:
+        a single print from the previous drop, taped up in the margin the
+        centered phone leaves empty. Desktop only — below lg the phone owns
+        the width — and it leaves with the waiting state, because once the
+        match lands the page is about this week.
+      */}
+      <AnimatePresence>
+        {phase === 'waiting' && (
+          <motion.figure
+            key="last-week"
+            aria-hidden
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, transition: { duration: 0.4 } }}
+            transition={{ delay: 0.6, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+            className="pointer-events-none absolute right-[6vw] top-1/2 hidden -translate-y-1/2 lg:block"
+          >
+            <div className="u-paper rounded-artifact p-1.5 pb-4" style={{ transform: 'rotate(2.2deg)' }}>
+              {/* eslint-disable-next-line @next/next/no-img-element -- decorative pre-sized webp */}
+              <img
+                src="/photos/moment-06.webp"
+                alt=""
+                loading="lazy"
+                decoding="async"
+                className="block w-[clamp(7rem,11vw,9.5rem)] rounded-[1px]"
+              />
+            </div>
+            <figcaption className="mt-2 text-center font-hand text-[1.05rem] text-paper/55">
+              last wednesday worked.
+            </figcaption>
+          </motion.figure>
+        )}
+      </AnimatePresence>
+
       <div className="relative flex h-full flex-col justify-between px-gutter py-[clamp(1.25rem,4vh,2.5rem)]">
         <header className="flex items-start justify-between gap-4">
           <p className="font-mono text-[0.62rem] uppercase tracking-[0.3em] text-paper/62">
@@ -191,7 +229,24 @@ export function DropStage() {
                       {pair.personB.contradiction}
                     </p>
 
-                    <div className="mt-7 flex flex-wrap items-baseline gap-x-6 gap-y-2 border-t border-paper/12 pt-5">
+                    {/*
+                      The room itself. The drop's whole claim is that *where*
+                      is the decision, and for two phases this card made that
+                      claim in type alone. The plate is the same photograph the
+                      stage uses for this scene, held down to a window rather
+                      than a hero so the names stay the biggest thing.
+                    */}
+                    {/* eslint-disable-next-line @next/next/no-img-element -- pre-sized webp plate */}
+                    <img
+                      src={`/rooms/${scene.id}.webp`}
+                      alt={`${scene.label.toLowerCase()} — ${scene.location}`}
+                      loading="lazy"
+                      decoding="async"
+                      className="mt-7 h-36 w-full rounded-artifact object-cover"
+                      style={{ filter: 'saturate(0.7) contrast(0.92) brightness(0.88)' }}
+                    />
+
+                    <div className="mt-5 flex flex-wrap items-baseline gap-x-6 gap-y-2 border-t border-paper/12 pt-5">
                       <span className="font-mono text-[0.62rem] uppercase tracking-[0.24em] text-paper/55">
                         proposed
                       </span>

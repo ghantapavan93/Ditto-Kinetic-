@@ -151,7 +151,21 @@ function TabDitto({ pair }: { pair: (typeof PAIRS)[number] }) {
         <p className="font-mono text-[0.55rem] uppercase tracking-[0.24em] text-paper/55">
           proposed
         </p>
-        <p className="mt-1.5 font-display text-[1.25rem] uppercase leading-none text-paper">
+        {/*
+          The venue, shown. A real product card leads with the place — it is
+          the one visual fact that makes "post show walk" a plan rather than a
+          label. Same plate the stage's RoomPlate uses, cropped to card height.
+        */}
+        {/* eslint-disable-next-line @next/next/no-img-element -- pre-sized webp plate */}
+        <img
+          src={`/rooms/${scene.id}.webp`}
+          alt={`${scene.label.toLowerCase()} — ${scene.location}`}
+          loading="lazy"
+          decoding="async"
+          className="mt-2.5 h-28 w-full rounded-artifact object-cover"
+          style={{ filter: 'saturate(0.72) contrast(0.92) brightness(0.9)' }}
+        />
+        <p className="mt-2.5 font-display text-[1.25rem] uppercase leading-none text-paper">
           {scene.label}
         </p>
         <p className="mt-1.5 font-voice text-[0.95rem] italic text-paper/62">
@@ -207,13 +221,29 @@ function TabWhere({ pair }: { pair: (typeof PAIRS)[number] }) {
           return (
             <li
               key={r.scene.id}
-              className={`flex items-baseline gap-3 rounded-artifact border px-3 py-2 ${
+              className={`flex items-center gap-3 rounded-artifact border px-3 py-2 ${
                 chosen ? 'border-mint/35 bg-mint/[0.05]' : 'border-paper/10 bg-paper/[0.02]'
               }`}
             >
               <span className="font-mono text-[0.55rem] tabular-nums text-paper/55">
                 {i + 1}
               </span>
+              {/*
+                The room at a glance. Ranked rows of six labels asked the
+                reader to already know what "gallery drift" looks like; a
+                thumb answers it in the row. Below-bar rooms dim, because the
+                list's one visual argument is what would and wouldn't be sent.
+              */}
+              {/* eslint-disable-next-line @next/next/no-img-element -- 56px thumb from a pre-sized webp */}
+              <img
+                src={`/rooms/${r.scene.id}.webp`}
+                alt=""
+                loading="lazy"
+                decoding="async"
+                className={`h-8 w-12 shrink-0 rounded-[2px] object-cover ${
+                  sendable ? 'opacity-90 saturate-[0.8]' : 'opacity-40 saturate-[0.4]'
+                }`}
+              />
               <span
                 className={`flex-1 font-display text-[0.95rem] uppercase leading-none ${
                   sendable ? 'text-paper' : 'text-paper/62'

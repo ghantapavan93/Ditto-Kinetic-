@@ -23,13 +23,13 @@ export const SURFACES: Surface[] = [
   {
     "path": "/app",
     "kind": "product",
-    "words": 215,
+    "words": 219,
     "decisions": 7
   },
   {
     "path": "/wednesday",
     "kind": "product",
-    "words": 87,
+    "words": 93,
     "decisions": 5
   },
   {
