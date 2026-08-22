@@ -21,5 +21,17 @@ export default function manifest(): MetadataRoute.Manifest {
     background_color: '#0B0907',
     theme_color: '#0B0907',
     categories: ['lifestyle', 'social'],
+    /*
+     * Without icons a manifest fails Chrome's installability audit outright —
+     * "fullscreen" display was being promised by a manifest no browser would
+     * act on. Both entries are the generated dial-mark routes (icon.tsx,
+     * apple-icon.tsx); nothing binary enters the repo.
+     */
+    icons: [
+      // Extension-less: this Next version serves metadata image routes at
+      // /icon and /apple-icon (hash query only in the injected <link>).
+      { src: '/icon', sizes: '512x512', type: 'image/png', purpose: 'any' },
+      { src: '/apple-icon', sizes: '180x180', type: 'image/png' },
+    ],
   };
 }
