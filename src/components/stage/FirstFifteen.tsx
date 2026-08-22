@@ -81,7 +81,7 @@ export function FirstFifteen({ pairId, sceneId }: { pairId: string; sceneId: str
                   style={{ borderWidth: 1, borderStyle: 'solid' }}
                 />
                 <span
-                  className={`font-mono text-[0.66rem] tabular-nums transition-colors ${
+                  className={`py-1.5 font-mono text-[0.66rem] tabular-nums transition-colors ${
                     active ? 'text-tungsten' : 'text-paper/55 group-hover:text-paper/60'
                   }`}
                 >

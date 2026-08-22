@@ -169,7 +169,7 @@ function TabDitto({ pair }: { pair: (typeof PAIRS)[number] }) {
       <Link
         href="/wednesday"
         data-cursor="the full drop"
-        className="mt-6 inline-block font-editorial text-[0.72rem] lowercase tracking-wide text-paper/55 underline-offset-4 hover:text-paper hover:underline"
+        className="py-1.5 mt-6 inline-block font-editorial text-[0.72rem] lowercase tracking-wide text-paper/55 underline-offset-4 hover:text-paper hover:underline"
       >
         see this arrive properly →
       </Link>
@@ -254,7 +254,7 @@ function TabWhere({ pair }: { pair: (typeof PAIRS)[number] }) {
       <Link
         href="/"
         data-cursor="open the stage"
-        className="mt-6 inline-block font-editorial text-[0.72rem] lowercase tracking-wide text-paper/55 underline-offset-4 hover:text-paper hover:underline"
+        className="py-1.5 mt-6 inline-block font-editorial text-[0.72rem] lowercase tracking-wide text-paper/55 underline-offset-4 hover:text-paper hover:underline"
       >
         open the room properly →
       </Link>
@@ -327,7 +327,7 @@ function TabYou() {
       <Link
         href="/profile"
         data-cursor="answer them yourself"
-        className="mt-6 inline-block font-editorial text-[0.72rem] lowercase tracking-wide text-paper/55 underline-offset-4 hover:text-paper hover:underline"
+        className="py-1.5 mt-6 inline-block font-editorial text-[0.72rem] lowercase tracking-wide text-paper/55 underline-offset-4 hover:text-paper hover:underline"
       >
         answer them yourself →
       </Link>

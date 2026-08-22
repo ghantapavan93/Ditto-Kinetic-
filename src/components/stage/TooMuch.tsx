@@ -38,7 +38,7 @@ export function TooMuch() {
       <button
         onClick={toggle}
         data-cursor="be honest"
-        className="pointer-events-auto fixed bottom-3 right-4 z-overlay font-mono text-micro uppercase text-paper/55 underline-offset-4 transition-colors hover:text-paper/70 hover:underline"
+        className="py-1.5 pointer-events-auto fixed bottom-3 right-4 z-overlay font-mono text-micro uppercase text-paper/55 underline-offset-4 transition-colors hover:text-paper/70 hover:underline"
       >
         too much?
       </button>

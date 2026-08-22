@@ -102,7 +102,7 @@ export function CompilerStage() {
           <Link
             href="/"
             data-cursor="back to the stage"
-            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="py-1.5 font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             first scene →
           </Link>
@@ -153,7 +153,7 @@ export function CompilerStage() {
                   key={p}
                   onClick={() => setSentence(p)}
                   data-cursor="use this"
-                  className={`font-editorial text-[0.72rem] lowercase tracking-wide underline-offset-4 transition-colors ${
+                  className={`py-1.5 font-editorial text-[0.72rem] lowercase tracking-wide underline-offset-4 transition-colors ${
                     sentence === p
                       ? 'text-tungsten underline'
                       : 'text-paper/55 hover:text-paper hover:underline'
@@ -290,7 +290,7 @@ export function CompilerStage() {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 2.4, duration: 1.2 }}
                   onClick={() => setPhase('landed')}
-                  className="mt-10 font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 hover:text-paper/60 hover:underline"
+                  className="py-1.5 mt-10 font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 hover:text-paper/60 hover:underline"
                 >
                   show me the working again
                 </motion.button>

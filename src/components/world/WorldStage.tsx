@@ -61,7 +61,7 @@ export function WorldStage() {
           <Link
             href="/network"
             data-cursor="back to one campus"
-            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="py-1.5 font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             ← one campus
           </Link>
@@ -202,7 +202,7 @@ export function WorldStage() {
                   <Link
                     href="/vision"
                     data-cursor="where this goes"
-                    className="mt-6 inline-block font-editorial text-[0.72rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
+                    className="py-1.5 mt-6 inline-block font-editorial text-[0.72rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
                   >
                     then the city →
                   </Link>

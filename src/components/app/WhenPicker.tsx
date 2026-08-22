@@ -59,7 +59,7 @@ export function WhenPicker({ a, b }: { a: Person; b: Person }) {
             >
               <div className="flex items-baseline justify-between gap-3">
                 <span
-                  className={`font-editorial text-[0.72rem] lowercase tracking-wide transition-colors ${
+                  className={`py-1.5 font-editorial text-[0.72rem] lowercase tracking-wide transition-colors ${
                     active ? 'text-paper' : 'text-paper/62 group-hover:text-paper/80'
                   }`}
                 >

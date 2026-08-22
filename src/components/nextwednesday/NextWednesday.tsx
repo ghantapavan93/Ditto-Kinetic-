@@ -75,14 +75,14 @@ export function NextWednesday() {
           <Link
             href="/after"
             data-cursor="last week"
-            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="py-1.5 font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             ← last week
           </Link>
           <Link
             href="/wednesday"
             data-cursor="the next drop"
-            className="font-editorial text-[0.72rem] lowercase tracking-wide text-tungsten underline-offset-4 transition-colors hover:text-tungsten hover:underline"
+            className="py-1.5 font-editorial text-[0.72rem] lowercase tracking-wide text-tungsten underline-offset-4 transition-colors hover:text-tungsten hover:underline"
           >
             next wednesday, 7pm →
           </Link>
@@ -135,7 +135,7 @@ export function NextWednesday() {
                 track('next_wednesday_counterfactual_opened');
               }}
               data-cursor="check it"
-              className="font-editorial text-[0.76rem] lowercase tracking-wide text-paper/62 underline-offset-4 transition-colors hover:text-tungsten hover:underline"
+              className="py-1.5 font-editorial text-[0.76rem] lowercase tracking-wide text-paper/62 underline-offset-4 transition-colors hover:text-tungsten hover:underline"
             >
               what would last week&rsquo;s model have said?
             </button>

@@ -86,7 +86,7 @@ export function DoubleStage() {
           <Link
             href="/"
             data-cursor="back to the stage"
-            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="py-1.5 font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             first scene →
           </Link>
@@ -115,7 +115,7 @@ export function DoubleStage() {
               key={n}
               onClick={() => setCombo(n)}
               data-cursor="try these four"
-              className={`font-editorial text-[0.76rem] lowercase tracking-wide underline-offset-4 transition-colors ${
+              className={`py-1.5 font-editorial text-[0.76rem] lowercase tracking-wide underline-offset-4 transition-colors ${
                 combo === n
                   ? 'text-tungsten underline'
                   : 'text-paper/55 hover:text-paper hover:underline'

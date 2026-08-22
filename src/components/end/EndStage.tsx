@@ -252,7 +252,7 @@ export function EndStage() {
               <Link
                 href="/"
                 data-cursor="from the beginning"
-                className="font-editorial text-[0.72rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper/60 hover:underline"
+                className="py-1.5 font-editorial text-[0.72rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper/60 hover:underline"
               >
                 start again
               </Link>

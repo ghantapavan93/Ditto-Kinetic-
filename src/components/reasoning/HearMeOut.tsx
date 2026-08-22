@@ -83,7 +83,7 @@ export function HearMeOut({
               <button
                 onClick={onClose}
                 data-cursor="fine"
-                className="font-editorial text-[0.72rem] lowercase text-ink/62 underline-offset-4 transition-colors hover:text-ink hover:underline"
+                className="py-1.5 font-editorial text-[0.72rem] lowercase text-ink/62 underline-offset-4 transition-colors hover:text-ink hover:underline"
               >
                 close
               </button>

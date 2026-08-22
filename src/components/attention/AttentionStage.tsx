@@ -70,7 +70,7 @@ export function AttentionStage() {
           <Link
             href="/"
             data-cursor="back to the stage"
-            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="py-1.5 font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             first scene →
           </Link>
@@ -149,7 +149,7 @@ export function AttentionStage() {
                   key={key}
                   onClick={() => setShowing(key)}
                   data-cursor="filter it"
-                  className={`font-editorial text-[0.74rem] lowercase tracking-wide underline-offset-4 transition-colors ${
+                  className={`py-1.5 font-editorial text-[0.74rem] lowercase tracking-wide underline-offset-4 transition-colors ${
                     showing === key
                       ? 'text-tungsten underline'
                       : 'text-paper/55 hover:text-paper hover:underline'
@@ -173,7 +173,7 @@ export function AttentionStage() {
                 <Link
                   href={c.surface.path}
                   data-cursor="go and spend it"
-                  className="font-mono text-[0.78rem] text-paper/70 underline-offset-4 transition-colors hover:text-paper hover:underline"
+                  className="py-1.5 font-mono text-[0.78rem] text-paper/70 underline-offset-4 transition-colors hover:text-paper hover:underline"
                 >
                   {c.surface.path}
                 </Link>

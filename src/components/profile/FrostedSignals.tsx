@@ -105,7 +105,7 @@ export function FrostedSignals({ personId, name }: { personId: string; name: str
       <button
         onClick={() => setTried(true)}
         data-cursor="try it"
-        className="mt-5 font-editorial text-[0.74rem] lowercase tracking-wide text-paper/62 underline-offset-4 transition-colors hover:text-paper hover:underline"
+        className="py-1.5 mt-5 font-editorial text-[0.74rem] lowercase tracking-wide text-paper/62 underline-offset-4 transition-colors hover:text-paper hover:underline"
       >
         why can&rsquo;t i see these?
       </button>

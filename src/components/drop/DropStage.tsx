@@ -100,7 +100,7 @@ export function DropStage() {
           <Link
             href="/"
             data-cursor="the other half"
-            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/62 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="py-1.5 font-editorial text-[0.7rem] lowercase tracking-wide text-paper/62 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             first scene →
           </Link>
@@ -151,7 +151,7 @@ export function DropStage() {
               <button
                 onClick={open}
                 data-cursor="don't wait"
-                className="mt-8 border-b border-paper/25 pb-1 font-editorial text-[0.74rem] lowercase tracking-wide text-paper/62 transition-colors hover:border-tungsten hover:text-tungsten"
+                className="mt-8 border-b border-paper/25 pb-1 pt-1 font-editorial text-[0.74rem] lowercase tracking-wide text-paper/62 transition-colors hover:border-tungsten hover:text-tungsten"
               >
                 open it early — this is a prototype
               </button>

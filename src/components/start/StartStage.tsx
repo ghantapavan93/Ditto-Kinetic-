@@ -43,7 +43,7 @@ export function StartStage() {
           <Link
             href="/all"
             data-cursor="everything at once"
-            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="py-1.5 font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             all {EVIDENCE.routes} →
           </Link>
@@ -62,7 +62,7 @@ export function StartStage() {
             {EVIDENCE.routes} of them. pick the one that&rsquo;s yours. the shortest is{' '}
             <Link
               href={shortest.route}
-              className="text-tungsten underline-offset-4 hover:underline"
+              className="inline-block py-0.5 text-tungsten underline-offset-4 hover:underline"
             >
               {shortest.route}
             </Link>
@@ -98,7 +98,7 @@ export function StartStage() {
                     doesn&rsquo;t: {way.doesNot}
                   </p>
                 </div>
-                <p className="shrink-0 font-mono text-[0.68rem] uppercase tracking-[0.16em] text-tungsten transition-colors group-hover:text-tungsten sm:text-right">
+                <p className="py-1.5 shrink-0 font-mono text-[0.68rem] uppercase tracking-[0.16em] text-tungsten transition-colors group-hover:text-tungsten sm:text-right">
                   {way.route}
                   <span className="ml-2 text-paper/55">
                     {Math.round(costOfWay(way))}s
@@ -144,7 +144,7 @@ export function StartStage() {
           <Link
             href="/next"
             data-cursor="how it loses"
-            className="font-editorial text-[0.72rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="py-1.5 font-editorial text-[0.72rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             what would have to be true &mdash; and how it loses &rarr;
           </Link>

@@ -214,14 +214,14 @@ export function Handoff({
               <button
                 onClick={capture}
                 data-cursor="keep it"
-                className="font-editorial text-[0.78rem] lowercase tracking-wide text-paper/62 underline-offset-4 transition-colors hover:text-paper hover:underline"
+                className="py-1.5 font-editorial text-[0.78rem] lowercase tracking-wide text-paper/62 underline-offset-4 transition-colors hover:text-paper hover:underline"
               >
                 {captured ? 'kept.' : 'capture this'}
               </button>
               {captured && (
                 <button
                   onClick={() => setStage('sent')}
-                  className="font-editorial text-[0.78rem] lowercase tracking-wide text-paper/62 underline-offset-4 transition-colors hover:text-paper hover:underline"
+                  className="py-1.5 font-editorial text-[0.78rem] lowercase tracking-wide text-paper/62 underline-offset-4 transition-colors hover:text-paper hover:underline"
                 >
                   send it →
                 </button>

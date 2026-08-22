@@ -145,7 +145,7 @@ export function HeldBackCard({ restraint, index }: { restraint: Restraint; index
       <button
         onClick={() => setOpen((v) => !v)}
         data-cursor="check the others"
-        className="mt-5 font-editorial text-[0.72rem] lowercase tracking-wide text-paper/62 underline-offset-4 transition-colors hover:text-paper hover:underline"
+        className="py-1.5 mt-5 font-editorial text-[0.72rem] lowercase tracking-wide text-paper/62 underline-offset-4 transition-colors hover:text-paper hover:underline"
       >
         {open ? 'hide the rest' : 'what about everything else?'}
       </button>

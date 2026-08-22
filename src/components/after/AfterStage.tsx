@@ -104,6 +104,13 @@ export function AfterStage() {
         }}
       />
 
+      {/* Stable across every phase. The phase-scoped heading became an h2,
+
+          because it did not exist on first paint and the document had no title. */}
+
+      <h1 className="sr-only">After — 12:14 AM, and what the system revised</h1>
+
+
       <NarrativeCursor />
 
       <div className="relative mx-auto flex min-h-screen max-w-[62rem] flex-col gap-10 px-gutter py-[clamp(1.5rem,5vh,3rem)]">
@@ -114,7 +121,7 @@ export function AfterStage() {
           <Link
             href="/"
             data-cursor="back to the stage"
-            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="py-1.5 font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             first scene →
           </Link>
@@ -141,9 +148,9 @@ export function AfterStage() {
                   <p className="font-mono text-[0.6rem] uppercase tracking-[0.28em] text-paper/55">
                     Ditto
                   </p>
-                  <h1 className="mt-3 font-voice text-[clamp(1.8rem,4.4vw,2.8rem)] leading-tight text-paper">
+                  <h2 className="mt-3 font-voice text-[clamp(1.8rem,4.4vw,2.8rem)] leading-tight text-paper">
                     so&hellip; how was it?
-                  </h1>
+                  </h2>
                   <p className="mt-3 max-w-[34ch] font-editorial text-[0.85rem] lowercase tracking-wide text-paper/62">
                     not a rating. a sentence. the messier the better.
                   </p>
@@ -169,7 +176,7 @@ export function AfterStage() {
                     {!text.trim() && (
                       <button
                         onClick={() => setText(EXAMPLE)}
-                        className="font-editorial text-[0.74rem] lowercase text-paper/55 underline-offset-4 hover:underline"
+                        className="py-1.5 font-editorial text-[0.74rem] lowercase text-paper/55 underline-offset-4 hover:underline"
                       >
                         use the example
                       </button>

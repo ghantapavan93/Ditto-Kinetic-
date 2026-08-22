@@ -93,7 +93,7 @@ export function ThreadStage() {
           <Link
             href="/"
             data-cursor="the apparatus"
-            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="py-1.5 font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             first scene →
           </Link>
@@ -172,7 +172,7 @@ export function ThreadStage() {
           <Link
             href="/attention"
             data-cursor="what this costs you"
-            className="font-editorial text-[0.72rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="py-1.5 font-editorial text-[0.72rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             what the rest of it costs →
           </Link>
@@ -259,7 +259,7 @@ export function ThreadStage() {
                       key={l.href}
                       href={l.href}
                       data-cursor="deeper"
-                      className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
+                      className="py-1.5 font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
                     >
                       {l.label} →
                     </Link>

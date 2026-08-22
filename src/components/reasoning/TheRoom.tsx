@@ -152,7 +152,7 @@ export function TheRoom({
             key={scene.id}
             onClick={() => setChallenging(challenging === scene.id ? null : scene.id)}
             data-cursor="argue with it"
-            className={`font-editorial text-[0.72rem] lowercase tracking-wide underline-offset-4 transition-colors ${
+            className={`py-1.5 font-editorial text-[0.72rem] lowercase tracking-wide underline-offset-4 transition-colors ${
               challenging === scene.id
                 ? 'text-tungsten underline'
                 : 'text-paper/62 hover:text-paper hover:underline'

@@ -209,7 +209,7 @@ export function VisionStage() {
           <Link
             href="/"
             data-cursor="back to the stage"
-            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="py-1.5 font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             first scene →
           </Link>
@@ -309,7 +309,7 @@ export function VisionStage() {
                   transition={{ delay: 6, duration: 1.2 }}
                   onClick={() => setGlossary((g) => !g)}
                   data-cursor="the words"
-                  className="mt-8 font-editorial text-[0.72rem] lowercase tracking-wide text-paper/55 underline-offset-4 hover:text-paper/70 hover:underline"
+                  className="py-1.5 mt-8 font-editorial text-[0.72rem] lowercase tracking-wide text-paper/55 underline-offset-4 hover:text-paper/70 hover:underline"
                 >
                   {glossary ? 'put the words away' : 'the language this built \u2192'}
                 </motion.button>
@@ -369,7 +369,7 @@ export function VisionStage() {
                       target.current = at;
                     }}
                     data-cursor="fly here"
-                    className={`font-editorial text-[0.7rem] lowercase tracking-wide transition-colors ${
+                    className={`py-1.5 font-editorial text-[0.7rem] lowercase tracking-wide transition-colors ${
                       near ? 'text-tungsten' : 'text-paper/55 hover:text-paper/70'
                     }`}
                   >

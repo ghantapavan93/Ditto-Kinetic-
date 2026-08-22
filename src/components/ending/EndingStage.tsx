@@ -72,7 +72,7 @@ export function EndingStage() {
           <Link
             href="/"
             data-cursor="back to the stage"
-            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="py-1.5 font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             first scene →
           </Link>
@@ -103,7 +103,7 @@ export function EndingStage() {
               key={p.id}
               onClick={() => setWhich(i)}
               data-cursor="these two"
-              className={`font-editorial text-[0.76rem] lowercase tracking-wide underline-offset-4 transition-colors ${
+              className={`py-1.5 font-editorial text-[0.76rem] lowercase tracking-wide underline-offset-4 transition-colors ${
                 which === i
                   ? 'text-tungsten underline'
                   : 'text-paper/55 hover:text-paper hover:underline'

@@ -95,7 +95,7 @@ export function FeedbackReceipt({ pair }: { pair: MatchPair }) {
                 {!text.trim() && (
                   <button
                     onClick={() => setText(PLACEHOLDER)}
-                    className="font-mono text-micro uppercase text-paper/55 underline-offset-4 hover:underline"
+                    className="py-1.5 font-mono text-micro uppercase text-paper/55 underline-offset-4 hover:underline"
                   >
                     use the example
                   </button>

@@ -173,7 +173,7 @@ export function PossibilityStage() {
                     key={d}
                     onClick={() => scrub(d)}
                     data-cursor="this evening"
-                    className={`font-mono text-[0.66rem] uppercase tracking-[0.16em] transition-colors ${
+                    className={`py-1.5 font-mono text-[0.66rem] uppercase tracking-[0.16em] transition-colors ${
                       d === day ? 'text-tungsten' : 'text-paper/55 hover:text-paper/60'
                     }`}
                   >
@@ -186,7 +186,7 @@ export function PossibilityStage() {
           <Link
             href="/"
             data-cursor="back to the stage"
-            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="py-1.5 font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             first scene →
           </Link>

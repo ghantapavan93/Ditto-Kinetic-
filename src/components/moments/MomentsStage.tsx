@@ -158,6 +158,14 @@ export function MomentsStage() {
         )}
       </AnimatePresence>
 
+      {/*
+        The page has a name even though showing it would wreck the reel.
+        A route with no h1 hands a screen reader a document with no title and no
+        structure; a sweep of all 27 routes found this and /after were the only
+        two without one.
+      */}
+      <h1 className="sr-only">Moments — the world the argument is for</h1>
+
       <NarrativeCursor />
 
       {/* chrome, kept to almost nothing */}
@@ -170,7 +178,7 @@ export function MomentsStage() {
           <Link
             href="/"
             data-cursor="back to the stage"
-            className="pointer-events-auto font-editorial text-[0.7rem] lowercase tracking-wide text-paper/62 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="py-1.5 pointer-events-auto font-editorial text-[0.7rem] lowercase tracking-wide text-paper/62 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             first scene →
           </Link>

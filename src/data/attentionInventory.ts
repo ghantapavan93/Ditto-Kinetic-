@@ -35,7 +35,7 @@ export const SURFACES: Surface[] = [
   {
     "path": "/after",
     "kind": "product",
-    "words": 156,
+    "words": 163,
     "decisions": 6
   },
   {
@@ -161,7 +161,7 @@ export const SURFACES: Surface[] = [
   {
     "path": "/moments",
     "kind": "product",
-    "words": 44,
+    "words": 51,
     "decisions": 2
   },
   {

@@ -39,7 +39,7 @@ export function WhyThisScene({
               <h3 className="font-display text-[1.6rem] uppercase leading-none text-paper">why this one?</h3>
               <button
                 onClick={onClose}
-                className="font-mono text-micro uppercase text-paper/62 transition-colors hover:text-paper"
+                className="py-1.5 font-mono text-micro uppercase text-paper/62 transition-colors hover:text-paper"
               >
                 close
               </button>

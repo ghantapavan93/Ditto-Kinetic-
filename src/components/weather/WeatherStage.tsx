@@ -73,7 +73,7 @@ export function WeatherStage() {
           <Link
             href="/"
             data-cursor="back to the stage"
-            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="py-1.5 font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             first scene →
           </Link>
@@ -146,7 +146,7 @@ export function WeatherStage() {
                       }`}
                     />
                     <span
-                      className={`font-editorial text-[0.68rem] lowercase tracking-wide transition-colors ${
+                      className={`py-1.5 font-editorial text-[0.68rem] lowercase tracking-wide transition-colors ${
                         d.day === day ? 'text-tungsten' : 'text-paper/55 group-hover:text-paper/60'
                       }`}
                     >
@@ -180,7 +180,7 @@ export function WeatherStage() {
             <button
               onClick={() => setStrained((s) => !s)}
               data-cursor="make it midterms"
-              className={`font-editorial text-[0.76rem] lowercase tracking-wide underline-offset-4 transition-colors ${
+              className={`py-1.5 font-editorial text-[0.76rem] lowercase tracking-wide underline-offset-4 transition-colors ${
                 strained ? 'text-acid underline' : 'text-paper/55 hover:text-paper hover:underline'
               }`}
             >

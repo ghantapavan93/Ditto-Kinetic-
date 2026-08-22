@@ -95,7 +95,7 @@ export function GravityStage() {
           <Link
             href="/"
             data-cursor="back to the stage"
-            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="py-1.5 font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             first scene →
           </Link>
@@ -153,7 +153,7 @@ export function GravityStage() {
                   setSceneId(null);
                 }}
                 data-cursor="these two"
-                className={`font-editorial text-[0.74rem] lowercase tracking-wide underline-offset-4 transition-colors ${
+                className={`py-1.5 font-editorial text-[0.74rem] lowercase tracking-wide underline-offset-4 transition-colors ${
                   which === i ? 'text-tungsten underline' : 'text-paper/55 hover:text-paper'
                 }`}
               >
@@ -169,7 +169,7 @@ export function GravityStage() {
                 key={f.scene.id}
                 onClick={() => setSceneId(f.scene.id)}
                 data-cursor="put them here"
-                className={`font-editorial text-[0.74rem] lowercase tracking-wide underline-offset-4 transition-colors ${
+                className={`py-1.5 font-editorial text-[0.74rem] lowercase tracking-wide underline-offset-4 transition-colors ${
                   f.scene.id === field.scene.id
                     ? 'text-tungsten underline'
                     : 'text-paper/55 hover:text-paper'
@@ -187,7 +187,7 @@ export function GravityStage() {
                 key={d}
                 onClick={() => toggle(d)}
                 data-cursor="push them apart"
-                className={`font-editorial text-[0.74rem] lowercase tracking-wide underline-offset-4 transition-colors ${
+                className={`py-1.5 font-editorial text-[0.74rem] lowercase tracking-wide underline-offset-4 transition-colors ${
                   conditions.disruptions.includes(d)
                     ? 'text-acid underline'
                     : 'text-paper/55 hover:text-paper'
@@ -204,7 +204,7 @@ export function GravityStage() {
                 }))
               }
               data-cursor="make it worse"
-              className={`font-editorial text-[0.74rem] lowercase tracking-wide underline-offset-4 transition-colors ${
+              className={`py-1.5 font-editorial text-[0.74rem] lowercase tracking-wide underline-offset-4 transition-colors ${
                 conditions.week === 'strained'
                   ? 'text-acid underline'
                   : 'text-paper/55 hover:text-paper'
@@ -215,7 +215,7 @@ export function GravityStage() {
             {(conditions.disruptions.length > 0 || conditions.week !== 'normal') && (
               <button
                 onClick={() => setConditions(NO_CONDITIONS)}
-                className="font-editorial text-[0.74rem] lowercase tracking-wide text-paper/55 underline-offset-4 hover:underline"
+                className="py-1.5 font-editorial text-[0.74rem] lowercase tracking-wide text-paper/55 underline-offset-4 hover:underline"
               >
                 reset
               </button>

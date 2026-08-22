@@ -102,7 +102,7 @@ export function AllStage() {
           <Link
             href="/"
             data-cursor="back to the stage"
-            className="font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
+            className="py-1.5 font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
             first scene →
           </Link>
@@ -151,7 +151,7 @@ export function AllStage() {
                 onFocus={() => setActive(i)}
                 onClick={() => setActive(i)}
                 data-cursor="look at it"
-                className={`font-mono text-[0.7rem] transition-colors ${
+                className={`py-1.5 font-mono text-[0.7rem] transition-colors ${
                   i === active
                     ? 'text-tungsten'
                     : c.surface.kind === 'product'
@@ -168,7 +168,7 @@ export function AllStage() {
             size is what a surface costs to read. mint is close to the centre and could ship;
             amber orbits and exists to argue. this page is on the map too, and is measured the
             same way — see{' '}
-            <Link href="/attention" className="underline underline-offset-4 hover:text-paper/60">
+            <Link href="/attention" className="inline-block py-1 underline underline-offset-4 hover:text-paper/60">
               the bill
             </Link>
             .
