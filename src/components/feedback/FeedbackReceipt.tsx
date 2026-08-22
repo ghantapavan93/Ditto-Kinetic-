@@ -270,6 +270,19 @@ export function FeedbackReceipt({ pair }: { pair: MatchPair }) {
                 >
                   what happened after &rarr;
                 </Link>
+                {/*
+                  The loop, closed where it closes. "DITTO LEARNED" printed a
+                  hypothesis a few lines up; this is the surface where that
+                  hypothesis is actually spent. Feedback that never visibly
+                  reaches the next decision is a testimonial, not a loop.
+                */}
+                <Link
+                  href="/next-wednesday"
+                  data-cursor="the hypothesis, spent"
+                  className="min-h-[44px] font-editorial text-[0.72rem] lowercase tracking-wide text-tungsten underline-offset-4 transition-colors hover:text-paper hover:underline"
+                >
+                  see it change next wednesday &rarr;
+                </Link>
                 <Link
                   href="/start"
                   data-cursor="everything else"

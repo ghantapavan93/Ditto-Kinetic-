@@ -14,6 +14,7 @@ import {
   type WeightKey,
 } from '@/lib/rankScenes';
 import type { MatchPair } from '@/lib/types';
+import { PROOF } from '@/data/proof';
 
 import { ACID, COBALT, THREAD_COLD } from '@/lib/palette';
 /**
@@ -317,6 +318,30 @@ export function DecisionView({
                   .map((k) => `${WEIGHTS[k] > 0 ? '+' : ''}${WEIGHTS[k]}·${k}`)
                   .join('  ')}
               </p>
+              {/*
+                The question this table exists to answer. Ditto's published
+                number is that one matched pair in five actually goes on the
+                date — which means the other four are the product's whole
+                problem. Every term above is either a reason two people show
+                up or a reason they don't; attendance is not one metric among
+                eleven here, it is the objective the rest serve.
+              */}
+              <p className="mt-4 max-w-[70ch] font-editorial text-[0.86rem] leading-relaxed text-paper/62">
+                Aimed at the number that matters: publicly, one matched pair in five actually
+                meets. Every term above is either a reason two people show up or a reason they
+                don&rsquo;t &mdash; attendance isn&rsquo;t a metric here, it&rsquo;s the objective.
+              </p>
+
+              {/*
+                Derived, not written: these counts are read off the last real
+                run of the suite (npm run proof) and `npm run check` fails if
+                they drift. A claims number typed by hand would be exactly the
+                kind of sentence this project refuses everywhere else.
+              */}
+              <p className="mt-3 font-mono text-[0.68rem] uppercase text-paper/55">
+                {`evidence: ${PROOF.claims} claims · ${PROOF.assertions} assertions · ${PROOF.routes} surfaces · npm run check`}
+              </p>
+
               <p className="mt-3 font-mono text-micro uppercase text-acid">
                 these weights are invented for this prototype. they are not Ditto’s model.
               </p>
