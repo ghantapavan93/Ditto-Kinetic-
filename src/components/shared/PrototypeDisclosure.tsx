@@ -30,9 +30,9 @@ export function PrototypeDisclosure({
   if (compact) {
     return (
       <p className={`font-mono text-micro leading-relaxed text-paper/55 ${className}`}>
-        <span className="sm:hidden">unofficial concept &middot; synthetic people</span>
+        <span className="sm:hidden">a concept build &middot; everyone here is synthetic</span>
         <span className="hidden sm:inline">
-          unofficial concept &middot; synthetic people &middot; no access to ditto systems
+          a concept build for ditto &middot; everyone here is synthetic
         </span>
       </p>
     );
@@ -40,8 +40,7 @@ export function PrototypeDisclosure({
 
   return (
     <p className={`font-mono text-label leading-relaxed text-paper/55 ${className}`}>
-      Unofficial Ditto interaction concept. Synthetic people and simulated signals.
-      <br className="hidden sm:block" /> No access to Ditto systems.
+      A concept build for Ditto. Everyone here is synthetic.
     </p>
   );
 }

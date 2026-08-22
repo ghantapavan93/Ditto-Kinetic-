@@ -75,7 +75,7 @@ export default function OpengraphImage() {
           </span>
           <span style={{ fontSize: 40, color: '#FF2E88', marginTop: 10 }}>six ways to meet.</span>
           <span style={{ fontSize: 19, opacity: 0.4, marginTop: 22 }}>
-            Unofficial Ditto interaction concept. Synthetic people and simulated signals.
+            A concept build for Ditto — everyone here is synthetic.
           </span>
         </div>
       </div>

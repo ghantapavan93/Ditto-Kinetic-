@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl()),
   title: 'FIRST SCENE — same two people, six ways to meet',
   description:
-    'An unofficial Ditto interaction concept. The right person can still get the wrong first date. Drag through six openings and watch the same two people work — or not.',
+    'A concept build for Ditto: the right person can still get the wrong first date. Drag through six openings and watch the same two people work — or not.',
   openGraph: {
     title: 'FIRST SCENE',
     description: 'Same two people. Different first moments. One finally feels right.',

@@ -14,7 +14,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: 'FIRST SCENE — same two people, six ways to meet',
     short_name: 'First Scene',
     description:
-      'An unofficial Ditto interaction concept. The right person can still get the wrong first date.',
+      'A concept build for Ditto: the right person can still get the wrong first date.',
     start_url: '/',
     display: 'fullscreen',
     orientation: 'any',

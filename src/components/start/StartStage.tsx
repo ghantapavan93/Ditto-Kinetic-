@@ -55,7 +55,7 @@ export function StartStage() {
             five ways in.
           </h1>
           <p className="mt-5 max-w-[46ch] font-voice text-[clamp(1.05rem,2.4vw,1.35rem)] leading-snug text-paper/70">
-            an unofficial concept for ditto, built around one line: the right person
+            a concept build for ditto, around one line: the right person
             can still get the wrong first date. rank the pair <em>and</em> the evening.
           </p>
           <p className="mt-3 max-w-[46ch] font-voice text-[clamp(1.05rem,2.4vw,1.35rem)] leading-snug text-paper/70">
