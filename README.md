@@ -2,6 +2,10 @@
 
 **Same two people. Different first moments. One finally feels right.**
 
+> **Stack parity:** ditto.ai itself ships Next 16.2, React, Tailwind, Radix and
+> Lucide on Vercel — and so does this repo, dependency for dependency. Nothing
+> here would need a rewrite to live in their codebase.
+
 An unofficial interaction concept for [Ditto](https://tryditto.com). Drag a dial
 through six ways the same pair could meet and watch the interface physically
 resist the ones that don't work — then watch it delete itself once the

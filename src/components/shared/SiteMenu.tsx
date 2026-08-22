@@ -149,6 +149,15 @@ export function SiteMenu({
 
         <footer className="border-t border-paper/10 pt-5">
           <PrototypeDisclosure />
+          {/*
+            Verifiable against ditto.ai itself: their site ships Next 16.2,
+            Tailwind, Radix and Lucide on Vercel — and so does this repo,
+            dependency for dependency. Not a coincidence; the point is that
+            everything here could be lifted across without a rewrite.
+          */}
+          <p className="mt-2 font-mono text-micro uppercase text-paper/55">
+            built on ditto&rsquo;s own stack &mdash; next 16.2 &middot; react &middot; tailwind &middot; radix &middot; lucide
+          </p>
         </footer>
       </div>
     </Sheet>

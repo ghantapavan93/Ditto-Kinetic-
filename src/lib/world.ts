@@ -46,7 +46,7 @@ import { SEND_THRESHOLD } from '@/lib/rankScenes';
 export const SCHOOLS = 8;
 
 /** Fictional. No real institution is named or implied anywhere in this project. */
-const NAMES = [
+export const NAMES = [
   'your campus',
   'the college across the river',
   'the state school, north',

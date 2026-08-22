@@ -66,7 +66,11 @@ export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () =
         frame under the intro moves the first five seconds into their world;
         it leaves with the curtain, and the stage underneath stays the stage.
       */}
-      <div aria-hidden className="absolute inset-0 -z-10 overflow-hidden">
+      <div
+        aria-hidden
+        className="u-stack-grain absolute inset-0 -z-10 overflow-hidden"
+        style={{ '--grain-opacity': '0.14' } as React.CSSProperties}
+      >
         {/* eslint-disable-next-line @next/next/no-img-element -- decorative pre-sized webp */}
         <img
           src="/photos/twilight-stroll.webp"
@@ -131,8 +135,13 @@ export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () =
                 ))}
               </h1>
 
+              {/*
+                Hero-scale, because it is the hero. Ditto's own landing leads
+                with one swashy serif sentence over photography; this is our
+                sentence, in our serif, at the size a thesis deserves.
+              */}
               <motion.p
-                className="mt-5 font-voice text-lede italic text-paper/80"
+                className="mt-5 font-voice text-[clamp(1.4rem,3.6vw,2.4rem)] italic leading-tight text-paper/85"
                 initial={{ opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.42, duration: 0.6, ease: EASE.settle }}

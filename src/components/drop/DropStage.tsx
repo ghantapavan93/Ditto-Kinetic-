@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
 import { PAIRS } from '@/data/pairs';
+import { NAMES } from '@/lib/world';
 import { sendDecision } from '@/lib/rankScenes';
 import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
 import { NarrativeCursor } from '@/components/shared/NarrativeCursor';
@@ -196,6 +197,27 @@ export function DropStage() {
               <p className="mt-7 max-w-[34ch] font-voice text-[1.15rem] leading-snug text-paper/50">
                 nothing to browse until then. that is the whole idea.
               </p>
+
+              {/*
+                The campuses, passing. ditto.ai runs a ticker of a hundred
+                school codes under its hero; ours runs the eight fictional
+                campuses /world actually models — the honest version of the
+                same gesture, drawn from the same data the network pages
+                compute over. Under reduced motion the animation stops (the
+                global rule) and the first names simply read as a list.
+              */}
+              <div className="mt-8 max-w-[30rem] overflow-hidden" aria-hidden>
+                <div className="flex w-max animate-ticker gap-6 whitespace-nowrap font-mono text-[0.6rem] uppercase tracking-[0.26em] text-paper/55">
+                  {[...NAMES, ...NAMES].map((name, i) => (
+                    <span key={`${name}-${i}`} className="flex items-center gap-6">
+                      {name} <span className="text-paper/55">·</span>
+                    </span>
+                  ))}
+                </div>
+                <p className="mt-2 font-mono text-[0.55rem] uppercase tracking-[0.24em] text-paper/55">
+                  {NAMES.length} campuses modelled · one wednesday everywhere
+                </p>
+              </div>
 
               <button
                 onClick={open}

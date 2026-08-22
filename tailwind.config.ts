@@ -124,10 +124,17 @@ const config: Config = {
           '0%, 45%': { opacity: '1' },
           '50%, 95%': { opacity: '0' },
         },
+        // One slow marquee. The list is rendered twice and slid by half its
+        // own width, so the loop has no visible seam.
+        'ticker': {
+          '0%': { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-50%)' },
+        },
       },
       animation: {
         'tape-in': 'tape-in 520ms cubic-bezier(0.16, 1, 0.3, 1) both',
         'caret': 'caret 1.1s steps(1) infinite',
+        'ticker': 'ticker 34s linear infinite',
       },
     },
   },
