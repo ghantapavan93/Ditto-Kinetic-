@@ -20,6 +20,12 @@ const COPY: Record<string, { title: string; body: string }> = {
     title: 'ninety-six people',
     body: 'six corners of one campus, and sixteen threads holding them together. one of those threads is lit, and it is the only one this site has ever been about.',
   },
+  /*
+   * The widest shot carries the only sentence about the future. Not a 2030
+   * manifesto, not a roadmap section — one line and five words, visible
+   * exactly when the camera is far enough out that a date is one thread among
+   * many. Fly in and it leaves; the close shots stay about tonight.
+   */
   connection: {
     title: 'two of them',
     body: 'you did not change scene. that thread had two ends, and this is what is at them — the same two people the stage spends an entire evening on.',
@@ -169,6 +175,21 @@ export function ZoomStage() {
               <p className="mt-4 max-w-[38ch] font-voice text-[clamp(1rem,2.1vw,1.25rem)] leading-snug text-paper/70">
                 {copy.body}
               </p>
+
+              {level === 'world' && (
+                <div className="mt-5">
+                  <p className="flex flex-wrap gap-x-3 gap-y-1 font-mono text-[0.6rem] uppercase tracking-[0.26em] text-paper/55">
+                    {['date', 'friend', 'build', 'run', 'explore'].map((kind, i) => (
+                      <span key={kind} className={i === 0 ? 'text-tungsten' : undefined}>
+                        {kind}
+                      </span>
+                    ))}
+                  </p>
+                  <p className="mt-2.5 font-voice text-[1.05rem] italic leading-snug text-paper/70">
+                    dating is the first intersection.
+                  </p>
+                </div>
+              )}
 
               {level === 'human' && (
                 <ul className="mt-5 grid gap-1.5">

@@ -47,6 +47,50 @@ export function DecisionView({
   const ranked = useMemo(() => rankScenes(pair, conditions), [pair, conditions]);
   const [expanded, setExpanded] = useState<string | null>(ranked[0]?.scene.id ?? null);
 
+  /*
+   * The six lines an engineer actually wants after pressing "break it" and
+   * then D: what was preserved, what was invalidated, what the system did
+   * about it. Derived, never written — the venue count is the exclusion
+   * list's length, the action is the live send decision, and the last row is
+   * the one constant in the whole machine.
+   */
+  const dirty =
+    conditions.excluded.length > 0 ||
+    conditions.disruptions.length > 0 ||
+    conditions.week !== 'normal';
+  const top = ranked[0];
+  const tops = top !== undefined && top.utility >= SEND_THRESHOLD ? top : undefined;
+  const ledger: { k: string; v: string; tone?: 'good' | 'bad' }[] = [
+    {
+      k: 'pair',
+      v: `${pair.personA.name.toLowerCase()} × ${pair.personB.name.toLowerCase()} · preserved`,
+      tone: 'good',
+    },
+    { k: 'scene', v: tops ? tops.scene.label.toLowerCase() : 'none clears the bar' },
+    {
+      k: 'venue',
+      v:
+        conditions.excluded.length > 0
+          ? `${conditions.excluded.length} invalidated`
+          : 'intact',
+      tone: conditions.excluded.length > 0 ? 'bad' : undefined,
+    },
+    {
+      k: 'schedule',
+      v: conditions.disruptions.includes('availability')
+        ? 'shifted · reconciled'
+        : conditions.week === 'strained'
+          ? 'strained week · repriced'
+          : 'as planned',
+    },
+    {
+      k: 'action',
+      v: tops ? (dirty ? 'replan context' : 'send') : 'decline to send',
+      tone: tops ? undefined : 'bad',
+    },
+    { k: 'rematch', v: 'false', tone: 'good' },
+  ];
+
   // Bars are scaled against the send bar rather than against the best row, so
   // the threshold is a fixed position on every chart instead of a moving one.
   const ceiling = Math.max(SEND_THRESHOLD * 1.6, ranked[0]?.utility ?? SEND_THRESHOLD);
@@ -62,6 +106,35 @@ export function DecisionView({
       title="how this scene won"
       description="The ranking object isn't a person. It's a possible real-world introduction — the same two people under six sets of conditions."
     >
+      {/*
+        The ledger. Shown only after something has been broken, because that
+        is when it has something to say — and it says it before any table or
+        chart, in six rows an engineer can read in three seconds. Every value
+        is derived from live state: the pair line is the invariant the whole
+        piece defends, the venue count is the real exclusion list, the action
+        is whatever the send bar actually decided. Nothing here is prose about
+        resilience; it is the resilience, printed.
+      */}
+      {dirty && (
+        <dl
+          aria-label="System state after disruption"
+          className="mb-6 grid grid-cols-[auto_1fr] gap-x-6 gap-y-1.5 border border-paper/12 bg-paper/[0.02] px-4 py-3.5"
+        >
+          {ledger.map((row) => (
+            <div key={row.k} className="col-span-2 grid grid-cols-subgrid items-baseline">
+              <dt className="font-mono text-micro uppercase text-paper/55">{row.k}</dt>
+              <dd
+                className={`font-mono text-[0.78rem] lowercase tracking-wide ${
+                  row.tone === 'good' ? 'text-mint' : row.tone === 'bad' ? 'text-acid' : 'text-paper/80'
+                }`}
+              >
+                {row.v}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      )}
+
       {/* Three lenses on the same decision, before any arithmetic. */}
       <TheRoom
         pair={pair}
