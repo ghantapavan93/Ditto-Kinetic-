@@ -56,6 +56,33 @@ export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () =
       exit={{ opacity: 0, filter: 'blur(8px)' }}
       transition={{ duration: DUR.settle, ease: EASE.settle }}
     >
+      {/*
+        The world behind the words.
+
+        Ditto's own join flow opens on a photograph — a campus lawn shot soft,
+        grainy and blue, with the interface floating in front of it. Ours
+        opened on flat black, which read as an editorial site clearing its
+        throat rather than an evening starting. One heavily blurred blue-hour
+        frame under the intro moves the first five seconds into their world;
+        it leaves with the curtain, and the stage underneath stays the stage.
+      */}
+      <div aria-hidden className="absolute inset-0 -z-10 overflow-hidden">
+        {/* eslint-disable-next-line @next/next/no-img-element -- decorative pre-sized webp */}
+        <img
+          src="/photos/twilight-stroll.webp"
+          alt=""
+          decoding="async"
+          className="h-full w-full scale-110 object-cover"
+          style={{ filter: 'blur(22px) saturate(0.8) brightness(0.5)' }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              'radial-gradient(110% 80% at 50% 100%, rgba(11,9,7,0.9), rgba(11,9,7,0.45) 55%, rgba(11,9,7,0.62))',
+          }}
+        />
+      </div>
       <motion.p
         className="font-mono text-label uppercase text-paper/60"
         initial={{ opacity: 0, y: -8 }}

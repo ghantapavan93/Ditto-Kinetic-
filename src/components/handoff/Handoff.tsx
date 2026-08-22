@@ -203,7 +203,7 @@ export function Handoff({
               </p>
 
               <p className="mt-5 font-hand text-[1.2rem] leading-tight text-ink/62">
-                less pressure. more chance.
+                less pressure. more chance. <span aria-hidden>&#9825;</span>
               </p>
 
               <span aria-hidden className="absolute -left-1.5 top-[42%] h-3 w-3 rounded-full bg-ink" />

@@ -133,7 +133,8 @@ export function DropStage() {
       <div className="relative flex h-full flex-col justify-between px-gutter py-[clamp(1.25rem,4vh,2.5rem)]">
         <header className="flex items-start justify-between gap-4">
           <p className="font-mono text-[0.62rem] uppercase tracking-[0.3em] text-paper/62">
-            Westbrook · this week
+            {/* Seasonal, the way the real drop is named ("back to school date"). */}
+            Westbrook · back-to-school week
           </p>
           <Link
             href="/"
@@ -182,7 +183,17 @@ export function DropStage() {
 
               <Countdown t={t} reduced={reduced} />
 
-              <p className="mt-8 max-w-[34ch] font-voice text-[1.15rem] leading-snug text-paper/50">
+              {/*
+                The other half of the ritual. The drop lands Wednesday at 7,
+                but the system stops listening Tuesday at midnight — real
+                Ditto runs on exactly this rhythm, and the deadline is what
+                makes the countdown a schedule rather than a decoration.
+              */}
+              <p className="mt-3 font-mono text-[0.62rem] uppercase tracking-[0.24em] text-paper/55">
+                preferences lock tuesday 11:59 pm
+              </p>
+
+              <p className="mt-7 max-w-[34ch] font-voice text-[1.15rem] leading-snug text-paper/50">
                 nothing to browse until then. that is the whole idea.
               </p>
 

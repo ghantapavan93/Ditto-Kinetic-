@@ -156,3 +156,52 @@ file returns the stage to exactly what ships today. Verified in both states.
 - [ ] dark enough that white text sits on it legibly
 - [ ] the page still works if the file is deleted
 - [ ] `npm run check` and `npx next build` still pass
+
+---
+
+## 5. Round two — the selfie layer (open)
+
+Compiled 2026-08-22, after walking Ditto's real join flow (`app.ditto.ai/join`,
+screenshots in `reference/`) and ditto.ai itself.
+
+### What their world actually looks like
+
+Their onboarding floats over **soft-focus campus photography** — lawn, sky,
+heavy grain, blue-shifted. Their "pick your type" step uses **bedroom flash
+selfies**: mirror shots, headphones around necks, ribbons, lamp light, nobody
+posing for a brand. Their kitsch is real kitsch — a pink slot machine, a grainy
+dove carrying a letter. The texture reads found, not produced.
+
+### What our current set repeats (do not regenerate more of these)
+
+- same two faces in every frame
+- same pink/blue palette
+- same "pretty date photo" pose — two people, centered, smiling
+- everything at couple-distance; no close-ups, no wides, no fragments
+
+### The shot list
+
+All through one grammar: **35mm / disposable feel, visible grain, warm skin,
+real flash sometimes, slightly imperfect framing.** Variety comes from life,
+not from palette swaps.
+
+| # | Shot | Notes |
+|---|---|---|
+| 1–4 | bedroom / mirror selfies, one person each | flash, mess visible, different faces & ethnicities each |
+| 5–6 | hands only — two cups, a ticket being handed over | no faces |
+| 7 | backs, walking away, night street | motion blur welcome |
+| 8 | shoes under a café table | close, flash |
+| 9 | very wide environmental — campus at blue hour, tiny figures | the "world" frame |
+| 10 | laughing mid-motion, badly framed on purpose | the un-posed one |
+| 11–12 | quiet close-ups — one face each, lamp light, not smiling at camera | different faces than 1–4 |
+| 13 | a group table, four people, nobody centered | for /double |
+| 14 | rain on a window, interior warm | mood frame, no people |
+
+Different relationship configurations and degrees of closeness across the set;
+not everyone facing the camera; at least half the frames without eye contact.
+
+### Where they land
+
+`public/photos/` via `npm run photos` (manifest regenerates). SnapshotRow
+callers can then be re-pointed page by page; the selfie frames (1–4, 11–12)
+are for /profile, /mutual and /odds, where the subject is one person's side.

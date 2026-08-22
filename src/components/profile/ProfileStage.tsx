@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
+import { Lock } from 'lucide-react';
 import { QUESTIONS, STARTING_TRAITS, WHEN } from '@/data/livingProfile';
 import {
   ACTIONABLE,
@@ -119,6 +120,19 @@ export function ProfileStage() {
                   <h1 className="font-voice text-[clamp(1.7rem,4vw,2.6rem)] leading-tight text-paper">
                     {question.prompt}
                   </h1>
+
+                  {/*
+                    Ditto's own onboarding puts this exact reassurance under
+                    its questions — "Private. Only used to match you" — and it
+                    is the right sentence: the question above asks something
+                    personal, and this is the one line that makes answering it
+                    feel safe. Borrowed as a pattern, kept lowercase like the
+                    rest of this site's chrome.
+                  */}
+                  <p className="mt-2.5 flex items-center gap-1.5 font-mono text-micro uppercase text-paper/55">
+                    <Lock size={10} strokeWidth={2} aria-hidden />
+                    private. only used to match you.
+                  </p>
 
                   <div className="mt-7 grid gap-3">
                     {question.answers.map((a) => (

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
+import { Lock } from 'lucide-react';
 import { MISSING_SHAPE, compile, type Compiled } from '@/lib/compiler';
 import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
 import { NarrativeCursor } from '@/components/shared/NarrativeCursor';
@@ -147,6 +148,11 @@ export function CompilerStage() {
               className="mt-3 w-full resize-none border-b border-paper/20 bg-transparent pb-3 font-voice text-[clamp(1.3rem,3.2vw,2rem)] leading-snug text-paper outline-none transition-colors placeholder:text-paper/55 focus:border-tungsten"
               placeholder="say it however you would say it"
             />
+            {/* Same reassurance Ditto's join flow prints under its own asks. */}
+            <p className="mt-2 flex items-center gap-1.5 font-mono text-micro uppercase text-paper/55">
+              <Lock size={10} strokeWidth={2} aria-hidden />
+              private. only used to match you.
+            </p>
 
             <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
               {PRESETS.map((p) => (
