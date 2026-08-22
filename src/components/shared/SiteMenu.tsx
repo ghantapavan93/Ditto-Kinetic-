@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { Sheet } from './Sheet';
 import { PrototypeDisclosure } from './PrototypeDisclosure';
+import { PhoneQR } from './PhoneQR';
 
 /**
  * The index, as a menu.
@@ -147,7 +148,8 @@ export function SiteMenu({
           </section>
         ))}
 
-        <footer className="border-t border-paper/10 pt-5">
+        <footer className="flex flex-wrap items-end justify-between gap-6 border-t border-paper/10 pt-5">
+          <div>
           <PrototypeDisclosure />
           {/*
             Verifiable against ditto.ai itself: their site ships Next 16.2,
@@ -158,6 +160,8 @@ export function SiteMenu({
           <p className="mt-2 font-mono text-micro uppercase text-paper/55">
             built on ditto&rsquo;s own stack &mdash; next 16.2 &middot; react &middot; tailwind &middot; radix &middot; lucide
           </p>
+          </div>
+          <PhoneQR className="shrink-0" />
         </footer>
       </div>
     </Sheet>
