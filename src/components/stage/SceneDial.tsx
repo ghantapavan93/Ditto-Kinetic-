@@ -58,9 +58,20 @@ export function SceneDial({ scenes }: { scenes: Scene[] }) {
     return Math.round(wrapped) % SCENE_ORDER.length;
   }, []);
 
-  /** Keep the dial in sync when the scene changes from anywhere else. */
+  /**
+   * Keep the dial in sync when the scene changes from anywhere else.
+   *
+   * "Anywhere else" has to exclude the dial's own animation loop, not just an
+   * active drag. The loop commits the nearest scene *while inertia is still
+   * running*, and each commit re-fired this effect — which teleported the
+   * ring to the committed detent and zeroed its velocity mid-spin. Visibly:
+   * a fling jumped instead of coasting, skipped detents in the readout, and
+   * read as the dial looping past positions it never landed on. Guarding on
+   * `raf` leaves the loop as the single writer while it is alive; keyboard
+   * and list navigation still arrive here because they animate nothing.
+   */
   useEffect(() => {
-    if (state.current.dragging) return;
+    if (state.current.dragging || state.current.raf) return;
     const target = SCENE_ORDER.indexOf(sceneId as (typeof SCENE_ORDER)[number]);
     if (target < 0) return;
     // Choose the rotation direction that travels the shorter way round.
@@ -154,6 +165,11 @@ export function SceneDial({ scenes }: { scenes: Scene[] }) {
   const onPointerUp = () => {
     if (!state.current.dragging) return;
     state.current.dragging = false;
+    // Velocity is per-pointer-event, so one fast flick could hand the loop a
+    // whole revolution per frame — six detents blurring past uncounted. Capped,
+    // the hardest throw coasts about two rooms and settles, which keeps every
+    // number between here and there readable on the way.
+    state.current.velocity = Math.max(-9, Math.min(9, state.current.velocity));
     setDragging(false);
     kick();
   };
@@ -187,7 +203,7 @@ export function SceneDial({ scenes }: { scenes: Scene[] }) {
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerUp}
         onKeyDown={onKeyDown}
-        className={`relative aspect-square w-[clamp(112px,17vw,168px)] cursor-grab touch-none select-none rounded-full
+        className={`relative aspect-square w-[clamp(112px,17vw,168px)] short:w-[clamp(104px,13vw,140px)] cursor-grab touch-none select-none rounded-full
           ${dragging ? 'cursor-grabbing' : ''}`}
         style={{ WebkitTapHighlightColor: 'transparent' }}
       >

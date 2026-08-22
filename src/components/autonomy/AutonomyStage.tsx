@@ -14,6 +14,7 @@ import {
 import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
 import { NarrativeCursor } from '@/components/shared/NarrativeCursor';
 import { track } from '@/lib/analytics';
+import { SnapshotRow } from '@/components/shared/SnapshotRow';
 
 /**
  * The ladder.
@@ -87,6 +88,11 @@ export function AutonomyStage() {
             being paid in.
           </p>
         </section>
+
+        <SnapshotRow
+          srcs={['/photos/moment-07.webp']}
+          note="what each rung hands over."
+        />
 
         {/* the climb */}
         <div className="flex flex-wrap items-center gap-x-1 gap-y-2">

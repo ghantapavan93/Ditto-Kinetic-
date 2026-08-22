@@ -7,6 +7,7 @@ import { EVIDENCE, WAYS_IN, costOfWay, shortestWay } from '@/lib/waysIn';
 import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
 import { NarrativeCursor } from '@/components/shared/NarrativeCursor';
 import { track } from '@/lib/analytics';
+import { SnapshotRow } from '@/components/shared/SnapshotRow';
 
 /**
  * The front door.
@@ -69,6 +70,11 @@ export function StartStage() {
             , at about {Math.round(costOfWay(shortest))} seconds.
           </p>
         </section>
+
+        <SnapshotRow
+          srcs={['/photos/twilight-stroll.webp', '/photos/moment-01.webp']}
+          note="same two people. six evenings."
+        />
 
         {/* the lanes */}
         <section aria-label="Five ways into this project" className="grid gap-0">

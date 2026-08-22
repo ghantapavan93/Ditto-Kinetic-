@@ -12,6 +12,7 @@ import { MemoryBoard } from './MemoryBoard';
 import { track } from '@/lib/analytics';
 
 import { TICKET } from '@/lib/palette';
+import { SnapshotRow } from '@/components/shared/SnapshotRow';
 const EXAMPLE =
   'honestly she was way more outgoing than I expected but once we started walking it felt weirdly easy';
 
@@ -289,6 +290,12 @@ export function AfterStage() {
             )}
           </AnimatePresence>
         </section>
+
+        <SnapshotRow
+          srcs={['/photos/moment-12.webp']}
+          note="it keeps one photo. you keep the rest."
+          className="mt-2"
+        />
 
         <PrototypeDisclosure className="mt-auto pt-6" />
       </div>

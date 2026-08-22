@@ -8,6 +8,7 @@ import { OUT_OF_SCOPE, falsifiers, roadmap, roomSpread } from '@/lib/roadmap';
 import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
 import { NarrativeCursor } from '@/components/shared/NarrativeCursor';
 import { track } from '@/lib/analytics';
+import { SnapshotRow } from '@/components/shared/SnapshotRow';
 
 /**
  * What would have to be true.
@@ -85,6 +86,11 @@ export function NextStage() {
             is right, is the same mistake this whole site has been pointing at.
           </p>
         </section>
+
+        <SnapshotRow
+          srcs={['/photos/moment-09.webp', '/photos/moment-14.webp']}
+          note="the bet, stated so it can lose."
+        />
 
         {/* the bet */}
         <section className="max-w-[52rem] border-t border-paper/12 pt-8">

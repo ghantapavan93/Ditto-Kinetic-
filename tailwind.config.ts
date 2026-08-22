@@ -73,6 +73,17 @@ const config: Config = {
       spacing: {
         gutter: 'clamp(1rem, 3.5vw, 3.5rem)',
       },
+      screens: {
+        /**
+         * A *height* breakpoint. The stage is a fixed, unscrollable viewport,
+         * and its full composition — persona notes, verdict, dial stack —
+         * measures ~790px tall. On 768- and 720-high laptops that meant the
+         * dial and the controls were silently clipped, not compressed. `short:`
+         * is where the stage sheds its most expendable layer (the persona
+         * notes) and tightens the rest instead of overflowing.
+         */
+        short: { raw: '(max-height: 799px)' },
+      },
       borderRadius: {
         artifact: '2px',
         sheet: '14px',

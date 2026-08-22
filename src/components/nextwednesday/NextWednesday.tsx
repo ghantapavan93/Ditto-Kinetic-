@@ -16,6 +16,7 @@ import {
 import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
 import { NarrativeCursor } from '@/components/shared/NarrativeCursor';
 import { track } from '@/lib/analytics';
+import { SnapshotRow } from '@/components/shared/SnapshotRow';
 
 const LEARNED: readonly Learned[] = ['pressure-over-extroversion'];
 
@@ -125,6 +126,11 @@ export function NextWednesday() {
             </p>
           </section>
         )}
+
+        <SnapshotRow
+          srcs={['/photos/moment-13.webp']}
+          note="week two looks different."
+        />
 
         {/* the consequence, offered rather than announced */}
         <section>

@@ -1941,7 +1941,15 @@ console.log(HEADING29);
   // The stage is the front door, so it carries the widest nav. Every surface a
   // first-time visitor could want should be one click from it -- the drop most
   // of all, which was missing when a growth review walked the site cold.
-  const stage = readSourceFile(join(process.cwd(), 'src/components/stage/FirstSceneStage.tsx'), 'utf8');
+  //
+  // "The stage's nav" is now two files. The twenty-six inline links were
+  // replaced by one button opening SiteMenu, because the pile stacked past the
+  // fold of a viewport-locked stage and clipped the dial with it. The menu is
+  // the stage's index -- it opens over the stage and nowhere else -- so the
+  // assertion reads both sources as one front door.
+  const stage =
+    readSourceFile(join(process.cwd(), 'src/components/stage/FirstSceneStage.tsx'), 'utf8') +
+    readSourceFile(join(process.cwd(), 'src/components/shared/SiteMenu.tsx'), 'utf8');
   for (const key of ['/wednesday', '/after', '/next-wednesday', '/vision', '/moments', '/all']) {
     expect(`the stage links to ${key}`, stage.includes(`'${key}'`) || stage.includes(`"${key}"`), true);
   }

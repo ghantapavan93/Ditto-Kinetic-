@@ -19,6 +19,7 @@ import { Handoff } from '@/components/handoff/Handoff';
 import { FeedbackReceipt } from '@/components/feedback/FeedbackReceipt';
 import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
 import { NarrativeCursor } from '@/components/shared/NarrativeCursor';
+import { SiteMenu } from '@/components/shared/SiteMenu';
 import { Volume2, VolumeX } from 'lucide-react';
 import { TooMuch } from './TooMuch';
 import { TimeDial } from './TimeDial';
@@ -123,6 +124,9 @@ export function FirstSceneStage() {
    * in the app needs to know about it — it opens, it is looked at, it closes.
    */
   const [cloudOpen, setCloudOpen] = useState(false);
+
+  /** The site index. One button here instead of twenty-six links on the stage. */
+  const [menuOpen, setMenuOpen] = useState(false);
   const cloud = useMemo(() => possibilityCloud(pair, scene, conditions), [pair, scene, conditions]);
   const closeDecision = usePrototype((s) => s.closeDecision);
   const toggleHearMeOut = usePrototype((s) => s.toggleHearMeOut);
@@ -325,7 +329,7 @@ export function FirstSceneStage() {
             {/* top bar */}
             <div className="pointer-events-auto flex flex-col gap-4">
               <div className="flex items-start justify-end gap-2">
-                <p className="mr-auto font-mono text-[0.62rem] uppercase tracking-[0.3em] text-paper/62 md:hidden">
+                <p className="mr-auto font-mono text-[0.62rem] uppercase tracking-[0.3em] text-paper/62 md:hidden short:md:block">
                   wed 7:00 pm · {pair.personA.name} × {pair.personB.name}
                 </p>
                 <button
@@ -357,7 +361,7 @@ export function FirstSceneStage() {
             </div>
 
             {/* headline block — or the abstention, when there is nothing to send */}
-            <div className="max-w-[min(36rem,90vw)] pb-4 sm:pb-10">
+            <div className="max-w-[min(36rem,90vw)] pb-4 sm:pb-10 short:pb-2">
               <AnimatePresence mode="popLayout" initial={false}>
                 {decision.send ? (
                   <motion.div key="headline" className="pointer-events-none">
@@ -423,8 +427,20 @@ export function FirstSceneStage() {
               hid it below 1024px. In the flow it costs one short line and
               collides with nothing.
             */}
-            <div className="pointer-events-auto flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between">
-              <div className="order-2 flex flex-wrap items-center gap-2 sm:order-1">
+            {/*
+              Two columns, not four stacked rows.
+
+              The old bar stacked buttons, disruptions and the index each as a
+              full-width row *under* the dial column, which put its own bottom
+              edge ~140px past the fold on a 720-high screen — inside a stage
+              that cannot scroll. Everything below the headline was cropped:
+              the dial's lower arc, "break it", the index. Stacked beside the
+              dial instead, the bar is exactly as tall as the dial column and
+              the whole stage fits the viewports it actually ships on.
+            */}
+            <div className="pointer-events-auto flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between sm:gap-6">
+              <div className="order-2 flex min-w-0 flex-col gap-1.5 sm:order-1">
+              <div className="flex flex-wrap items-center gap-2">
                 <AnimatePresence mode="popLayout">
                   {!decision.send ? null : phase === 'exploring' ? (
                     <motion.button
@@ -497,7 +513,7 @@ export function FirstSceneStage() {
                 is never touched — and when nothing left clears the send bar,
                 the plan is withdrawn rather than downgraded.
               */}
-              <div className="order-3 flex flex-wrap items-center gap-x-3 gap-y-1.5 sm:order-3 sm:w-full sm:justify-start">
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
                 <span className="font-mono text-micro uppercase text-paper/55">break it:</span>
                 {(Object.keys(DISRUPTION_LABELS) as Disruption[]).map((d) => {
                   const spent =
@@ -542,63 +558,48 @@ export function FirstSceneStage() {
               {/*
                 The other surfaces.
 
-                The stage had no outgoing links at all — every other page linked
-                back to it and nothing led out, so half the project was
-                reachable only by typing a URL. Kept to the same register as
-                "break it" rather than promoted into a nav bar: these are places
-                to go afterwards, not chapters to work through.
+                For a while this was the opposite problem twice over. First the
+                stage had no outgoing links at all; then it had all twenty-six,
+                inline, as one wrapping paragraph of micro type — which on a
+                short viewport stacked past the fold of a stage that cannot
+                scroll, clipping the dial and half the controls with it. The
+                index is one button now. The grouping, the descriptions and the
+                room to read them live in the menu it opens.
               */}
               <nav
                 aria-label="Other surfaces"
-                className="order-4 flex flex-wrap items-center gap-x-3 gap-y-1.5 sm:w-full"
+                className="flex flex-wrap items-center gap-x-3 gap-y-1.5"
               >
                 <span className="font-mono text-micro uppercase text-paper/55">also:</span>
                 <Link
-                  href="/all"
-                  data-cursor="see all of it"
-                  className="min-h-[44px] px-1 py-2 font-mono text-micro uppercase text-tungsten underline-offset-4 transition-colors hover:text-tungsten hover:underline"
+                  href="/start"
+                  data-cursor="the guided way in"
+                  className="min-h-[44px] px-1 py-2 font-mono text-micro uppercase text-paper/62 underline-offset-4 transition-colors hover:text-paper hover:underline"
                 >
-                  everything
+                  start here
                 </Link>
-                {[
-                  { href: '/start', label: 'start here' },
-                  { href: '/thread', label: 'no app, just a thread' },
-                  { href: '/wednesday', label: 'the drop, 7pm' },
-                  { href: '/mutual', label: 'both sides, separately' },
-                  { href: '/gravity', label: 'forces, not scores' },
-                  { href: '/zoom', label: 'one camera, all of it' },
-                  { href: '/network', label: 'the whole campus' },
-                  { href: '/world', label: 'every campus at once' },
-                  { href: '/weather', label: 'is tonight worth it' },
-                  { href: '/possibility', label: 'where openings appear' },
-                  { href: '/moments', label: 'the reel' },
-                  { href: '/compiler', label: 'say it in one sentence' },
-                  { href: '/app', label: 'the whole thing as an app' },
-                  { href: '/profile', label: 'what it knows about you' },
-                  { href: '/held-back', label: 'what it did not send' },
-                  { href: '/double', label: 'four people' },
-                  { href: '/odds', label: 'your odds' },
-                  { href: '/ending', label: 'the exit, as a term' },
-                  { href: '/autonomy', label: 'how much to hand over' },
-                  { href: '/attention', label: 'what this costs you' },
-                  { href: '/vision', label: 'where this goes' },
-                  { href: '/next', label: 'what would have to be true' },
-                  { href: '/end', label: 'the last surface' },
-                  { href: '/after', label: 'after the date' },
-                  { href: '/next-wednesday', label: 'the week after' },
-                ].map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    data-cursor="go there"
-                    className="min-h-[44px] px-1 py-2 font-mono text-micro uppercase text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
-                  >
-                    {link.label}
-                  </Link>
-                ))}
+                <button
+                  onClick={() => setMenuOpen(true)}
+                  data-cursor="see all of it"
+                  className="min-h-[44px] px-1 py-2 font-mono text-micro uppercase text-tungsten underline-offset-4 transition-colors hover:underline"
+                >
+                  everything else &rarr;
+                </button>
               </nav>
 
-              <div className="order-1 flex flex-col items-center gap-3 self-center sm:order-2 sm:self-end">
+              {/*
+                The disclosure, in the flow.
+
+                Its absolute desktop position (bottom-9, right) laid a 660px
+                sentence straight across the dial's face — pointer-events-none,
+                so it worked, but it *read* as collision. As the left column's
+                last line it costs 15px and touches nothing. The fixed strip
+                below remains for small screens only.
+              */}
+              <PrototypeDisclosure compact className="hidden pt-1 sm:block" />
+              </div>
+
+              <div className="order-1 flex shrink-0 flex-col items-center gap-3 self-center sm:order-2 sm:self-end short:gap-2">
                 <TimeDial />
                 <SceneDial scenes={pair.scenes} />
               </div>
@@ -606,6 +607,8 @@ export function FirstSceneStage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <SiteMenu open={menuOpen} onOpenChange={setMenuOpen} />
 
       <WhyThisScene scene={scene} open={reasoningOpen} onClose={closeReasoning} />
       <HearMeOut
@@ -683,7 +686,7 @@ export function FirstSceneStage() {
       {showStageChrome && (
         <PrototypeDisclosure
           compact
-          className="pointer-events-none fixed bottom-0 left-0 z-sheet w-full bg-ink/92 px-gutter py-1.5 text-left backdrop-blur-sm sm:absolute sm:bottom-9 sm:left-auto sm:right-gutter sm:w-auto sm:bg-transparent sm:px-0 sm:py-0 sm:text-right sm:backdrop-blur-none"
+          className="pointer-events-none fixed bottom-0 left-0 z-sheet w-full bg-ink/92 px-gutter py-1.5 text-left backdrop-blur-sm sm:hidden"
         />
       )}
     </div>

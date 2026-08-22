@@ -16,6 +16,7 @@ import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
 import { NarrativeCursor } from '@/components/shared/NarrativeCursor';
 import { useReducedMotion } from '@/components/shared/useReducedMotion';
 import { track } from '@/lib/analytics';
+import { SnapshotRow } from '@/components/shared/SnapshotRow';
 
 /**
  * Mutuality.
@@ -89,6 +90,11 @@ export function MutualStage() {
             them was keener, and the other one still has to show up.
           </p>
         </section>
+
+        <SnapshotRow
+          srcs={['/photos/moment-02.webp', '/photos/moment-03.webp']}
+          note="two readings of one room."
+        />
 
         {/* the physics */}
         <section aria-label="Each person's own reading of this room">

@@ -9,6 +9,7 @@ import { SEND_THRESHOLD } from '@/lib/rankScenes';
 import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
 import { NarrativeCursor } from '@/components/shared/NarrativeCursor';
 import { track } from '@/lib/analytics';
+import { SnapshotRow } from '@/components/shared/SnapshotRow';
 
 /*
  * This week only.
@@ -104,6 +105,11 @@ export function DoubleStage() {
             interaction is most of what decides the night.
           </p>
         </section>
+
+        <SnapshotRow
+          srcs={['/photos/study-picnic.webp']}
+          note="four people, one table."
+        />
 
         {/* who */}
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">

@@ -14,6 +14,7 @@ import {
 import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
 import { NarrativeCursor } from '@/components/shared/NarrativeCursor';
 import { track } from '@/lib/analytics';
+import { SnapshotRow } from '@/components/shared/SnapshotRow';
 
 /**
  * The bill.
@@ -90,6 +91,11 @@ export function AttentionStage() {
             it has to count it as a bill — so here is ours.
           </p>
         </section>
+
+        <SnapshotRow
+          srcs={['/photos/moment-08.webp']}
+          note="time spent here is the bill."
+        />
 
         {/* the headline */}
         <section className="border-t border-paper/12 pt-8">

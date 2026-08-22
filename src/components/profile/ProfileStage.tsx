@@ -18,6 +18,7 @@ import { FrostedSignals } from './FrostedSignals';
 import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
 import { NarrativeCursor } from '@/components/shared/NarrativeCursor';
 import { track } from '@/lib/analytics';
+import { SnapshotRow } from '@/components/shared/SnapshotRow';
 
 const PROVENANCE_LABEL = {
   stated: 'assumed',
@@ -249,6 +250,12 @@ export function ProfileStage() {
             <FrostedSignals personId="jonah" name="Jonah" />
           </section>
         </div>
+
+        <SnapshotRow
+          srcs={['/photos/bookstore-reading.webp']}
+          note="it never knows more than this page."
+          className="mt-2"
+        />
 
         <PrototypeDisclosure className="mt-auto pt-6" />
       </div>

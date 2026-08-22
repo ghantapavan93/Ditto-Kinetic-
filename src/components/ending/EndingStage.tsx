@@ -10,6 +10,7 @@ import { NarrativeCursor } from '@/components/shared/NarrativeCursor';
 import { track } from '@/lib/analytics';
 
 import { ACID, PAPER } from '@/lib/palette';
+import { SnapshotRow } from '@/components/shared/SnapshotRow';
 /**
  * How it ends.
  *
@@ -93,6 +94,11 @@ export function EndingStage() {
             matching system has a field for it.
           </p>
         </section>
+
+        <SnapshotRow
+          srcs={['/photos/bridgeside.webp']}
+          note="leaving is a feature."
+        />
 
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
           <span className="font-mono text-[0.6rem] uppercase tracking-[0.24em] text-paper/55">

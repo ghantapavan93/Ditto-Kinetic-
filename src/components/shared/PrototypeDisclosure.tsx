@@ -13,6 +13,12 @@
  * `compact` exists for the second of those. The stage's bottom edge is crowded
  * on a small screen, which is presumably why somebody hid it rather than
  * placed it. A shorter sentence fits; not saying it does not.
+ *
+ * Compact is now one short line at every width. The two-line desktop variant
+ * sat mid-air over the stage's right side and read as interface rather than
+ * colophon — it competed with the dial it floated next to. The full sentence
+ * still opens the site (the intro) and closes the index (the menu); on the
+ * stage itself the fact only has to be present, not loud.
  */
 export function PrototypeDisclosure({
   className = '',
@@ -23,11 +29,10 @@ export function PrototypeDisclosure({
 }) {
   if (compact) {
     return (
-      <p className={`font-mono text-label leading-relaxed text-paper/55 ${className}`}>
-        <span className="sm:hidden">Unofficial concept. Synthetic people.</span>
+      <p className={`font-mono text-micro leading-relaxed text-paper/55 ${className}`}>
+        <span className="sm:hidden">unofficial concept &middot; synthetic people</span>
         <span className="hidden sm:inline">
-          Unofficial Ditto interaction concept. Synthetic people and simulated signals.
-          <br className="hidden lg:block" /> No access to Ditto systems.
+          unofficial concept &middot; synthetic people &middot; no access to ditto systems
         </span>
       </p>
     );

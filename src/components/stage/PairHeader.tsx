@@ -57,7 +57,7 @@ function PersonNote({ person, align }: { person: Person; align: 'left' | 'right'
 
 export function PairHeader({ pair }: { pair: MatchPair }) {
   return (
-    <div className="pointer-events-none hidden w-full items-start justify-between gap-8 md:flex">
+    <div className="pointer-events-none hidden w-full items-start justify-between gap-8 md:flex short:md:hidden">
       <PersonNote person={pair.personA} align="left" />
       <div className="mt-6 shrink-0 text-center">
         <p className="font-mono text-[0.62rem] uppercase tracking-[0.3em] text-paper/55">

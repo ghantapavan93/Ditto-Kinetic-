@@ -11,13 +11,13 @@ export const SURFACES: Surface[] = [
   {
     "path": "/",
     "kind": "argument",
-    "words": 546,
-    "decisions": 29
+    "words": 457,
+    "decisions": 30
   },
   {
     "path": "/compiler",
     "kind": "product",
-    "words": 176,
+    "words": 180,
     "decisions": 8
   },
   {
@@ -35,43 +35,43 @@ export const SURFACES: Surface[] = [
   {
     "path": "/after",
     "kind": "product",
-    "words": 163,
+    "words": 171,
     "decisions": 6
   },
   {
     "path": "/next-wednesday",
     "kind": "product",
-    "words": 78,
+    "words": 82,
     "decisions": 4
   },
   {
     "path": "/profile",
     "kind": "product",
-    "words": 216,
+    "words": 223,
     "decisions": 6
   },
   {
     "path": "/held-back",
     "kind": "argument",
-    "words": 246,
+    "words": 250,
     "decisions": 4
   },
   {
     "path": "/double",
     "kind": "argument",
-    "words": 174,
+    "words": 178,
     "decisions": 4
   },
   {
     "path": "/ending",
     "kind": "argument",
-    "words": 353,
+    "words": 357,
     "decisions": 5
   },
   {
     "path": "/odds",
     "kind": "argument",
-    "words": 127,
+    "words": 131,
     "decisions": 5
   },
   {
@@ -89,19 +89,19 @@ export const SURFACES: Surface[] = [
   {
     "path": "/mutual",
     "kind": "argument",
-    "words": 338,
+    "words": 343,
     "decisions": 4
   },
   {
     "path": "/thread",
     "kind": "product",
-    "words": 132,
+    "words": 136,
     "decisions": 7
   },
   {
     "path": "/start",
     "kind": "argument",
-    "words": 141,
+    "words": 146,
     "decisions": 5
   },
   {
@@ -125,13 +125,13 @@ export const SURFACES: Surface[] = [
   {
     "path": "/next",
     "kind": "argument",
-    "words": 222,
+    "words": 229,
     "decisions": 1
   },
   {
     "path": "/attention",
     "kind": "argument",
-    "words": 161,
+    "words": 167,
     "decisions": 5
   },
   {
@@ -143,7 +143,7 @@ export const SURFACES: Surface[] = [
   {
     "path": "/autonomy",
     "kind": "argument",
-    "words": 248,
+    "words": 253,
     "decisions": 6
   },
   {

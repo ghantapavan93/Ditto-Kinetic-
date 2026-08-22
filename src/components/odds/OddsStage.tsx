@@ -12,6 +12,7 @@ import { SEND_THRESHOLD } from '@/lib/rankScenes';
 import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
 import { NarrativeCursor } from '@/components/shared/NarrativeCursor';
 import { track } from '@/lib/analytics';
+import { SnapshotRow } from '@/components/shared/SnapshotRow';
 
 type Phase = 'idle' | 'spinning' | 'landed' | 'refused';
 
@@ -140,6 +141,11 @@ export function OddsStage() {
               </p>
             )}
           </section>
+
+          <SnapshotRow
+            srcs={['/photos/neon-tacos.webp']}
+            note="the honest number first."
+          />
 
           {/* the readout */}
           <section>

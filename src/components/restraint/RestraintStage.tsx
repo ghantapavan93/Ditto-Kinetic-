@@ -13,6 +13,7 @@ import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
 import { NarrativeCursor } from '@/components/shared/NarrativeCursor';
 import { HeldBackCard } from './HeldBackCard';
 import { track } from '@/lib/analytics';
+import { SnapshotRow } from '@/components/shared/SnapshotRow';
 
 /**
  * What did not get sent.
@@ -106,6 +107,11 @@ export function RestraintStage() {
             of these is actually waiting for.
           </p>
         </section>
+
+        <SnapshotRow
+          srcs={['/photos/stadium-night.webp']}
+          note="the ones it kept."
+        />
 
         <section aria-label="Pairs held back this week" className="mt-2">
           {held.map((restraint, i) => (

@@ -8,6 +8,7 @@ import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
 import { NarrativeCursor } from '@/components/shared/NarrativeCursor';
 import { useReducedMotion } from '@/components/shared/useReducedMotion';
 import { track } from '@/lib/analytics';
+import { SnapshotRow } from '@/components/shared/SnapshotRow';
 
 const PRESETS = [
   'I just moved here and don’t really know anyone.',
@@ -298,6 +299,14 @@ export function CompilerStage() {
             </motion.section>
           )}
         </AnimatePresence>
+
+        {phase !== 'quiet' && (
+          <SnapshotRow
+            srcs={['/photos/moment-10.webp']}
+            note="one sentence became this."
+            className="mt-2"
+          />
+        )}
 
         {phase !== 'quiet' && <PrototypeDisclosure className="mt-auto pt-6" />}
       </div>

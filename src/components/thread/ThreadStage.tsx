@@ -10,6 +10,7 @@ import { mutualityOf } from '@/lib/mutuality';
 import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
 import { NarrativeCursor } from '@/components/shared/NarrativeCursor';
 import { track } from '@/lib/analytics';
+import { SnapshotRow } from '@/components/shared/SnapshotRow';
 
 /**
  * Three worlds, one thread.
@@ -111,6 +112,11 @@ export function ThreadStage() {
             opens into all of it.
           </p>
         </section>
+
+        <SnapshotRow
+          srcs={['/photos/neon-downtown.webp']}
+          note="no app. one thread."
+        />
 
         {/* NORMAL WORLD — the thread */}
         <section
