@@ -127,6 +127,45 @@ export function FirstSceneStage() {
 
   /** The site index. One button here instead of twenty-six links on the stage. */
   const [menuOpen, setMenuOpen] = useState(false);
+
+  /*
+   * Progressive depth.
+   *
+   * The stage used to open with every affordance it has — disruptions, the
+   * decision view, the cloud, the time dial, the index — before a first-time
+   * visitor had turned the dial once. All of it read as proof of effort, and
+   * the one interaction that matters (turn, feel the rooms differ, snap) had
+   * to compete with its own control panel.
+   *
+   * So the chrome now arrives in the order the story needs it:
+   *   meet    — the two people, the verdict, the dial. Nothing else.
+   *   played  — after the first turn, the commit button.
+   *   depth   — after the choice (or enough playing, or ~22s), everything
+   *             else: break it, the decision view, the cloud, the index.
+   * Nothing is removed and nothing needs a manual: every control still exists,
+   * it just waits for the moment it answers a question the visitor has
+   * actually formed. Keyboard paths (D, C, arrows) work from the first frame
+   * regardless — discovery gates the chrome, never the machinery.
+   */
+  const [turns, setTurns] = useState(0);
+  const prevSceneRef = useRef(scene.id);
+  useEffect(() => {
+    if (scene.id !== prevSceneRef.current) {
+      prevSceneRef.current = scene.id;
+      setTurns((t) => t + 1);
+    }
+  }, [scene.id]);
+
+  const [depthByTime, setDepthByTime] = useState(false);
+  useEffect(() => {
+    if (phase !== 'exploring') return;
+    const t = setTimeout(() => setDepthByTime(true), 22000);
+    return () => clearTimeout(t);
+  }, [phase]);
+
+  const played = turns >= 1;
+  const depth =
+    phase !== 'intro' && (phase !== 'exploring' || turns >= 3 || depthByTime);
   const cloud = useMemo(() => possibilityCloud(pair, scene, conditions), [pair, scene, conditions]);
   const closeDecision = usePrototype((s) => s.closeDecision);
   const toggleHearMeOut = usePrototype((s) => s.toggleHearMeOut);
@@ -305,7 +344,7 @@ export function FirstSceneStage() {
 
       {/* Intro */}
       <AnimatePresence>
-        {phase === 'intro' && <IntroCurtain key="intro" onBegin={begin} />}
+        {phase === 'intro' && <IntroCurtain key="intro" pair={pair} onBegin={begin} />}
       </AnimatePresence>
 
       {/* Stage chrome */}
@@ -332,15 +371,20 @@ export function FirstSceneStage() {
                 <p className="mr-auto font-mono text-[0.62rem] uppercase tracking-[0.3em] text-paper/62 md:hidden short:md:block">
                   wed 7:00 pm · {pair.personA.name} × {pair.personB.name}
                 </p>
-                <button
-                  onClick={swapPair}
-                  disabled={swapPhase !== 'idle'}
-                  data-cursor="same rooms, different people"
-                  className="border border-paper/15 px-2.5 py-1.5 font-editorial text-[0.68rem] lowercase tracking-wide text-paper/60 transition-colors hover:border-paper/45 hover:text-paper disabled:opacity-30"
-                  title="Run the same six rooms for a different pair"
-                >
-                  try another pair
-                </button>
+                {depth && (
+                  <motion.button
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.6 }}
+                    onClick={swapPair}
+                    disabled={swapPhase !== 'idle'}
+                    data-cursor="same rooms, different people"
+                    className="border border-paper/15 px-2.5 py-1.5 font-editorial text-[0.68rem] lowercase tracking-wide text-paper/60 transition-colors hover:border-paper/45 hover:text-paper disabled:opacity-30"
+                    title="Run the same six rooms for a different pair"
+                  >
+                    try another pair
+                  </motion.button>
+                )}
                 <button
                   onClick={toggleSound}
                   aria-pressed={soundOn}
@@ -386,6 +430,16 @@ export function FirstSceneStage() {
                   animate={{ opacity: 1, y: 0 }}
                   className="pointer-events-none mt-5 inline-block border-l-2 border-acid pl-3 font-mono text-micro uppercase leading-relaxed text-paper/55"
                 >
+                  {/*
+                    The sentence before the ledger. The mono lines below are
+                    the accounting; this is the point of the accounting, in
+                    the voice the product actually speaks.
+                  */}
+                  <span className="mb-1 block font-voice text-[1.05rem] normal-case italic tracking-normal text-paper">
+                    {conditions.excluded.length > 0
+                      ? 'the place broke. the match didn\u2019t.'
+                      : 'the week broke. the match didn\u2019t.'}
+                  </span>
                   {conditions.excluded.length > 0 && (
                     <>
                       {conditions.excluded.length} venue{conditions.excluded.length > 1 ? 's' : ''} lost
@@ -443,6 +497,7 @@ export function FirstSceneStage() {
               <div className="flex flex-wrap items-center gap-2">
                 <AnimatePresence mode="popLayout">
                   {!decision.send ? null : phase === 'exploring' ? (
+                    !played ? null : (
                     <motion.button
                       key="choose"
                       layout
@@ -455,6 +510,7 @@ export function FirstSceneStage() {
                     >
                       {isWinner ? 'choose this one' : 'choose anyway'}
                     </motion.button>
+                    )
                   ) : (
                     <>
                       <motion.button
@@ -484,27 +540,36 @@ export function FirstSceneStage() {
                   )}
                 </AnimatePresence>
 
-                <button
-                  onClick={openDecision}
-                  className="min-h-[44px] px-2 py-2 font-mono text-micro uppercase text-paper/62 underline-offset-4 transition-colors hover:text-paper/80 hover:underline"
-                >
-                  see the decision
-                </button>
-                <button
-                  onClick={() => setCloudOpen((v) => !v)}
-                  data-cursor="see every version"
-                  className={`min-h-[44px] px-2 py-2 font-mono text-micro uppercase underline-offset-4 transition-colors hover:underline ${
-                    cloudOpen ? 'text-tungsten underline' : 'text-paper/62 hover:text-paper/80'
-                  }`}
-                >
-                  what could happen
-                </button>
-                <button
-                  onClick={toggleHearMeOut}
-                  className="min-h-[44px] px-2 py-2 font-mono text-micro uppercase text-paper/62 underline-offset-4 transition-colors hover:text-acid hover:underline"
-                >
-                  hear me out
-                </button>
+                {depth && (
+                  <motion.span
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.6 }}
+                    className="contents"
+                  >
+                    <button
+                      onClick={openDecision}
+                      className="min-h-[44px] px-2 py-2 font-mono text-micro uppercase text-paper/62 underline-offset-4 transition-colors hover:text-paper/80 hover:underline"
+                    >
+                      see the decision
+                    </button>
+                    <button
+                      onClick={() => setCloudOpen((v) => !v)}
+                      data-cursor="see every version"
+                      className={`min-h-[44px] px-2 py-2 font-mono text-micro uppercase underline-offset-4 transition-colors hover:underline ${
+                        cloudOpen ? 'text-tungsten underline' : 'text-paper/62 hover:text-paper/80'
+                      }`}
+                    >
+                      what could happen
+                    </button>
+                    <button
+                      onClick={toggleHearMeOut}
+                      className="min-h-[44px] px-2 py-2 font-mono text-micro uppercase text-paper/62 underline-offset-4 transition-colors hover:text-acid hover:underline"
+                    >
+                      hear me out
+                    </button>
+                  </motion.span>
+                )}
               </div>
 
               {/*
@@ -513,7 +578,13 @@ export function FirstSceneStage() {
                 is never touched — and when nothing left clears the send bar,
                 the plan is withdrawn rather than downgraded.
               */}
-              <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+              {depth && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className="flex flex-wrap items-center gap-x-3 gap-y-1.5"
+              >
                 <span className="font-mono text-micro uppercase text-paper/55">break it:</span>
                 {(Object.keys(DISRUPTION_LABELS) as Disruption[]).map((d) => {
                   const spent =
@@ -553,7 +624,8 @@ export function FirstSceneStage() {
                     reset
                   </button>
                 )}
-              </div>
+              </motion.div>
+              )}
 
               {/*
                 The other surfaces.
@@ -566,7 +638,11 @@ export function FirstSceneStage() {
                 index is one button now. The grouping, the descriptions and the
                 room to read them live in the menu it opens.
               */}
-              <nav
+              {depth && (
+              <motion.nav
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
                 aria-label="Other surfaces"
                 className="flex flex-wrap items-center gap-x-3 gap-y-1.5"
               >
@@ -585,7 +661,8 @@ export function FirstSceneStage() {
                 >
                   everything else &rarr;
                 </button>
-              </nav>
+              </motion.nav>
+              )}
 
               {/*
                 The disclosure, in the flow.
@@ -600,7 +677,15 @@ export function FirstSceneStage() {
               </div>
 
               <div className="order-1 flex shrink-0 flex-col items-center gap-3 self-center sm:order-2 sm:self-end short:gap-2">
-                <TimeDial />
+                {depth && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6 }}
+                  >
+                    <TimeDial />
+                  </motion.div>
+                )}
                 <SceneDial scenes={pair.scenes} />
               </div>
             </div>

@@ -31,7 +31,10 @@ const GROUPS: Group[] = [
     entries: [
       { href: '/start', label: 'start here', blurb: 'five ways in — pick the one that is yours' },
       { href: '/', label: 'the stage', blurb: 'same two people, six ways to meet' },
-      { href: '/app', label: 'the whole thing as an app', blurb: 'the product surface, one phone screen' },
+      // Not "the app". Ditto's own line is that apps want people to stay
+      // inside them, and this project agrees — the phone shape exists so the
+      // interface can hand the night over, not so anyone lingers in it.
+      { href: '/app', label: 'in your pocket', blurb: 'the same engine, phone-shaped — matched, planned, gone' },
       { href: '/all', label: 'everything, as one map', blurb: 'every surface, sized by what it costs you' },
     ],
   },

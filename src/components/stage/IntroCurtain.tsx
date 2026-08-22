@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { DUR, EASE } from '@/lib/motion';
 import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
+import type { MatchPair } from '@/lib/types';
 
 /**
  * The opening.
@@ -18,8 +19,16 @@ import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
  * get named.
  *
  * Any input at all skips the whole thing.
+ *
+ * The second beat used to be a thesis poster — SAME TWO PEOPLE / six ways to
+ * meet / but where changes everything — three lines of exposition before a
+ * single human appeared. The people are the product; the poster was the
+ * README. Now the names arrive first, as people, and the only line of copy is
+ * the one sentence the whole piece exists to say. The thesis is still stated
+ * everywhere a crawler or a no-JS reader looks; it just stops being the thing
+ * a visitor has to read before anything happens.
  */
-export function IntroCurtain({ onBegin }: { onBegin: () => void }) {
+export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () => void }) {
   const [beat, setBeat] = useState<'text' | 'people'>('text');
 
   useEffect(() => {
@@ -75,41 +84,33 @@ export function IntroCurtain({ onBegin }: { onBegin: () => void }) {
         )}
       </AnimatePresence>
 
-      {/* Beat two: the two people it is about. */}
+      {/* Beat two: the two people it is about, then the one sentence. */}
       <div className="max-w-[min(46rem,92vw)]">
         <AnimatePresence>
           {beat === 'people' && (
             <motion.div key="hero" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
               <h1 className="font-display text-hero uppercase leading-[0.86] text-paper">
-                {['same two', 'people.'].map((line, i) => (
+                {[pair.personA.name, pair.personB.name].map((name, i) => (
                   <motion.span
-                    key={line}
+                    key={name}
                     className="block"
                     initial={{ opacity: 0, y: 26 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.1, duration: 0.7, ease: EASE.settle }}
+                    transition={{ delay: i * 0.14, duration: 0.7, ease: EASE.settle }}
                   >
-                    {line}
+                    {i === 1 && <span className="text-acid">× </span>}
+                    {name}
                   </motion.span>
                 ))}
               </h1>
 
               <motion.p
-                className="mt-5 font-editorial text-lede font-medium text-acid"
+                className="mt-5 font-voice text-lede italic text-paper/80"
                 initial={{ opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.26, duration: 0.6, ease: EASE.settle }}
+                transition={{ delay: 0.42, duration: 0.6, ease: EASE.settle }}
               >
-                six ways to meet.
-              </motion.p>
-
-              <motion.p
-                className="mt-2 font-editorial text-[0.95rem] text-paper/62"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5, duration: 0.6 }}
-              >
-                but where changes everything.
+                right person. <span className="text-acid not-italic">wrong first date.</span>
               </motion.p>
             </motion.div>
           )}
