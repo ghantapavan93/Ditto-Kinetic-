@@ -90,7 +90,7 @@ export function AutonomyStage() {
         </section>
 
         <SnapshotRow
-          srcs={['/photos/moment-07.webp']}
+          srcs={['/photos/print-hands-cups.webp']}
           note="what each rung hands over."
         />
 

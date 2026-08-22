@@ -96,7 +96,7 @@ export function EndingStage() {
         </section>
 
         <SnapshotRow
-          srcs={['/photos/bridgeside.webp']}
+          srcs={['/photos/print-backs-rain.webp']}
           note="leaving is a feature."
         />
 

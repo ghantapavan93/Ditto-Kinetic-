@@ -266,7 +266,7 @@ export function ProfileStage() {
         </div>
 
         <SnapshotRow
-          srcs={['/photos/bookstore-reading.webp']}
+          srcs={['/photos/print-selfie-02.webp']}
           note="it never knows more than this page."
           className="mt-2"
         />

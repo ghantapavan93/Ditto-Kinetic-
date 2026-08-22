@@ -88,7 +88,7 @@ export function NextStage() {
         </section>
 
         <SnapshotRow
-          srcs={['/photos/moment-09.webp', '/photos/moment-14.webp']}
+          srcs={['/photos/print-campus-wide.webp', '/photos/moment-09.webp']}
           note="the bet, stated so it can lose."
         />
 

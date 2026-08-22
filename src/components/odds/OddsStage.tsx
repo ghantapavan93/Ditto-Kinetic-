@@ -143,7 +143,7 @@ export function OddsStage() {
           </section>
 
           <SnapshotRow
-            srcs={['/photos/neon-tacos.webp']}
+            srcs={['/photos/print-selfie-04.webp']}
             note="the honest number first."
           />
 

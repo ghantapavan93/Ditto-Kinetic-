@@ -7,7 +7,7 @@ export type Photo = {
   src: string;
   w: number;
   h: number;
-  kind: 'moment' | 'room' | 'sheet';
+  kind: 'moment' | 'room' | 'sheet' | 'print';
   kb: number;
   title?: string;
 };
@@ -226,5 +226,103 @@ export const PHOTOS: Photo[] = [
     "kind": "sheet",
     "kb": 123,
     "title": "the week in frames"
+  },
+  {
+    "src": "/photos/print-backs-rain.webp",
+    "w": 266,
+    "h": 241,
+    "kind": "print",
+    "kb": 9
+  },
+  {
+    "src": "/photos/print-campus-wide.webp",
+    "w": 305,
+    "h": 241,
+    "kind": "print",
+    "kb": 7
+  },
+  {
+    "src": "/photos/print-closeup-01.webp",
+    "w": 237,
+    "h": 269,
+    "kind": "print",
+    "kb": 6
+  },
+  {
+    "src": "/photos/print-closeup-02.webp",
+    "w": 251,
+    "h": 269,
+    "kind": "print",
+    "kb": 8
+  },
+  {
+    "src": "/photos/print-group-table.webp",
+    "w": 335,
+    "h": 269,
+    "kind": "print",
+    "kb": 14
+  },
+  {
+    "src": "/photos/print-hands-cups.webp",
+    "w": 268,
+    "h": 241,
+    "kind": "print",
+    "kb": 6
+  },
+  {
+    "src": "/photos/print-hands-ticket.webp",
+    "w": 246,
+    "h": 241,
+    "kind": "print",
+    "kb": 5
+  },
+  {
+    "src": "/photos/print-laughing-blur.webp",
+    "w": 233,
+    "h": 269,
+    "kind": "print",
+    "kb": 8
+  },
+  {
+    "src": "/photos/print-rain-window.webp",
+    "w": 308,
+    "h": 269,
+    "kind": "print",
+    "kb": 13
+  },
+  {
+    "src": "/photos/print-selfie-01.webp",
+    "w": 326,
+    "h": 313,
+    "kind": "print",
+    "kb": 10
+  },
+  {
+    "src": "/photos/print-selfie-02.webp",
+    "w": 313,
+    "h": 313,
+    "kind": "print",
+    "kb": 11
+  },
+  {
+    "src": "/photos/print-selfie-03.webp",
+    "w": 250,
+    "h": 313,
+    "kind": "print",
+    "kb": 10
+  },
+  {
+    "src": "/photos/print-selfie-04.webp",
+    "w": 489,
+    "h": 313,
+    "kind": "print",
+    "kb": 12
+  },
+  {
+    "src": "/photos/print-shoes-cafe.webp",
+    "w": 280,
+    "h": 241,
+    "kind": "print",
+    "kb": 9
   }
 ];

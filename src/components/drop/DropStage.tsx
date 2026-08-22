@@ -116,7 +116,7 @@ export function DropStage() {
             <div className="u-paper rounded-artifact p-1.5 pb-4" style={{ transform: 'rotate(2.2deg)' }}>
               {/* eslint-disable-next-line @next/next/no-img-element -- decorative pre-sized webp */}
               <img
-                src="/photos/moment-06.webp"
+                src="/photos/print-laughing-blur.webp"
                 alt=""
                 loading="lazy"
                 decoding="async"

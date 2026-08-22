@@ -107,7 +107,7 @@ export function DoubleStage() {
         </section>
 
         <SnapshotRow
-          srcs={['/photos/study-picnic.webp']}
+          srcs={['/photos/print-group-table.webp']}
           note="four people, one table."
         />
 

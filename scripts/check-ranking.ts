@@ -1734,12 +1734,19 @@ console.log(HEADING26);
     expect(`${p.src}: is under the size budget`, p.kb <= 260, true);
   }
 
-  const kinds = { moment: 0, room: 0, sheet: 0 };
+  const kinds = { moment: 0, room: 0, sheet: 0, print: 0 };
   for (const p of PHOTOS) kinds[p.kind]++;
-  console.log(`  ${PHOTOS.length} photos -- ${kinds.moment} moments, ${kinds.room} rooms, ${kinds.sheet} sheets`);
+  console.log(
+    `  ${PHOTOS.length} photos -- ${kinds.moment} moments, ${kinds.room} rooms, ${kinds.sheet} sheets, ${kinds.print} prints`,
+  );
   expect('moments carry the reel', kinds.moment >= 18, true);
   expect('the rooms are the quiet passage', kinds.room, 6);
   expect('the sheets cut fast', kinds.sheet, 4);
+  // The selfie-grammar layer: small frames the pages pin up as taped prints.
+  // The reel excludes them (they ship at ~300px), so the count is asserted
+  // here instead — a print that silently fell out of the manifest would
+  // otherwise just render as a page with its photograph missing.
+  expect('the prints are all present', kinds.print, 14);
 
   // The six room plates the stage keys off scene ids all exist now, so the
   // graceful-absence path on the stage has something to find.

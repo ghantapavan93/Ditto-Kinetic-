@@ -109,7 +109,7 @@ export function RestraintStage() {
         </section>
 
         <SnapshotRow
-          srcs={['/photos/stadium-night.webp']}
+          srcs={['/photos/print-rain-window.webp']}
           note="the ones it kept."
         />
 

@@ -93,7 +93,7 @@ export function AttentionStage() {
         </section>
 
         <SnapshotRow
-          srcs={['/photos/moment-08.webp']}
+          srcs={['/photos/print-shoes-cafe.webp']}
           note="time spent here is the bill."
         />
 

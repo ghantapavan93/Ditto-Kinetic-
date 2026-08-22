@@ -308,7 +308,7 @@ export function CompilerStage() {
 
         {phase !== 'quiet' && (
           <SnapshotRow
-            srcs={['/photos/moment-10.webp']}
+            srcs={['/photos/print-selfie-03.webp']}
             note="one sentence became this."
             className="mt-2"
           />

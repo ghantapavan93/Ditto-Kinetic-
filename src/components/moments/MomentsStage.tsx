@@ -4,6 +4,13 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
 import { PHOTOS } from '@/data/photoManifest';
+
+/*
+ * The reel's cut. Prints are ~300px selfie-grammar frames made for the pages'
+ * small taped prints; fullscreen they would render soft, so the reel leaves
+ * them out rather than showing an image at twice the size it can hold.
+ */
+const REEL = PHOTOS.filter((p) => p.kind !== 'print');
 import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
 import { NarrativeCursor } from '@/components/shared/NarrativeCursor';
 import { useReducedMotion } from '@/components/shared/useReducedMotion';
@@ -39,7 +46,7 @@ type Beat = { kind: 'photo'; index: number } | { kind: 'closing' };
 export function MomentsStage() {
   const reel = useMemo<Beat[]>(
     () => [
-      ...PHOTOS.map((_, index) => ({ kind: 'photo', index }) as Beat),
+      ...REEL.map((_, index) => ({ kind: 'photo', index }) as Beat),
       { kind: 'closing' },
     ],
     [],
@@ -51,7 +58,7 @@ export function MomentsStage() {
   const beat = reel[at];
 
   useEffect(() => {
-    track('moments_viewed', { photos: PHOTOS.length });
+    track('moments_viewed', { photos: REEL.length });
   }, []);
 
   const advance = useCallback(
@@ -64,7 +71,7 @@ export function MomentsStage() {
   useEffect(() => {
     if (paused) return;
     const hold =
-      beat.kind === 'closing' ? CLOSING_HOLD : HOLD[PHOTOS[beat.index].kind] ?? 5200;
+      beat.kind === 'closing' ? CLOSING_HOLD : HOLD[REEL[beat.index].kind] ?? 5200;
     const t = setTimeout(() => advance(1), hold);
     return () => clearTimeout(t);
   }, [at, paused, beat, advance]);
@@ -86,11 +93,11 @@ export function MomentsStage() {
     const next = reel[(at + 1) % reel.length];
     if (next.kind !== 'photo') return;
     const img = new window.Image();
-    img.src = PHOTOS[next.index].src;
+    img.src = REEL[next.index].src;
   }, [at, reel]);
 
-  const photo = beat.kind === 'photo' ? PHOTOS[beat.index] : null;
-  const shown = beat.kind === 'photo' ? beat.index + 1 : PHOTOS.length;
+  const photo = beat.kind === 'photo' ? REEL[beat.index] : null;
+  const shown = beat.kind === 'photo' ? beat.index + 1 : REEL.length;
 
   return (
     <div
@@ -172,7 +179,7 @@ export function MomentsStage() {
       <div className="pointer-events-none relative flex h-full flex-col justify-between px-gutter py-[clamp(1.25rem,4vh,2.25rem)]">
         <header className="flex items-baseline justify-between gap-4">
           <p className="font-mono text-[0.66rem] uppercase tracking-[0.2em] text-paper/50">
-            {String(shown).padStart(2, '0')} / {PHOTOS.length}
+            {String(shown).padStart(2, '0')} / {REEL.length}
             {paused ? ' · held' : ''}
           </p>
           <Link

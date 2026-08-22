@@ -72,7 +72,7 @@ export function StartStage() {
         </section>
 
         <SnapshotRow
-          srcs={['/photos/twilight-stroll.webp', '/photos/moment-01.webp']}
+          srcs={['/photos/twilight-stroll.webp', '/photos/print-selfie-01.webp']}
           note="same two people. six evenings."
         />
 

@@ -33,11 +33,16 @@ const rows = [];
 for (const f of readdirSync('public/photos').filter((x) => x.endsWith('.webp')).sort()) {
   const slug = f.replace('.webp', '');
   const m = await sharp(join('public/photos', f)).metadata();
+  // `print-` files are the small selfie-grammar frames the pages pin up as
+  // taped prints. They ship at ~300px — right for a 140px print, wrong for a
+  // fullscreen reel beat — so they carry their own kind and the reel skips it.
   const kind = slug.startsWith('room-')
     ? 'room'
-    : /sheet|moodboard|grid/.test(slug)
-      ? 'sheet'
-      : 'moment';
+    : slug.startsWith('print-')
+      ? 'print'
+      : /sheet|moodboard|grid/.test(slug)
+        ? 'sheet'
+        : 'moment';
   rows.push({
     src: `/photos/${f}`,
     w: m.width,
@@ -50,7 +55,7 @@ for (const f of readdirSync('public/photos').filter((x) => x.endsWith('.webp')).
 
 // The reel runs moments, then the empty rooms as a quiet passage, then the
 // sheets as fast beats. Order is the edit.
-const order = { moment: 0, room: 1, sheet: 2 };
+const order = { moment: 0, room: 1, sheet: 2, print: 3 };
 rows.sort((a, b) => order[a.kind] - order[b.kind] || a.src.localeCompare(b.src));
 
 const out = `/**
@@ -62,7 +67,7 @@ export type Photo = {
   src: string;
   w: number;
   h: number;
-  kind: 'moment' | 'room' | 'sheet';
+  kind: 'moment' | 'room' | 'sheet' | 'print';
   kb: number;
   title?: string;
 };

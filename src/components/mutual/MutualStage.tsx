@@ -92,7 +92,7 @@ export function MutualStage() {
         </section>
 
         <SnapshotRow
-          srcs={['/photos/moment-02.webp', '/photos/moment-03.webp']}
+          srcs={['/photos/print-closeup-01.webp', '/photos/print-closeup-02.webp']}
           note="two readings of one room."
         />
 

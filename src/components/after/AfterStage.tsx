@@ -292,7 +292,7 @@ export function AfterStage() {
         </section>
 
         <SnapshotRow
-          srcs={['/photos/moment-12.webp']}
+          srcs={['/photos/print-hands-ticket.webp']}
           note="it keeps one photo. you keep the rest."
           className="mt-2"
         />
