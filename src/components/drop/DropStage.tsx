@@ -131,7 +131,7 @@ export function DropStage() {
         )}
       </AnimatePresence>
 
-      <div className="relative flex h-full flex-col justify-between px-gutter py-[clamp(1.25rem,4vh,2.5rem)]">
+      <div className="relative flex h-full flex-col justify-between overflow-y-auto px-gutter py-[clamp(1.25rem,4vh,2.5rem)]">
         <header className="flex items-start justify-between gap-4">
           <p className="font-mono text-[0.62rem] uppercase tracking-[0.3em] text-paper/62">
             {/* Seasonal, the way the real drop is named ("back to school date"). */}
@@ -176,7 +176,14 @@ export function DropStage() {
                 one match. one person. one introduction.
               </p>
 
-              <h1 className="mt-4 font-display text-hero uppercase leading-[0.84] text-paper">
+              {/*
+                Sized for the phone, not the stage. This carried text-hero —
+                up to 9rem — inside a 23rem frame, so on any wide screen
+                "WEDNESDAY" broke through the bezel and read as a rendering
+                bug. The claim of this page is that the wait happens inside a
+                phone; the type has to actually fit the phone.
+              */}
+              <h1 className="mt-4 font-display text-[clamp(2.2rem,4.6vw,3.4rem)] uppercase leading-[0.88] text-paper">
                 wednesday
                 <br />
                 7:00 pm
@@ -194,7 +201,7 @@ export function DropStage() {
                 preferences lock tuesday 11:59 pm
               </p>
 
-              <p className="mt-7 max-w-[34ch] font-voice text-[1.15rem] leading-snug text-paper/50">
+              <p className="mt-7 max-w-[34ch] font-voice text-[1.15rem] leading-snug text-paper/50 short:mt-4">
                 nothing to browse until then. that is the whole idea.
               </p>
 
@@ -206,7 +213,7 @@ export function DropStage() {
                 compute over. Under reduced motion the animation stops (the
                 global rule) and the first names simply read as a list.
               */}
-              <div className="mt-8 max-w-[30rem] overflow-hidden" aria-hidden>
+              <div className="mt-8 max-w-[30rem] overflow-hidden short:mt-5" aria-hidden>
                 <div className="flex w-max animate-ticker gap-6 whitespace-nowrap font-mono text-[0.6rem] uppercase tracking-[0.26em] text-paper/55">
                   {[...NAMES, ...NAMES].map((name, i) => (
                     <span key={`${name}-${i}`} className="flex items-center gap-6">
@@ -222,7 +229,7 @@ export function DropStage() {
               <button
                 onClick={open}
                 data-cursor="don't wait"
-                className="mt-8 border-b border-paper/25 pb-1 pt-1 font-editorial text-[0.74rem] lowercase tracking-wide text-paper/62 transition-colors hover:border-tungsten hover:text-tungsten"
+                className="mt-8 border-b border-paper/25 pb-1 pt-1 short:mt-5 font-editorial text-[0.74rem] lowercase tracking-wide text-paper/62 transition-colors hover:border-tungsten hover:text-tungsten"
               >
                 open it early — this is a prototype
               </button>
