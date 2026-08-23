@@ -75,7 +75,7 @@ import {
 } from '../src/lib/booking';
 import type { MatchPair, Scene } from '../src/lib/types';
 import type { SendDecision } from '../src/lib/rankScenes';
-import { existsSync, readFileSync as readSourceFile, readdirSync } from 'node:fs';
+import { existsSync, readFileSync as readSourceFile, readdirSync, statSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { join } from 'node:path';
 import { SURFACES } from '../src/data/attentionInventory';
@@ -1747,6 +1747,23 @@ console.log(HEADING26);
   // here instead — a print that silently fell out of the manifest would
   // otherwise just render as a page with its photograph missing.
   expect('the prints are all present', kinds.print, 14);
+
+  /*
+   * Asset weight budgets — the regression guard the per-file cap can't be.
+   *
+   * Measured on the production build (2026-08-22): the whole photo library
+   * is ~2.5 MB across 43 files, the six room plates ~230 KB, and no page
+   * requests more than two photos up front. The budgets sit a comfortable
+   * margin above reality, so they never nag — they exist to catch the one
+   * future commit that drops a 6 MB original into public/ and quietly
+   * doubles what every visitor downloads.
+   */
+  const photoBytes = PHOTOS.reduce((a, p) => a + p.kb, 0);
+  expect('the photo library stays under its 3.5 MB budget', photoBytes <= 3584, true);
+  const roomBytes = ['coffee', 'mission', 'gallery', 'postshow', 'group', 'study']
+    .map((r) => statSync(join(process.cwd(), 'public', 'rooms', `${r}.webp`)).size)
+    .reduce((a, b) => a + b, 0);
+  expect('the room plates stay under their 400 KB budget', roomBytes <= 400 * 1024, true);
 
   // The six room plates the stage keys off scene ids all exist now, so the
   // graceful-absence path on the stage has something to find.
