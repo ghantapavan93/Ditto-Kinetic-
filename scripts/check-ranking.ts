@@ -1765,6 +1765,26 @@ console.log(HEADING26);
     .reduce((a, b) => a + b, 0);
   expect('the room plates stay under their 400 KB budget', roomBytes <= 400 * 1024, true);
 
+  /*
+   * The vision scene's hardcoded frames. The station data in vision.ts is
+   * asserted elsewhere, but the scene component places planes by its own
+   * slug="..." literals — and one of them (coffee-date) referenced a file
+   * that never existed, which rendered as a blank paper plane on the first
+   * station of /vision for as long as the page has been live. TextureLoader
+   * fails silently, so the only guard that works is reading the source.
+   */
+  const visionScene = readSourceFile(
+    join(process.cwd(), 'src/components/vision/VisionScene.tsx'),
+    'utf8',
+  );
+  for (const m of visionScene.matchAll(/slug="([a-z0-9-]+)"/g)) {
+    expect(
+      `vision scene frame ${m[1]} exists on disk`,
+      existsSync(join(process.cwd(), 'public', 'photos', `${m[1]}.webp`)),
+      true,
+    );
+  }
+
   // The six room plates the stage keys off scene ids all exist now, so the
   // graceful-absence path on the stage has something to find.
   for (const room of ['coffee', 'mission', 'gallery', 'postshow', 'group', 'study']) {

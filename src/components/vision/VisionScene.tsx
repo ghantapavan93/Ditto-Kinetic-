@@ -326,7 +326,13 @@ function Flight({
         >
           {s.key === 'tonight' && (
             <>
-              <PhotoPlane slug="coffee-date" position={[-1.1, 0.1, 0]} rotation={[0, 0.2, -0.02]} />
+              {/*
+                coffee-date.webp never existed — the manifest carries a title
+                for it, the loader 404'd silently, and the first station's
+                lead frame rendered as blank paper on every visit. moment-13
+                is what the station data always said belonged here.
+              */}
+              <PhotoPlane slug="moment-13" position={[-1.1, 0.1, 0]} rotation={[0, 0.2, -0.02]} height={1.5} />
               <PhotoPlane slug="twilight-stroll" position={[1.15, -0.15, -0.5]} rotation={[0, -0.24, 0.03]} height={1.3} />
               <pointLight position={[0, 0.8, 1.4]} intensity={2.2} color="#FFB865" distance={7} />
             </>
