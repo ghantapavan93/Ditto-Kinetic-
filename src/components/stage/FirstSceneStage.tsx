@@ -532,7 +532,7 @@ export function FirstSceneStage() {
                         exit={{ opacity: 0, y: 8 }}
                         onClick={makeItReal}
                         data-cursor="make it real"
-                        className="min-h-[44px] border border-acid bg-acid px-4 py-2 font-mono text-micro uppercase text-ink transition-colors hover:bg-transparent hover:text-acid"
+                        className="u-sheen min-h-[44px] border border-acid bg-acid px-4 py-2 font-mono text-micro uppercase text-ink transition-colors hover:bg-transparent hover:text-acid"
                       >
                         make it real
                       </motion.button>

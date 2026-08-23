@@ -22,10 +22,11 @@ import { PhoneQR } from './PhoneQR';
  * about the routes changed, only the way in.
  */
 
-type Entry = { href: string; label: string; blurb: string };
-type Group = { title: string; photo?: string; entries: Entry[] };
+export type Entry = { href: string; label: string; blurb: string };
+export type Group = { title: string; photo?: string; entries: Entry[] };
 
-const GROUPS: Group[] = [
+/** Exported for the command palette — one list, two doors. */
+export const GROUPS: Group[] = [
   {
     title: 'begin',
     photo: '/photos/twilight-stroll.webp',
@@ -151,6 +152,9 @@ export function SiteMenu({
         <footer className="flex flex-wrap items-end justify-between gap-6 border-t border-paper/10 pt-5">
           <div>
           <PrototypeDisclosure />
+          <p className="mt-2 font-mono text-micro uppercase text-paper/55">
+            &#8984;K jumps anywhere from any page
+          </p>
           </div>
           <PhoneQR className="shrink-0" />
         </footer>

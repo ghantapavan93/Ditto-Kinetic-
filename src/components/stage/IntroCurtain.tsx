@@ -140,13 +140,34 @@ export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () =
                 with one swashy serif sentence over photography; this is our
                 sentence, in our serif, at the size a thesis deserves.
               */}
+              {/*
+                Word by word, not as a block. Four words carry the whole
+                thesis, so each one gets its own beat — the acid pair lands
+                last, which is the order the idea actually unfolds in.
+              */}
               <motion.p
                 className="mt-5 font-voice text-[clamp(1.4rem,3.6vw,2.4rem)] italic leading-tight text-paper/85"
-                initial={{ opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.42, duration: 0.6, ease: EASE.settle }}
+                initial="hidden"
+                animate="shown"
+                transition={{ staggerChildren: 0.11, delayChildren: 0.42 }}
               >
-                right person. <span className="text-acid not-italic">wrong first date.</span>
+                {[
+                  { t: 'right', acid: false },
+                  { t: 'person.', acid: false },
+                  { t: 'wrong', acid: true },
+                  { t: 'first date.', acid: true },
+                ].map((w) => (
+                  <motion.span
+                    key={w.t}
+                    className={`mr-[0.32em] inline-block ${w.acid ? 'text-acid not-italic' : ''}`}
+                    variants={{
+                      hidden: { opacity: 0, y: 14 },
+                      shown: { opacity: 1, y: 0, transition: { duration: 0.55, ease: EASE.settle } },
+                    }}
+                  >
+                    {w.t}
+                  </motion.span>
+                ))}
               </motion.p>
             </motion.div>
           )}

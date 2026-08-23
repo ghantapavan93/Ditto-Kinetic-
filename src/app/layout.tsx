@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from 'next';
 import { Anton, Archivo, Caveat, Instrument_Serif, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
+import { CommandK } from '@/components/shared/CommandK';
+import { ScrollProgress } from '@/components/shared/ScrollProgress';
 
 /**
  * Three typographic voices, as the brief specifies.
@@ -71,7 +73,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       lang="en"
       className={`${display.variable} ${editorial.variable} ${voice.variable} ${mono.variable} ${hand.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        {children}
+        {/* Global chrome: both render nothing until they have something to say. */}
+        <CommandK />
+        <ScrollProgress />
+      </body>
     </html>
   );
 }
