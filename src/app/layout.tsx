@@ -3,6 +3,7 @@ import { Anton, Archivo, Caveat, Instrument_Serif, JetBrains_Mono } from 'next/f
 import './globals.css';
 import { CommandK } from '@/components/shared/CommandK';
 import { ScrollProgress } from '@/components/shared/ScrollProgress';
+import { GlobalMenu } from '@/components/shared/GlobalMenu';
 
 /**
  * Three typographic voices, as the brief specifies.
@@ -78,6 +79,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Global chrome: both render nothing until they have something to say. */}
         <CommandK />
         <ScrollProgress />
+        <GlobalMenu />
       </body>
     </html>
   );

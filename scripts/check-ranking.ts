@@ -1766,6 +1766,43 @@ console.log(HEADING26);
   expect('the room plates stay under their 400 KB budget', roomBytes <= 400 * 1024, true);
 
   /*
+   * Every asset path written anywhere in src.
+   *
+   * The vision drift proved the shape of this bug: a component references a
+   * file by string, the loader fails silently, and a page ships with a hole
+   * where a photograph should be. So the suite walks the whole source tree
+   * and asserts that every static "/photos/..." or "/rooms/..." literal names
+   * a file that exists. Dynamic template paths are covered separately (the
+   * room plates by id below, the vision slugs next to this).
+   */
+  {
+    const walkSrc = (dir: string): string[] =>
+      readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
+        e.isDirectory()
+          ? walkSrc(join(dir, e.name))
+          : /\.(tsx?|mjs)$/.test(e.name)
+            ? [join(dir, e.name)]
+            : [],
+      );
+    const seen = new Set<string>();
+    for (const file of walkSrc(join(process.cwd(), 'src'))) {
+      const src = readSourceFile(file, 'utf8');
+      for (const m of src.matchAll(/['"`](\/(?:photos|rooms)\/[a-z0-9-]+\.webp)['"`]/g)) {
+        seen.add(m[1]);
+      }
+    }
+    let missing = 0;
+    for (const ref of seen) {
+      if (!existsSync(join(process.cwd(), 'public', ref))) missing++;
+    }
+    expect(
+      `every asset literal in src resolves to a real file (${seen.size} refs)`,
+      missing,
+      0,
+    );
+  }
+
+  /*
    * The vision scene's hardcoded frames. The station data in vision.ts is
    * asserted elsewhere, but the scene component places planes by its own
    * slug="..." literals — and one of them (coffee-date) referenced a file
