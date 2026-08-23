@@ -1,0 +1,8 @@
+# Research material and source assets — not part of the served site.
+reference/
+assets-src/
+docs/
+IMPLEMENTATION_NOTES.md
+RESEARCH.md
+PRODUCT_THESIS.md
+tsconfig.tsbuildinfo
