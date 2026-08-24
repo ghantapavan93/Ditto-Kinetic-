@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { DUR, EASE } from '@/lib/motion';
 import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
@@ -41,6 +41,25 @@ export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () =
    * way the one thing the opening must never show is a partial backdrop.
    */
   const [filmLost, setFilmLost] = useState(false);
+
+  /*
+   * Opened in a background tab, the browser defers the film's autoplay — and
+   * not every browser re-runs it when the tab is finally fronted. The visitor
+   * who arrives that way would meet the poster standing in for the whole
+   * opening. So the first time the page becomes visible, a paused, unfinished
+   * film is asked to play again; if the browser still declines, the poster
+   * remains, which is the designed still and not an error.
+   */
+  const filmRef = useRef<HTMLVideoElement | null>(null);
+  useEffect(() => {
+    const resume = () => {
+      if (document.visibilityState !== 'visible') return;
+      const film = filmRef.current;
+      if (film && film.paused && !film.ended) film.play().catch(() => {});
+    };
+    document.addEventListener('visibilitychange', resume);
+    return () => document.removeEventListener('visibilitychange', resume);
+  }, []);
 
   useEffect(() => {
     const t = setTimeout(() => setBeat('people'), 1900);
@@ -107,6 +126,7 @@ export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () =
           />
         ) : (
           <video
+            ref={filmRef}
             src={MASTER.hero}
             poster={MASTER.heroFirst}
             autoPlay
