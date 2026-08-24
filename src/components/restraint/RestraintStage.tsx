@@ -112,6 +112,7 @@ export function RestraintStage() {
 
         <SnapshotRow
           srcs={['/photos/print-rain-window.webp']}
+          facedown
           note="the ones it kept."
         />
 

@@ -28,12 +28,19 @@ const ROTATIONS = ['-1.6deg', '1.2deg', '-0.8deg'];
 export function SnapshotRow({
   srcs,
   note,
+  facedown = false,
   className = '',
 }: {
   /** Paths into public/photos, in display order. Unknown paths are skipped. */
   srcs: string[];
   /** The handwritten margin note. Keep it under a sentence. */
   note?: string;
+  /**
+   * Render the prints face-down: paper backs, no image. For pages about
+   * what is kept rather than shown — the photograph exists, and you don't
+   * get to see it, which is the entire point of the page saying so.
+   */
+  facedown?: boolean;
   className?: string;
 }) {
   const photos = srcs
@@ -52,20 +59,31 @@ export function SnapshotRow({
             className="u-paper shrink-0 rounded-artifact p-1.5 pb-5"
             style={{ transform: `rotate(${ROTATIONS[i % ROTATIONS.length]})` }}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element -- decorative,
-                pre-sized webp under 120KB; next/image adds a loader round-trip
-                for no visible gain at this size. */}
-            <img
-              src={photo.src}
-              alt=""
-              loading="lazy"
-              decoding="async"
-              width={photo.w}
-              height={photo.h}
-              className={`block rounded-[1px] object-cover ${
-                portrait ? 'w-[clamp(6rem,14vw,8.5rem)]' : 'w-[clamp(9rem,20vw,13rem)]'
-              } h-auto`}
-            />
+            {facedown ? (
+              <div
+                className={`flex items-end justify-end rounded-[1px] bg-[#E8E0CF] p-2 ${
+                  portrait ? 'w-[clamp(6rem,14vw,8.5rem)]' : 'w-[clamp(9rem,20vw,13rem)]'
+                }`}
+                style={{ aspectRatio: `${photo.w} / ${photo.h}` }}
+              >
+                <span className="font-hand text-[0.95rem] leading-none text-ink/62">kept.</span>
+              </div>
+            ) : (
+              /* eslint-disable-next-line @next/next/no-img-element -- decorative,
+                 pre-sized webp under 120KB; next/image adds a loader round-trip
+                 for no visible gain at this size. */
+              <img
+                src={photo.src}
+                alt=""
+                loading="lazy"
+                decoding="async"
+                width={photo.w}
+                height={photo.h}
+                className={`block rounded-[1px] object-cover ${
+                  portrait ? 'w-[clamp(6rem,14vw,8.5rem)]' : 'w-[clamp(9rem,20vw,13rem)]'
+                } h-auto`}
+              />
+            )}
           </div>
         );
       })}

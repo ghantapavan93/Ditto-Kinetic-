@@ -102,6 +102,17 @@
   }
 }
 
+/*
+ * CUT TO: while the palette is open the page behind it freezes like a paused
+ * film — colour drains, a breath of blur. cmdk renders this overlay element
+ * itself; the styling is the only thing ours.
+ */
+[cmdk-overlay] {
+  /* @apply, because the raw backdrop-filter declaration was silently dropped
+     by the build's CSS pipeline while Tailwind's own utilities survive it. */
+  @apply fixed inset-0 bg-ink/55 backdrop-blur-[1.5px] backdrop-saturate-[.15];
+}
+
 @layer utilities {
   .u-stack-grain {
     position: relative;

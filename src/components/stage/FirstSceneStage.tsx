@@ -14,7 +14,7 @@ import { WhyThisScene } from '@/components/reasoning/WhyThisScene';
 import { DecisionView } from '@/components/reasoning/DecisionView';
 import { HearMeOut } from '@/components/reasoning/HearMeOut';
 import { NotThisWeek } from '@/components/reasoning/NotThisWeek';
-import { DISRUPTION_LABELS, type Disruption } from '@/lib/rankScenes';
+import { DISRUPTION_LABELS, SEND_THRESHOLD, rankScenes, type Disruption } from '@/lib/rankScenes';
 import { Handoff } from '@/components/handoff/Handoff';
 import { FeedbackReceipt } from '@/components/feedback/FeedbackReceipt';
 import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
@@ -248,6 +248,21 @@ export function FirstSceneStage() {
   const startFeedback = usePrototype((s) => s.startFeedback);
   const toggleSound = usePrototype((s) => s.toggleSound);
 
+  /*
+   * The photograph knows the score. One state per room, derived from the
+   * same ranking everything else reads: the winner's plate develops a shade
+   * brighter, a room under the send bar washes out, and a room whose venue
+   * broke overexposes into a ghost. The image is part of the argument now —
+   * a viewer who never opens the decision table still sees viability.
+   */
+  const plateState = useMemo(() => {
+    if (conditions.excluded.includes(scene.id)) return 'lost' as const;
+    if (isWinner) return 'winner' as const;
+    const entry = rankScenes(pair, conditions).find((r) => r.scene.id === scene.id);
+    if (!entry || entry.utility < SEND_THRESHOLD) return 'under' as const;
+    return 'possible' as const;
+  }, [conditions, isWinner, pair, scene.id]);
+
   const locked = phase === 'selected' || phase === 'reasoning';
   const inHandoff = phase === 'handoff' || phase === 'quiet';
   const inFeedback = phase === 'post-date' || phase === 'memory';
@@ -383,7 +398,7 @@ export function FirstSceneStage() {
         Renders nothing at all when the file is absent, which is the state this
         repo ships in — see RoomPlate.
       */}
-      <RoomPlate scene={scene} reducedMotion={reduced} />
+      <RoomPlate scene={scene} state={plateState} reducedMotion={reduced} />
 
       {/* WebGL layer */}
       <div className="absolute inset-0 z-stage" data-cursor="come closer">

@@ -25,7 +25,31 @@ import type { Scene } from '@/lib/types';
  * Keyed by `scene.id`, so the filename is the room: coffee, mission, gallery,
  * postshow, group, study.
  */
-export function RoomPlate({ scene, reducedMotion }: { scene: Scene; reducedMotion: boolean }) {
+/**
+ * What the ranking has decided about the room the plate depicts. The
+ * photograph participates in the logic instead of decorating it: the winner
+ * develops, a room under the send bar stays washed out, and a room whose
+ * venue broke overexposes into a ghost — the image of a place that stopped
+ * being available tonight.
+ */
+export type PlateState = 'winner' | 'possible' | 'under' | 'lost';
+
+const PLATE_LOOK: Record<PlateState, { opacity: number; filter: string }> = {
+  winner: { opacity: 0.3, filter: 'saturate(0.8) contrast(0.96)' },
+  possible: { opacity: 0.18, filter: 'saturate(0.65) contrast(0.9)' },
+  under: { opacity: 0.11, filter: 'saturate(0.3) contrast(0.82) brightness(1.12)' },
+  lost: { opacity: 0.07, filter: 'saturate(0.1) contrast(0.6) brightness(1.55)' },
+};
+
+export function RoomPlate({
+  scene,
+  state = 'possible',
+  reducedMotion,
+}: {
+  scene: Scene;
+  state?: PlateState;
+  reducedMotion: boolean;
+}) {
   // The set of srcs known to exist, rather than a boolean or a single value.
   //
   // Both simpler shapes were bugs. A boolean needed a reset inside the effect,
@@ -66,14 +90,14 @@ export function RoomPlate({ scene, reducedMotion }: { scene: Scene; reducedMotio
       key={src}
       aria-hidden
       initial={{ opacity: 0 }}
-      animate={{ opacity: 0.18 }}
+      animate={{ opacity: PLATE_LOOK[state].opacity }}
       transition={{ duration: reducedMotion ? 0 : 1.2, ease: [0.16, 1, 0.3, 1] }}
-      className="pointer-events-none absolute inset-0"
+      className="pointer-events-none absolute inset-0 transition-[filter] duration-scene"
       style={{
         backgroundImage: `url(${src})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        filter: 'saturate(0.65) contrast(0.9)',
+        filter: PLATE_LOOK[state].filter,
       }}
     />
   );

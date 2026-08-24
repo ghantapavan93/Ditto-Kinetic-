@@ -60,10 +60,20 @@ export function CommandK() {
       label="Jump anywhere"
       className="fixed left-1/2 top-[18vh] z-disclosure w-[min(34rem,92vw)] -translate-x-1/2 overflow-hidden rounded-artifact border border-paper/15 bg-ink-soft/95 shadow-lift backdrop-blur-md"
     >
-      <Command.Input
-        placeholder="where to? try “odds”, “pocket”, or “break”…"
-        className="w-full border-b border-paper/10 bg-transparent px-5 py-4 font-editorial text-[0.95rem] lowercase tracking-wide text-paper outline-none placeholder:text-paper/55"
-      />
+      {/*
+        Not a command menu — a cut. The film freezes (the overlay drains the
+        page's colour, styled globally on [cmdk-overlay]), the slate comes up,
+        and choosing a line cuts straight to that scene.
+      */}
+      <div className="flex items-center gap-3 border-b border-paper/10 px-5">
+        <span className="shrink-0 font-mono text-[0.62rem] uppercase tracking-[0.3em] text-acid">
+          cut to:
+        </span>
+        <Command.Input
+          placeholder="“odds”, “pocket”, “break”…"
+          className="w-full bg-transparent py-4 font-editorial text-[0.95rem] lowercase tracking-wide text-paper outline-none placeholder:text-paper/55"
+        />
+      </div>
       <Command.List className="max-h-[46vh] overflow-y-auto p-2">
         <Command.Empty className="px-4 py-6 font-voice text-[1rem] italic text-paper/62">
           nothing here by that name. the right person can still get the wrong first date.
@@ -100,7 +110,7 @@ export function CommandK() {
         <span className="font-mono text-[0.58rem] uppercase tracking-[0.2em] text-paper/55">
           ↑↓ move · ↵ go · esc close
         </span>
-        <span className="font-mono text-[0.58rem] uppercase tracking-[0.2em] text-paper/55">⌘K</span>
+        <span className="font-mono text-[0.58rem] uppercase tracking-[0.2em] text-paper/55">⌘K · cut</span>
       </div>
     </Command.Dialog>
   );
