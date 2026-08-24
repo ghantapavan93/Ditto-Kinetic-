@@ -79,20 +79,21 @@ ff(concatArgs([{ file: EDIT[3].file, in: 0.0, out: 8.0 }], join(OUT, 'hero.mp4')
 ff(['-i', join(OUT, 'hero.mp4'), '-frames:v', '1', '-vf', 'scale=1600:-1', join(OUT, 'hero-first.webp')]);
 ff(['-sseof', '-0.15', '-i', join(OUT, 'hero.mp4'), '-frames:v', '1', '-vf', 'scale=1600:-1', '-q:v', '68', join(OUT, 'hero-hold.webp')]);
 
-// The homepage cold open plays the storyboard cut whole — but as a faststart
-// re-encode, never the source: the source parks its moov atom after the
-// mdat, which makes a browser fetch nearly the entire file before frame one.
-// The poster is the export's own first frame so paint and playback are
-// continuous.
+// The homepage cold open: the storyboard cut whole, then the world-turn out
+// of its black — one faststart file, never the raw sources (the storyboard
+// source parks its moov atom after the mdat, which makes a browser fetch
+// nearly the entire file before frame one). The poster is the export's own
+// first frame so paint and playback are continuous.
 if (existsSync(join(SRC, 'Ditto_brand_sequence_storyboard_1080p_202608240400.mp4'))) {
-  console.log('intro (faststart, with audio)…');
-  ff([
-    '-i', join(SRC, 'Ditto_brand_sequence_storyboard_1080p_202608240400.mp4'),
-    '-c:v', 'libx264', '-preset', 'medium', '-crf', '24', '-pix_fmt', 'yuv420p',
-    '-c:a', 'aac', '-b:a', '160k',
-    '-movflags', '+faststart',
+  console.log('intro (storyboard + world-turn, faststart, with audio)…');
+  ff(concatArgs(
+    [
+      { file: 'Ditto_brand_sequence_storyboard_1080p_202608240400.mp4', in: 0.0, out: 10.0 },
+      { file: EDIT[3].file, in: 0.0, out: 8.0 },
+    ],
     join(OUT, 'intro.mp4'),
-  ]);
+    { crf: 26 },
+  ));
   ff(['-i', join(OUT, 'intro.mp4'), '-frames:v', '1', '-vf', 'scale=1600:-1', join(OUT, 'intro-first.webp')]);
 }
 

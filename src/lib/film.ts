@@ -116,22 +116,25 @@ export const STORYBOARD_ALT: FilmShot = {
 export const shotSrc = (s: FilmShot) => src(s.file);
 
 /**
- * The homepage cold open. The storyboard cut carries its own baked
- * typography and a music bed, so the intro treats it as a finished film:
- * plays it whole, keeps DOM type out of its frames, and lands the title
- * card on its black tail. `first` is its exact first frame, used as the
- * poster so paint and playback are continuous.
+ * The homepage cold open: one file, two movements. The storyboard cut runs
+ * whole — baked typography, music bed, fade to black — and out of that
+ * black the world-turn plays: the same two people standing still while a
+ * diner becomes a library becomes a courtyard becomes the Royal Theatre
+ * street. The film ends held on that street, which is where the title
+ * lands. `first` is the export's exact first frame, used as the poster so
+ * paint and playback are continuous.
  *
- * It plays the exports/ re-encode, never the source: the source parks its
- * moov atom after 5.6MB of mdat, which forces a browser to fetch nearly
- * the whole file before frame one — the opening bought itself a buffering
- * spinner. The export is faststart (moov first, ~38% smaller), so playback
- * begins on the first few hundred kilobytes.
+ * Always the exports/ re-encode, never the sources: the storyboard source
+ * parks its moov atom after 5.6MB of mdat, which forces a browser to fetch
+ * nearly the whole file before frame one — a buffering spinner where the
+ * opening should be. The export is faststart, so playback begins on the
+ * first few hundred kilobytes.
  */
 export const INTRO = {
   src: '/film/exports/intro.mp4',
   first: '/film/exports/intro-first.webp',
-  duration: STORYBOARD_ALT.duration,
+  /** 10s storyboard cut + 8s world-turn, per the recipe in build-film.mjs. */
+  duration: 18,
 };
 
 export const MASTER = {

@@ -22,11 +22,14 @@ import type { MatchPair } from '@/lib/types';
  *
  *   text   — the film's own dark phone-glow open, with the one bubble that
  *            is also how the real product arrives: "found someone."
- *   film   — the cut runs. Corner chrome recedes because two of its frames
- *            are paper-white and micro type cannot survive them; what stays
- *            is chipped in ink so it reads on any frame.
- *   people — the film's fade to black is the end card. The names and the
- *            one sentence arrive on it, and any input begins the stage.
+ *   film   — the cut runs: the brand movement whole, then out of its black
+ *            the world-turn — the same two people while a diner becomes a
+ *            library becomes a courtyard becomes the Royal Theatre street.
+ *            Corner chrome recedes because two of the brand frames are
+ *            paper-white and micro type cannot survive them; what stays is
+ *            chipped in ink so it reads on any frame.
+ *   people — the film ends held on the theatre street, and the names land
+ *            over the marquee. Any input begins the stage.
  *
  * The film starts muted because browsers permit nothing else; the toggle
  * (or M) unmutes it mid-flight, and pressed after the end it replays the
@@ -208,7 +211,18 @@ export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () =
               landTitle();
             }}
             onTimeUpdate={(e) => {
-              if (e.currentTarget.currentTime >= INTRO.duration - 0.85) landTitle();
+              // The street shot is fully formed for the film's last ~1.5s;
+              // the title starts entering as it settles and finishes over
+              // the held marquee frame. Below the cue, a film that is
+              // genuinely rolling takes its frame back — the stall handoff
+              // may have landed the title while autoplay was deferred (a
+              // background tab, fronted later), and the names must not sit
+              // on the footage. Hung off timeupdate, not the `playing`
+              // event: timeupdate is the one signal every browser fires
+              // steadily whenever the clock is really moving.
+              const film = e.currentTarget;
+              if (film.currentTime >= INTRO.duration - 1.3) landTitle();
+              else if (!film.paused) setBeat((b) => (b === 'people' ? 'film' : b));
             }}
             onEnded={landTitle}
             className="h-full w-full object-cover"
@@ -223,6 +237,22 @@ export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () =
           style={{
             background:
               'radial-gradient(130% 105% at 50% 50%, transparent 62%, rgba(11,9,7,0.42))',
+          }}
+        />
+        {/*
+          The end card's ground. The title lands over the lit theatre
+          street, not over black, so the lower third earns a gradient — but
+          only once the names are due; while the film speaks the frame
+          stays untouched.
+        */}
+        <motion.div
+          className="absolute inset-0"
+          initial={false}
+          animate={{ opacity: shownBeat === 'people' ? 1 : 0 }}
+          transition={{ duration: 0.8, ease: EASE.settle }}
+          style={{
+            background:
+              'linear-gradient(to top, rgba(11,9,7,0.9) 0%, rgba(11,9,7,0.45) 32%, transparent 60%)',
           }}
         />
       </div>
