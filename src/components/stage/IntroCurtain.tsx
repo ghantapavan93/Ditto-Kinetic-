@@ -6,6 +6,7 @@ import { DUR, EASE } from '@/lib/motion';
 import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
 import Link from 'next/link';
 import { useReducedMotion } from '@/components/shared/useReducedMotion';
+import { MASTER } from '@/lib/film';
 import type { MatchPair } from '@/lib/types';
 
 /**
@@ -205,7 +206,7 @@ export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () =
             data-cursor="roll it"
             className="shrink-0 py-1.5 font-mono text-[0.62rem] uppercase tracking-[0.24em] text-tungsten underline-offset-4 hover:underline"
           >
-            film · 00:54
+            {`film · 00:${MASTER.duration}`}
           </Link>
         </span>
         {/*

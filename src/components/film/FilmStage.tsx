@@ -452,12 +452,20 @@ export function FilmStage() {
         </details>
 
         <footer className="mt-10 flex flex-wrap items-end justify-between gap-4 border-t border-paper/10 pt-5">
-          <Link
-            href="/"
-            className="py-1.5 font-mono text-[0.66rem] uppercase tracking-[0.2em] text-tungsten underline-offset-4 hover:underline"
-          >
-            play first scene →
-          </Link>
+          <span className="flex flex-wrap items-baseline gap-x-5 gap-y-1.5">
+            <Link
+              href="/"
+              className="py-1.5 font-mono text-[0.66rem] uppercase tracking-[0.2em] text-tungsten underline-offset-4 hover:underline"
+            >
+              play first scene →
+            </Link>
+            <a
+              href={MASTER.teaser}
+              className="py-1.5 font-mono text-[0.66rem] uppercase tracking-[0.2em] text-paper/62 underline-offset-4 hover:text-paper hover:underline"
+            >
+              the fourteen-second teaser →
+            </a>
+          </span>
           <PrototypeDisclosure compact className="pr-28 text-right" />
         </footer>
       </section>

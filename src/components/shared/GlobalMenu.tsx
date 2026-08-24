@@ -59,7 +59,11 @@ export function GlobalMenu() {
   }, [pathname]);
   const seen = useSyncExternalStore(seenStore.subscribe, seenStore.read, () => 0);
 
-  if (pathname === '/') return null;
+  // The stage has its own door in the chrome; the cinema must stay pure —
+  // /film points back into the product from the poster, the ending and the
+  // cut, and a floating chip over a playing film is exactly the interface
+  // the film argues against.
+  if (pathname === '/' || pathname === '/film') return null;
 
   return (
     <>
