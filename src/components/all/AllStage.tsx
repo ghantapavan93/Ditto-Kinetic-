@@ -48,6 +48,7 @@ const SAYS: Record<string, string> = {
   '/moments': 'the world the argument is for, cut like a film',
   '/vision': 'tonight to 2030, one camera, their own direction taken seriously',
   '/reel': 'every surface, about a second each',
+  '/film': 'the whole idea as cinema, then the machinery underneath',
 };
 
 /**

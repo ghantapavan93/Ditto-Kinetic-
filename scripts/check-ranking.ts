@@ -13,6 +13,7 @@
  *   npm run check
  */
 
+import { MASTER, SHOTS, STORYBOARD_ALT } from '../src/lib/film';
 import { PAIRS, pairById } from '../src/data/pairs';
 import { WEEK_TWO } from '../src/data/weekTwo';
 import { CLOUD_COUNT, possibilityCloud } from '../src/lib/possibility';
@@ -1800,6 +1801,38 @@ console.log(HEADING26);
       missing,
       0,
     );
+  }
+
+  /*
+   * The film. Every source shot the manifest names must exist exactly as
+   * written (the filenames carry spaces and unicode — the one typo class the
+   * encoder can't catch), every generated export must exist before deploy,
+   * and the whole directory stays under budget so the cinema can never
+   * quietly double what a visitor downloads.
+   */
+  {
+    for (const s of [...SHOTS, STORYBOARD_ALT]) {
+      expect(`film source exists: ${s.id}`, existsSync(join(process.cwd(), 'public', 'film', s.file)), true);
+      expect(
+        `film poster exists: ${s.id}`,
+        existsSync(join(process.cwd(), 'public', decodeURI(s.poster))),
+        true,
+      );
+    }
+    for (const f of [MASTER.src, MASTER.poster, MASTER.teaser, MASTER.hero]) {
+      expect(`film export exists: ${f}`, existsSync(join(process.cwd(), 'public', decodeURI(f))), true);
+    }
+    const walkBytes = (dir: string): number =>
+      readdirSync(dir, { withFileTypes: true }).reduce(
+        (a, e) =>
+          a +
+          (e.isDirectory()
+            ? walkBytes(join(dir, e.name))
+            : statSync(join(dir, e.name)).size),
+        0,
+      );
+    const filmMB = walkBytes(join(process.cwd(), 'public', 'film')) / 1024 / 1024;
+    expect('the film directory stays under its 160 MB budget', filmMB <= 160, true);
   }
 
   /*

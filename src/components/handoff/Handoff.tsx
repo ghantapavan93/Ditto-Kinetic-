@@ -375,8 +375,14 @@ function StillHere() {
           </p>
           <div className="mt-3 flex flex-col items-end gap-1.5">
             <Link
-              href="/reel"
+              href="/film"
               className="font-mono text-micro uppercase text-tungsten underline-offset-4 hover:underline"
+            >
+              the film &rarr;
+            </Link>
+            <Link
+              href="/reel"
+              className="font-mono text-micro uppercase text-paper/62 underline-offset-4 hover:text-paper hover:underline"
             >
               the fast tour &rarr;
             </Link>

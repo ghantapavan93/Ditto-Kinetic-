@@ -70,6 +70,7 @@ export const ROUTES: { path: string; dir: string; kind: 'argument' | 'product' }
   { path: '/mutual', dir: 'components/mutual', kind: 'argument' },
   { path: '/thread', dir: 'components/thread', kind: 'product' },
   { path: '/start', dir: 'components/start', kind: 'argument' },
+  { path: '/film', dir: 'components/film', kind: 'product' },
   { path: '/reel', dir: 'components/reel', kind: 'product' },
   { path: '/zoom', dir: 'components/zoom', kind: 'argument' },
   { path: '/gravity', dir: 'components/gravity', kind: 'argument' },

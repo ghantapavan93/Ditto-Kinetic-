@@ -340,6 +340,19 @@ function ObjectFor({ path }: { path: string }) {
           <meshStandardMaterial color={PAPER_TONE} transparent opacity={0.32} roughness={0.3} />
         </mesh>
       );
+    case '/film': // a clapperboard
+      return (
+        <group rotation={[-0.3, 0.3, 0]}>
+          <mesh>
+            <boxGeometry args={[1.3, 0.85, 0.14]} />
+            <Skin />
+          </mesh>
+          <mesh position={[-0.08, 0.55, 0]} rotation={[0, 0, 0.22]}>
+            <boxGeometry args={[1.34, 0.2, 0.14]} />
+            <Skin dark />
+          </mesh>
+        </group>
+      );
     case '/reel': // a strip of film
       return (
         <group rotation={[-0.5, 0.2, 0]}>

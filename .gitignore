@@ -16,3 +16,8 @@ Thumbs.db
 assets-src/
 
 .vercel
+
+# Film footage stays out of git: GitHub is for the code, Vercel uploads the
+# working directory regardless of gitignore, and 120MB of mp4 does not belong
+# in every future clone. The suite still asserts the files exist locally.
+public/film/

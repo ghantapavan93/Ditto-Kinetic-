@@ -36,6 +36,7 @@ const PHOTO_FOR: Record<string, string> = {
   '/app': '/rooms/postshow.webp',
   '/all': '/photos/photo-grid.webp',
   '/reel': '/photos/contact-sheet.webp',
+  '/film': '/film/exports/poster.webp',
   '/wednesday': '/photos/print-laughing-blur.webp',
   '/thread': '/photos/neon-downtown.webp',
   '/double': '/photos/print-group-table.webp',

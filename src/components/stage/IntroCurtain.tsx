@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { DUR, EASE } from '@/lib/motion';
 import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
+import Link from 'next/link';
+import { useReducedMotion } from '@/components/shared/useReducedMotion';
 import type { MatchPair } from '@/lib/types';
 
 /**
@@ -30,6 +32,7 @@ import type { MatchPair } from '@/lib/types';
  */
 export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () => void }) {
   const [beat, setBeat] = useState<'text' | 'people'>('text');
+  const reduced = useReducedMotion();
 
   useEffect(() => {
     const t = setTimeout(() => setBeat('people'), 1900);
@@ -71,14 +74,34 @@ export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () =
         className="u-stack-grain absolute inset-0 -z-10 overflow-hidden"
         style={{ '--grain-opacity': '0.14' } as React.CSSProperties}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element -- decorative pre-sized webp */}
-        <img
-          src="/photos/twilight-stroll.webp"
-          alt=""
-          decoding="async"
-          className="h-full w-full scale-110 object-cover"
-          style={{ filter: 'blur(22px) saturate(0.8) brightness(0.5)' }}
-        />
+        {/*
+          The film breathes behind the words: eight muted seconds of the
+          world-turn, played once, blurred into atmosphere. Reduced motion
+          keeps the still photograph — a self-playing backdrop is exactly
+          what that preference declined — and the poster covers the frame
+          until the video can.
+        */}
+        {reduced ? (
+          /* eslint-disable-next-line @next/next/no-img-element -- decorative pre-sized webp */
+          <img
+            src="/photos/twilight-stroll.webp"
+            alt=""
+            decoding="async"
+            className="h-full w-full scale-110 object-cover"
+            style={{ filter: 'blur(22px) saturate(0.8) brightness(0.5)' }}
+          />
+        ) : (
+          <video
+            src="/film/exports/hero.mp4"
+            poster="/photos/twilight-stroll.webp"
+            autoPlay
+            muted
+            playsInline
+            preload="metadata"
+            className="h-full w-full scale-110 object-cover"
+            style={{ filter: 'blur(18px) saturate(0.8) brightness(0.5)' }}
+          />
+        )}
         <div
           className="absolute inset-0"
           style={{
@@ -175,7 +198,16 @@ export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () =
       </div>
 
       <div className="flex items-end justify-between gap-6">
-        <PrototypeDisclosure />
+        <span className="pointer-events-auto flex items-baseline gap-4">
+          <PrototypeDisclosure />
+          <Link
+            href="/film"
+            data-cursor="roll it"
+            className="shrink-0 py-1.5 font-mono text-[0.62rem] uppercase tracking-[0.24em] text-tungsten underline-offset-4 hover:underline"
+          >
+            film · 00:54
+          </Link>
+        </span>
         {/*
           Keeps breathing until somebody moves.
 
