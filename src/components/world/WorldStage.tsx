@@ -210,7 +210,7 @@ export function WorldStage() {
               )}
             </AnimatePresence>
           </div>
-          <PrototypeDisclosure className="text-right" />
+          <PrototypeDisclosure className="pr-28 text-right" />
         </footer>
       </div>
     </div>

@@ -270,7 +270,7 @@ export function OddsStage() {
           )}
         </AnimatePresence>
 
-        <PrototypeDisclosure className="mt-auto pt-6" />
+        <PrototypeDisclosure className="mt-auto pt-6 pr-28" />
       </div>
     </div>
   );

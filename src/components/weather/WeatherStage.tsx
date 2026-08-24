@@ -192,7 +192,7 @@ export function WeatherStage() {
             </span>
           </div>
 
-          <PrototypeDisclosure className="pt-1" />
+          <PrototypeDisclosure className="pt-1 pr-28" />
         </footer>
       </div>
     </div>

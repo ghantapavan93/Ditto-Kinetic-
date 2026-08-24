@@ -107,7 +107,7 @@ export const SURFACES: Surface[] = [
   {
     "path": "/reel",
     "kind": "product",
-    "words": 27,
+    "words": 31,
     "decisions": 1
   },
   {

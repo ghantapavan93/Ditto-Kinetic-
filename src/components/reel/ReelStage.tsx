@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { GROUPS } from '@/components/shared/SiteMenu';
 import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
-import { useReducedMotion } from '@/components/shared/useReducedMotion';
+import { useCoarsePointer, useReducedMotion } from '@/components/shared/useReducedMotion';
 import { track } from '@/lib/analytics';
 
 /**
@@ -77,6 +77,7 @@ const HOLD_MS = 1150;
 export function ReelStage() {
   const router = useRouter();
   const reduced = useReducedMotion();
+  const coarse = useCoarsePointer();
   const [i, setI] = useState(0);
   const [paused, setPaused] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -193,7 +194,9 @@ export function ReelStage() {
 
       <footer className="pointer-events-none absolute bottom-4 left-gutter right-gutter flex flex-wrap items-end justify-between gap-3">
         <p className="font-mono text-[0.6rem] uppercase tracking-[0.2em] text-paper/55">
-          {reduced ? (
+          {coarse ? (
+            <>tap dives in</>
+          ) : reduced ? (
             <>&larr; &rarr; page &middot; &crarr; dive in &middot; esc leave</>
           ) : (
             <>hover holds &middot; click dives in &middot; &larr; &rarr; scrub &middot; esc leave</>

@@ -211,7 +211,7 @@ export function MomentsStage() {
               click, arrows, or space to hold. every person here is synthetic.
             </p>
           </div>
-          <PrototypeDisclosure className="text-right" />
+          <PrototypeDisclosure className="pr-44 text-right" />
         </footer>
       </div>
     </div>

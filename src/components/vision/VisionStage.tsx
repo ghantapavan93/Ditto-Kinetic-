@@ -390,7 +390,7 @@ export function VisionStage() {
               />
             </div>
           </div>
-          <PrototypeDisclosure className="text-right" />
+          <PrototypeDisclosure className="pr-44 text-right" />
         </footer>
       </div>
     </div>

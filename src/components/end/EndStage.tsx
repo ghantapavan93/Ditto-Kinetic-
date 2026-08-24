@@ -262,7 +262,7 @@ export function EndStage() {
       </div>
 
       {/* The disclosure never leaves, at any phase. */}
-      <PrototypeDisclosure className="pointer-events-none fixed inset-x-0 bottom-3 text-center opacity-40" />
+      <PrototypeDisclosure className="pointer-events-none fixed inset-x-0 bottom-3 px-28 text-center opacity-40" />
     </div>
   );
 }
