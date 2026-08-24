@@ -148,17 +148,45 @@ export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () =
   }, []);
 
   /*
-   * Any input skips — except the inputs that operate the opening itself.
-   * The sound control must be pressable (and Tab-reachable, and M works
-   * from anywhere) without the whole curtain interpreting that as "begin".
+   * Skipping is deliberate now. The first version dismissed the whole
+   * opening on ANY pointer, key or wheel event — which meant the click
+   * that focused the window, a trackpad's inertia, or one habitual tap
+   * threw the film away before a single shot had landed. The film read as
+   * "skipped" because it was.
+   *
+   * While the film plays, stray input does nothing but light the skip
+   * control — the ways out are the skip button, Escape, Enter or Space.
+   * Once the title lands, the original contract returns: any input at all
+   * begins the stage. The sound control (button or M) is never mistaken
+   * for either.
    */
+  const beatRef = useRef(beat);
   useEffect(() => {
-    const isKept = (t: EventTarget | null) =>
-      t instanceof Element && !!t.closest('[data-intro-keep]');
+    beatRef.current = reduced ? 'people' : beat;
+  }, [reduced, beat]);
+  const [skipHot, setSkipHot] = useState(false);
+  const skipHotT = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const nudgeSkip = useCallback(() => {
+    setSkipHot(true);
+    if (skipHotT.current) clearTimeout(skipHotT.current);
+    skipHotT.current = setTimeout(() => setSkipHot(false), 1100);
+  }, []);
+  useEffect(() => () => {
+    if (skipHotT.current) clearTimeout(skipHotT.current);
+  }, []);
+
+  useEffect(() => {
+    const within = (t: EventTarget | null, sel: string) =>
+      t instanceof Element && !!t.closest(sel);
 
     const onPointer = (e: PointerEvent) => {
-      if (isKept(e.target)) return;
-      onBegin();
+      if (within(e.target, '[data-intro-keep]')) return;
+      if (within(e.target, '[data-intro-skip]')) {
+        onBegin();
+        return;
+      }
+      if (beatRef.current === 'people') onBegin();
+      else nudgeSkip();
     };
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Tab' || e.key === 'Shift') return;
@@ -167,10 +195,17 @@ export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () =
         toggleSound();
         return;
       }
-      if (isKept(e.target)) return;
-      onBegin();
+      if (within(e.target, '[data-intro-keep]')) return;
+      if (beatRef.current === 'people') {
+        onBegin();
+        return;
+      }
+      if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') onBegin();
+      else nudgeSkip();
     };
-    const onWheel = () => onBegin();
+    const onWheel = () => {
+      if (beatRef.current === 'people') onBegin();
+    };
 
     window.addEventListener('pointerdown', onPointer);
     window.addEventListener('keydown', onKey);
@@ -180,7 +215,7 @@ export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () =
       window.removeEventListener('keydown', onKey);
       window.removeEventListener('wheel', onWheel);
     };
-  }, [onBegin, toggleSound]);
+  }, [onBegin, toggleSound, nudgeSkip]);
 
   /* The film's paper-white frames would erase white micro type; the corner
      chrome that must survive every frame wears ink. */
@@ -393,25 +428,34 @@ export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () =
           </Link>
         </motion.span>
         {/*
-          The skip affordance keeps breathing until somebody moves, and it
-          survives the film's white frames the same way the sound control
-          does: chipped in ink. The gesture is forgiving — any pointer press
-          works — and the invitation stays alive rather than auto-advancing.
-          The stage is about choosing; it should not choose.
+          The way past the film is a control, not a hair trigger. While the
+          cut runs this is a real skip button — a stray click elsewhere only
+          lights it — and once the title lands it turns back into the
+          standing invitation, from which any input at all begins the
+          stage. It survives the film's white frames the same way the sound
+          control does: chipped in ink. It keeps breathing rather than
+          auto-advancing — the stage is about choosing; it should not
+          choose.
         */}
-        <motion.p
-          className="shrink-0 border border-paper/20 bg-ink/60 px-2.5 py-1.5 font-mono text-label uppercase text-paper/80 backdrop-blur-sm"
+        <motion.button
+          type="button"
+          data-intro-skip
+          className={`pointer-events-auto shrink-0 border px-2.5 py-1.5 font-mono text-label uppercase backdrop-blur-sm transition-colors ${
+            skipHot
+              ? 'border-acid bg-ink/80 text-acid'
+              : 'border-paper/20 bg-ink/60 text-paper/80 hover:border-paper/55 hover:text-paper'
+          }`}
           initial={{ opacity: 0 }}
-          animate={{ opacity: shownBeat === 'text' ? 0 : [0.45, 1, 0.45] }}
+          animate={{ opacity: shownBeat === 'text' ? 0 : skipHot ? 1 : [0.45, 1, 0.45] }}
           transition={{
             delay: 0.7,
-            duration: 2.6,
+            duration: skipHot ? 0.2 : 2.6,
             ease: 'easeInOut',
-            repeat: shownBeat === 'text' ? 0 : Infinity,
+            repeat: shownBeat === 'text' || skipHot ? 0 : Infinity,
           }}
         >
-          drag it &mdash; or tap anywhere
-        </motion.p>
+          {shownBeat === 'people' ? <>drag it &mdash; or tap anywhere</> : <>skip the film &rarr;</>}
+        </motion.button>
       </div>
     </motion.div>
   );

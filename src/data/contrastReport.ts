@@ -13,6 +13,6 @@ export type ContrastReport = {
 };
 
 export const CONTRAST: ContrastReport = {
-  checked: 1070,
+  checked: 1072,
   failing: 0,
 };
