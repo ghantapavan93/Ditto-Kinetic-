@@ -48,6 +48,8 @@ export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () =
   const [filmLost, setFilmLost] = useState(false);
   const [sound, setSound] = useState(false);
   const filmRef = useRef<HTMLVideoElement | null>(null);
+  /** Mirrors `sound` for event handlers, which must never read stale state. */
+  const soundRef = useRef(false);
 
   const landTitle = useCallback(() => {
     setBeat((b) => (b === 'people' ? b : 'people'));
@@ -74,24 +76,41 @@ export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () =
   }, [reduced]);
 
   /*
-   * If autoplay is declined outright (data saver, low-power mode), the
-   * opening must not sit as a poster with two chips and no story — but
-   * "declined" and "still loading" are different states, and the first
-   * version conflated them: a 3-second timer that only asked `paused` fired
-   * mid-download on any real connection, landed the title, then had it
-   * yanked away when playback began — the opening read as broken pieces.
-   * So the film is asked to play directly: a NotAllowedError is a real
-   * refusal and hands the frame to the title at once. The slow-network
-   * backstop only fires if the clock has never moved at all.
+   * Sound first. A film with a score should open scored, so the first
+   * attempt is an UNMUTED play — a browser that allows it (a returning
+   * visitor, a high engagement score) starts the opening the way it was
+   * made. A browser that refuses gets the muted fallback immediately, and
+   * from there the first tap anywhere turns the sound on — which is what
+   * a first tap on a playing film means everywhere else people watch one.
+   *
+   * Only a refusal of the MUTED attempt counts as autoplay being declined
+   * outright (data saver, low-power mode) — that, and only that, hands the
+   * frame to the title at once, because "declined" and "still loading" are
+   * different states: an earlier version conflated them and yanked the
+   * title around mid-download. The slow-network backstop only fires if the
+   * clock has never moved at all.
    */
   useEffect(() => {
     if (reduced) return;
     const film = filmRef.current;
     if (!film) return;
     let gone = false;
-    film.play().catch((err: unknown) => {
-      if (!gone && err instanceof DOMException && err.name === 'NotAllowedError') landTitle();
-    });
+    film.muted = false;
+    film
+      .play()
+      .then(() => {
+        if (gone) return;
+        soundRef.current = true;
+        setSound(true);
+      })
+      .catch(() => {
+        if (gone) return;
+        film.muted = true;
+        soundRef.current = false;
+        film.play().catch((err: unknown) => {
+          if (!gone && err instanceof DOMException && err.name === 'NotAllowedError') landTitle();
+        });
+      });
     const t = setTimeout(() => {
       if (!gone && film.currentTime === 0 && film.paused) landTitle();
     }, 8000);
@@ -122,10 +141,8 @@ export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () =
    * The media work happens in the handler, not inside the state updater —
    * updaters are re-invoked by StrictMode and batched at React's pleasure,
    * and a mute that sometimes applies twice is a mute that sometimes does
-   * nothing. The ref carries the current value so the handler never reads
-   * stale state.
+   * nothing.
    */
-  const soundRef = useRef(false);
   const toggleSound = useCallback(() => {
     const next = !soundRef.current;
     soundRef.current = next;
@@ -185,7 +202,15 @@ export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () =
         onBegin();
         return;
       }
-      if (beatRef.current === 'people') onBegin();
+      if (beatRef.current === 'people') {
+        onBegin();
+        return;
+      }
+      // The first tap on a muted, playing film means "sound on" — the
+      // gesture every story-shaped surface has taught. Only once the
+      // sound question is settled does a stray tap fall through to
+      // lighting the skip control.
+      if (!soundRef.current) toggleSound();
       else nudgeSkip();
     };
     const onKey = (e: KeyboardEvent) => {
@@ -250,8 +275,12 @@ export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () =
             ref={filmRef}
             src={INTRO.src}
             poster={INTRO.first}
-            autoPlay
-            muted={!sound}
+            /*
+              No autoPlay attribute and no muted prop: playback and mute are
+              driven imperatively by the sound-first effect and the toggle,
+              and a declarative `muted={!sound}` re-applied on re-render
+              would fight those writes mid-flight.
+            */
             playsInline
             preload="auto"
             onError={() => {
@@ -323,17 +352,29 @@ export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () =
             aria-pressed={sound}
             aria-label={sound ? 'Mute the film' : 'Play the film with sound'}
             data-cursor={sound ? 'go quiet' : 'hear it'}
-            className={chip}
+            className={`${chip} ${!sound && shownBeat === 'film' ? 'border-paper/45 text-paper' : ''}`}
             initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.5, ease: EASE.settle }}
+            /*
+              While the film runs muted, the one thing worth saying pulses:
+              a tap anywhere brings the score in. Settled (or before the
+              film), the control sits quiet.
+            */
+            animate={{
+              opacity: !sound && shownBeat === 'film' ? [0.55, 1, 0.55] : 1,
+              y: 0,
+            }}
+            transition={
+              !sound && shownBeat === 'film'
+                ? { duration: 2.2, ease: 'easeInOut', repeat: Infinity }
+                : { delay: 0.3, duration: 0.5, ease: EASE.settle }
+            }
           >
             {sound ? (
               <Volume2 size={12} strokeWidth={2} aria-hidden />
             ) : (
               <VolumeX size={12} strokeWidth={2} aria-hidden />
             )}
-            {sound ? 'sound on' : 'sound off'}
+            {sound ? 'sound on' : shownBeat === 'film' ? 'tap for sound' : 'sound off'}
           </motion.button>
         )}
       </div>
