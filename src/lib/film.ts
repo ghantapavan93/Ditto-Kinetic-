@@ -21,8 +21,6 @@ export type FilmShot = {
   duration: number;
 };
 
-const src = (file: string) => encodeURI(`/film/${file}`);
-
 export const SHOTS: FilmShot[] = [
   {
     id: 'wednesday',
@@ -113,7 +111,15 @@ export const STORYBOARD_ALT: FilmShot = {
   duration: 10,
 };
 
-export const shotSrc = (s: FilmShot) => src(s.file);
+/**
+ * The sources are served as they are — but their containers are faststart:
+ * nine of the ten originally parked the moov atom after the mdat, which
+ * forced a browser to fetch 8–12MB before the first frame, so every hover
+ * on THE CUT bought a stall. `npm run` build-film normalizes any source
+ * that regresses (a `-c copy` remux: the streams stay bit-identical, only
+ * the index moves to the front). Names are never changed.
+ */
+export const shotSrc = (s: FilmShot) => encodeURI(`/film/${s.file}`);
 
 /**
  * The homepage cold open: one file, two movements. The storyboard cut runs

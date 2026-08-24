@@ -1,9 +1,16 @@
 /**
  * Build the film exports from the source shots in public/film.
  *
- * Sources are never touched. Everything generated lands in
- * public/film/exports/: the ~54s master edit, the 14s teaser, the muted
- * homepage hero, the /film poster and one poster frame per shot for THE CUT.
+ * Source FOOTAGE is never touched — no re-encode, no trim, no rename. The
+ * one thing this script does do to a source is normalize its container to
+ * faststart (a `-c copy` remux that moves the moov index to the front,
+ * streams bit-identical): THE CUT plays the sources directly, and nine of
+ * the ten originally parked their moov after the mdat, which forced a
+ * browser to download 8–12MB before showing a first frame.
+ *
+ * Everything generated lands in public/film/exports/: the ~54s master
+ * edit, the 14s teaser, the muted homepage hero, the combined cold-open
+ * intro, the /film poster and one poster frame per shot for THE CUT.
  *
  * The trim map is the edit. Every cut is a hard cut — the physical rhythm
  * the brief asks for — and all typography stays in the DOM, so nothing here
@@ -11,12 +18,48 @@
  */
 import ffmpegPath from 'ffmpeg-static';
 import { execFileSync } from 'node:child_process';
-import { existsSync, mkdirSync } from 'node:fs';
+import { existsSync, mkdirSync, openSync, readSync, closeSync, renameSync, statSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 const SRC = 'public/film';
 const OUT = 'public/film/exports';
 mkdirSync(join(OUT, 'posters'), { recursive: true });
+
+/** True when the file's moov atom precedes its mdat (streams progressively). */
+function isFaststart(path) {
+  const fd = openSync(path, 'r');
+  try {
+    const head = Buffer.alloc(8);
+    let pos = 0;
+    const order = [];
+    while (order.length < 6) {
+      if (readSync(fd, head, 0, 8, pos) < 8) break;
+      let size = head.readUInt32BE(0);
+      const name = head.toString('latin1', 4, 8);
+      order.push(name);
+      if (size === 1) {
+        const big = Buffer.alloc(8);
+        readSync(fd, big, 0, 8, pos + 8);
+        size = Number(big.readBigUInt64BE(0));
+      } else if (size === 0) break;
+      pos += size;
+    }
+    return order.includes('moov') && order.includes('mdat') && order.indexOf('moov') < order.indexOf('mdat');
+  } finally {
+    closeSync(fd);
+  }
+}
+
+console.log('sources (faststart normalize)…');
+for (const entry of readdirSync(SRC, { withFileTypes: true })) {
+  if (!entry.isFile() || !entry.name.toLowerCase().endsWith('.mp4')) continue;
+  const path = join(SRC, entry.name);
+  if (isFaststart(path)) continue;
+  const tmp = `${path}.faststart.tmp.mp4`;
+  ff(['-i', path, '-c', 'copy', '-movflags', '+faststart', tmp]);
+  if (statSync(tmp).size > 0) renameSync(tmp, path);
+  console.log(`  normalized: ${entry.name}`);
+}
 
 /** The nine shots, in narrative order, with the master's in/out points. */
 export const EDIT = [
