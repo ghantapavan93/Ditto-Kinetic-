@@ -138,6 +138,13 @@ export const shotSrc = (s: FilmShot) => encodeURI(`/film/${s.file}`);
  */
 export const INTRO = {
   src: '/film/exports/intro.mp4',
+  /**
+   * The same cut at 720p/1.9Mbps for clients that report a slow or
+   * data-saving connection. The 1080p grade averages ~6Mbps — beautiful on
+   * broadband, but a sub-6Mbps link would catch up to its own download
+   * mid-film and stall. Better a soft frame than a stopped one.
+   */
+  srcLite: '/film/exports/intro-720.mp4',
   first: '/film/exports/intro-first.webp',
   /** 10s storyboard cut + 8s world-turn, per the recipe in build-film.mjs. */
   duration: 18,

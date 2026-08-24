@@ -51,6 +51,25 @@ export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () =
   /** Mirrors `sound` for event handlers, which must never read stale state. */
   const soundRef = useRef(false);
 
+  /*
+   * Rendition, chosen once. Clients that declare a slow or data-saving
+   * connection get the 720p/1.9Mbps cut instead of the 1080p/6Mbps grade —
+   * the film that stalls mid-shot on a thin link is worse than the film
+   * that is slightly soft. Browsers that expose no connection hint get the
+   * full grade, which is the right default for the desktops and modern
+   * phones that make up the audience.
+   */
+  const [filmSrc] = useState(() => {
+    if (typeof navigator === 'undefined') return INTRO.src;
+    const conn = (navigator as Navigator & {
+      connection?: { saveData?: boolean; downlink?: number };
+    }).connection;
+    if (conn && (conn.saveData || (typeof conn.downlink === 'number' && conn.downlink > 0 && conn.downlink < 8))) {
+      return INTRO.srcLite;
+    }
+    return INTRO.src;
+  });
+
   const landTitle = useCallback(() => {
     setBeat((b) => (b === 'people' ? b : 'people'));
   }, []);
@@ -273,7 +292,7 @@ export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () =
         {filmLost || reduced ? null : (
           <video
             ref={filmRef}
-            src={INTRO.src}
+            src={filmSrc}
             poster={INTRO.first}
             /*
               No autoPlay attribute and no muted prop: playback and mute are

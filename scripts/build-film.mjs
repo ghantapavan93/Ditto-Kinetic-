@@ -141,6 +141,16 @@ if (existsSync(join(SRC, 'Ditto_brand_sequence_storyboard_1080p_202608240400.mp4
     // that the earlier CRF 26 visibly flattened.
     { crf: 22, preset: 'slow' },
   ));
+  // The same cut at 720p/~1.9Mbps for clients that report a slow or
+  // data-saving connection — the intro chooses at runtime.
+  ff(concatArgs(
+    [
+      { file: 'Ditto_brand_sequence_storyboard_1080p_202608240400.mp4', in: 0.0, out: 10.0 },
+      { file: EDIT[3].file, in: 0.0, out: 8.0 },
+    ],
+    join(OUT, 'intro-720.mp4'),
+    { crf: 24, preset: 'slow', width: 1280, height: 720 },
+  ));
   ff(['-i', join(OUT, 'intro.mp4'), '-frames:v', '1', '-vf', 'scale=1600:-1', join(OUT, 'intro-first.webp')]);
 }
 

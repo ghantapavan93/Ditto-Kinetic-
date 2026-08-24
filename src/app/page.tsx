@@ -5,13 +5,15 @@ export default function Page() {
   return (
     <main>
       {/*
-        The opening film starts fetching with the HTML, not with the client
-        bundle. React hoists these into <head>; by the time the stage mounts
-        and the <video> asks for bytes, the poster is painted and the first
-        seconds are already in cache — the cold open never shows a spinner.
+        The poster starts fetching with the HTML, so the opening frame is
+        painted before the client bundle arrives. The film itself is NOT
+        preloaded here: the client picks between two renditions by
+        connection quality, and a hardcoded preload of the 1080p grade
+        would force 13MB onto exactly the connections that chose the light
+        one. The video element's own preload="auto" starts the right fetch
+        the moment the stage mounts.
       */}
       <link rel="preload" href="/film/exports/intro-first.webp" as="image" />
-      <link rel="preload" href="/film/exports/intro.mp4" as="video" type="video/mp4" />
 
       <StageLoader />
 
