@@ -341,6 +341,10 @@ export function FirstSceneStage() {
         if (decisionOpen) closeDecision();
         else if (hearMeOutOpen) toggleHearMeOut();
         else if (reasoningOpen) closeReasoning();
+        // The cloud is a mode, and a mode you cannot leave is a trap: with
+        // the chrome dimmed to near-nothing, Escape and the readout's own
+        // button are the exits a first-time visitor can actually find.
+        else if (cloudOpen) setCloudOpen(false);
         return;
       }
       if (!showStageChrome) return;
@@ -379,6 +383,7 @@ export function FirstSceneStage() {
     showStageChrome,
     stepScene,
     toggleHearMeOut,
+    cloudOpen,
   ]);
 
   return (
@@ -450,6 +455,19 @@ export function FirstSceneStage() {
               seven is a way of drawing a range, not a number of anything that was
               run. the spread is what we don&rsquo;t know yet, not a forecast.
             </p>
+            {/*
+              The way back, at full opacity. Opening the cloud dims the rest
+              of the chrome to near-nothing — including the button that
+              opened it — which read as a room with no door. This one never
+              dims, and Escape does the same thing.
+            */}
+            <button
+              onClick={() => setCloudOpen(false)}
+              data-cursor="back to the room"
+              className="pointer-events-auto mt-4 border border-paper/25 px-3 py-1.5 font-mono text-micro uppercase text-paper/80 transition-colors hover:border-paper/60 hover:text-paper"
+            >
+              close &middot; esc
+            </button>
           </motion.aside>
         )}
       </AnimatePresence>

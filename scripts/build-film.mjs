@@ -79,6 +79,12 @@ ff(concatArgs([{ file: EDIT[3].file, in: 0.0, out: 8.0 }], join(OUT, 'hero.mp4')
 ff(['-i', join(OUT, 'hero.mp4'), '-frames:v', '1', '-vf', 'scale=1600:-1', join(OUT, 'hero-first.webp')]);
 ff(['-sseof', '-0.15', '-i', join(OUT, 'hero.mp4'), '-frames:v', '1', '-vf', 'scale=1600:-1', '-q:v', '68', join(OUT, 'hero-hold.webp')]);
 
+// The homepage cold open plays the storyboard cut whole; its poster is that
+// film's own first frame so paint and playback are continuous.
+if (existsSync(join(SRC, 'Ditto_brand_sequence_storyboard_1080p_202608240400.mp4'))) {
+  ff(['-i', join(SRC, 'Ditto_brand_sequence_storyboard_1080p_202608240400.mp4'), '-frames:v', '1', '-vf', 'scale=1600:-1', join(OUT, 'intro-first.webp')]);
+}
+
 console.log('posters…');
 const POSTER_AT = { wednesday: 2.0, open: 2.5, coffee: 3.0, turn: 4.0, thisone: 2.0, break: 4.0, collapse: 4.0, phonesdown: 6.0, ditto: 4.0 };
 for (const c of EDIT) {

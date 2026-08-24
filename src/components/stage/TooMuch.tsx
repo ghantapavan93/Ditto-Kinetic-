@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useConditions, useCurrentPair, usePrototype, useSendDecision } from '@/store/prototypeStore';
 import { rankScenes } from '@/lib/rankScenes';
@@ -32,6 +33,17 @@ export function TooMuch() {
   const ranked = rankScenes(pair, conditions);
   const worst = ranked[ranked.length - 1]?.scene;
   const best = ranked[0]?.scene;
+
+  // The card has a visible way back; Escape is the way back people try
+  // first, so it works too.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') toggle();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open, toggle]);
 
   return (
     <>

@@ -115,6 +115,19 @@ export const STORYBOARD_ALT: FilmShot = {
 
 export const shotSrc = (s: FilmShot) => src(s.file);
 
+/**
+ * The homepage cold open. The storyboard cut carries its own baked
+ * typography and a music bed, so the intro treats it as a finished film:
+ * plays it whole, keeps DOM type out of its frames, and lands the title
+ * card on its black tail. `first` is its exact first frame, used as the
+ * poster so paint and playback are continuous.
+ */
+export const INTRO = {
+  src: src(STORYBOARD_ALT.file),
+  first: '/film/exports/intro-first.webp',
+  duration: STORYBOARD_ALT.duration,
+};
+
 export const MASTER = {
   src: '/film/exports/first-scene-film.mp4',
   poster: '/film/exports/poster.webp',

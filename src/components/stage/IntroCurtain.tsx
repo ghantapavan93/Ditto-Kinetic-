@@ -1,38 +1,40 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { DUR, EASE } from '@/lib/motion';
 import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
 import Link from 'next/link';
+import { Volume2, VolumeX } from 'lucide-react';
 import { useReducedMotion } from '@/components/shared/useReducedMotion';
-import { MASTER } from '@/lib/film';
+import { INTRO, MASTER } from '@/lib/film';
 import type { MatchPair } from '@/lib/types';
 
 /**
  * The opening.
  *
- * No landing page, no feature list, no explanation before play. The stage is
- * already live and already lit behind this copy.
+ * The site opens on the brand film — the storyboard cut, played whole, in
+ * focus. That cut carries its own baked typography and a music bed, so the
+ * curtain treats it as a finished piece: while it speaks, the DOM adds
+ * nothing to its frames but a sound control and the standing invitation to
+ * skip; when it fades to black, the title card lands on its tail and the
+ * black becomes ours. Three beats:
  *
- * It opens the way the real product opens: a text arrives. One bubble, three
- * words, and it leaves again — which is both accurate to Ditto's actual
- * delivery mechanism and the fastest possible way to establish that something
- * has already happened before you got here. Only then do the two photographs
- * get named.
+ *   text   — the film's own dark phone-glow open, with the one bubble that
+ *            is also how the real product arrives: "found someone."
+ *   film   — the cut runs. Corner chrome recedes because two of its frames
+ *            are paper-white and micro type cannot survive them; what stays
+ *            is chipped in ink so it reads on any frame.
+ *   people — the film's fade to black is the end card. The names and the
+ *            one sentence arrive on it, and any input begins the stage.
  *
- * Any input at all skips the whole thing.
- *
- * The second beat used to be a thesis poster — SAME TWO PEOPLE / six ways to
- * meet / but where changes everything — three lines of exposition before a
- * single human appeared. The people are the product; the poster was the
- * README. Now the names arrive first, as people, and the only line of copy is
- * the one sentence the whole piece exists to say. The thesis is still stated
- * everywhere a crawler or a no-JS reader looks; it just stops being the thing
- * a visitor has to read before anything happens.
+ * The film starts muted because browsers permit nothing else; the toggle
+ * (or M) unmutes it mid-flight, and pressed after the end it replays the
+ * whole cut with sound — the end card clears while it runs and re-forms on
+ * the tail. Any other input at all skips the whole thing.
  */
 export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () => void }) {
-  const [beat, setBeat] = useState<'text' | 'people'>('text');
+  const [beat, setBeat] = useState<'text' | 'film' | 'people'>('text');
   const reduced = useReducedMotion();
 
   /*
@@ -41,16 +43,55 @@ export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () =
    * way the one thing the opening must never show is a partial backdrop.
    */
   const [filmLost, setFilmLost] = useState(false);
+  const [sound, setSound] = useState(false);
+  const filmRef = useRef<HTMLVideoElement | null>(null);
+
+  const landTitle = useCallback(() => {
+    setBeat((b) => (b === 'people' ? b : 'people'));
+  }, []);
+
+  /*
+   * Reduced motion never mounts the video — a self-playing, self-scoring
+   * backdrop is exactly what that preference declined — so the title card
+   * is the whole opening, immediately, on ink. Derived, not set in an
+   * effect: the preference is a lens over the beat clock, not an event.
+   */
+  const shownBeat = reduced ? 'people' : beat;
+
+  /*
+   * The beat clock. The bubble leaves before the film's first baked line
+   * arrives (~1.5s in); after that the cut owns the frame until its fade.
+   * The title is cued off the film's own clock (timeupdate), not a timer,
+   * so a throttled tab can't land the names on top of the footage.
+   */
+  useEffect(() => {
+    if (reduced) return;
+    const t = setTimeout(() => setBeat((b) => (b === 'text' ? 'film' : b)), 1400);
+    return () => clearTimeout(t);
+  }, [reduced]);
+
+  /*
+   * If autoplay is declined outright (data saver, low-power mode), the
+   * opening must not sit as a poster with two chips and no story: after a
+   * grace period a stalled film hands the frame to the title card, which
+   * reads perfectly well over the cut's dark first frame.
+   */
+  useEffect(() => {
+    if (reduced) return;
+    const t = setTimeout(() => {
+      const film = filmRef.current;
+      if (!film || film.paused) landTitle();
+    }, 3200);
+    return () => clearTimeout(t);
+  }, [reduced, landTitle]);
 
   /*
    * Opened in a background tab, the browser defers the film's autoplay — and
-   * not every browser re-runs it when the tab is finally fronted. The visitor
-   * who arrives that way would meet the poster standing in for the whole
-   * opening. So the first time the page becomes visible, a paused, unfinished
-   * film is asked to play again; if the browser still declines, the poster
-   * remains, which is the designed still and not an error.
+   * not every browser re-runs it when the tab is finally fronted. The first
+   * time the page becomes visible, a paused, unfinished film is asked to
+   * play again; if the browser still declines, the stall handoff above has
+   * already given the frame to the title.
    */
-  const filmRef = useRef<HTMLVideoElement | null>(null);
   useEffect(() => {
     const resume = () => {
       if (document.visibilityState !== 'visible') return;
@@ -61,42 +102,87 @@ export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () =
     return () => document.removeEventListener('visibilitychange', resume);
   }, []);
 
-  useEffect(() => {
-    const t = setTimeout(() => setBeat('people'), 1900);
-    return () => clearTimeout(t);
+  /*
+   * The media work happens in the handler, not inside the state updater —
+   * updaters are re-invoked by StrictMode and batched at React's pleasure,
+   * and a mute that sometimes applies twice is a mute that sometimes does
+   * nothing. The ref carries the current value so the handler never reads
+   * stale state.
+   */
+  const soundRef = useRef(false);
+  const toggleSound = useCallback(() => {
+    const next = !soundRef.current;
+    soundRef.current = next;
+    const film = filmRef.current;
+    if (film) {
+      film.muted = !next;
+      /*
+       * Unmuted after the end, the film replays whole — hearing four
+       * seconds of tail is not what anyone pressed the button for. The
+       * end card steps aside while it runs; the timeupdate cue re-forms
+       * it on the fade.
+       */
+      if (next && film.ended) {
+        film.currentTime = 0;
+        setBeat('film');
+        film.play().catch(() => {});
+      }
+    }
+    setSound(next);
   }, []);
 
+  /*
+   * Any input skips — except the inputs that operate the opening itself.
+   * The sound control must be pressable (and Tab-reachable, and M works
+   * from anywhere) without the whole curtain interpreting that as "begin".
+   */
   useEffect(() => {
-    const dismiss = () => onBegin();
-    window.addEventListener('pointerdown', dismiss, { once: true });
-    window.addEventListener('keydown', dismiss, { once: true });
-    window.addEventListener('wheel', dismiss, { once: true, passive: true });
-    return () => {
-      window.removeEventListener('pointerdown', dismiss);
-      window.removeEventListener('keydown', dismiss);
-      window.removeEventListener('wheel', dismiss);
+    const isKept = (t: EventTarget | null) =>
+      t instanceof Element && !!t.closest('[data-intro-keep]');
+
+    const onPointer = (e: PointerEvent) => {
+      if (isKept(e.target)) return;
+      onBegin();
     };
-  }, [onBegin]);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Tab' || e.key === 'Shift') return;
+      if (e.key.toLowerCase() === 'm') {
+        e.preventDefault();
+        toggleSound();
+        return;
+      }
+      if (isKept(e.target)) return;
+      onBegin();
+    };
+    const onWheel = () => onBegin();
+
+    window.addEventListener('pointerdown', onPointer);
+    window.addEventListener('keydown', onKey);
+    window.addEventListener('wheel', onWheel, { passive: true });
+    return () => {
+      window.removeEventListener('pointerdown', onPointer);
+      window.removeEventListener('keydown', onKey);
+      window.removeEventListener('wheel', onWheel);
+    };
+  }, [onBegin, toggleSound]);
+
+  /* The film's paper-white frames would erase white micro type; the corner
+     chrome that must survive every frame wears ink. */
+  const chip =
+    'pointer-events-auto flex items-center gap-1.5 border border-paper/25 bg-ink/60 px-2.5 py-1.5 font-editorial text-[0.68rem] lowercase tracking-wide text-paper/85 backdrop-blur-sm transition-colors hover:border-paper/60 hover:text-paper';
+
+  const showFullChrome = shownBeat !== 'film';
 
   return (
     <motion.div
-      className="pointer-events-none absolute inset-0 isolate z-overlay flex flex-col justify-between px-gutter py-[clamp(1.25rem,4vh,2.5rem)] bg-ink"
+      className="pointer-events-none absolute inset-0 isolate z-overlay flex flex-col justify-between bg-ink px-gutter py-[clamp(1.25rem,4vh,2.5rem)]"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0, filter: 'blur(8px)' }}
       transition={{ duration: DUR.settle, ease: EASE.settle }}
     >
       {/*
-        The film opens the site, playing, in focus.
-
-        This used to be hero.mp4 under blur(18px) — footage as atmosphere. In
-        practice eighteen pixels of blur turned the opening frame into a brown
-        smear that read as a failed image load, and it threw away the one shot
-        that performs the whole thesis: the same two people standing still
-        while a diner becomes a library becomes a courtyard becomes a theatre
-        street. So the shot now plays sharp, once, and holds its final frame —
-        the lit marquee — behind the names. The scrim below, not a blur, is
-        what keeps the type readable.
+        The film, full-bleed and in focus.
 
         `isolate` matters: the backdrop sits at -z-10, and without a stacking
         context on the curtain it slid *behind* the WebGL stage, letting the
@@ -108,68 +194,82 @@ export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () =
         className="u-stack-grain absolute inset-0 -z-10 overflow-hidden"
         style={{ '--grain-opacity': '0.14' } as React.CSSProperties}
       >
-        {/*
-          Reduced motion keeps the held frame as a photograph — a self-playing
-          backdrop is exactly what that preference declined. A failed video
-          removes itself entirely: the words stand alone on ink, which is an
-          opening, where a broken frame is only a defect.
-        */}
-        {filmLost ? null : reduced ? (
-          /* eslint-disable-next-line @next/next/no-img-element -- decorative pre-sized webp */
-          <img
-            src={MASTER.heroHold}
-            alt=""
-            decoding="async"
-            onError={() => setFilmLost(true)}
-            className="h-full w-full object-cover"
-            style={{ filter: 'saturate(0.95) brightness(0.85)' }}
-          />
-        ) : (
+        {filmLost || reduced ? null : (
           <video
             ref={filmRef}
-            src={MASTER.hero}
-            poster={MASTER.heroFirst}
+            src={INTRO.src}
+            poster={INTRO.first}
             autoPlay
-            muted
+            muted={!sound}
             playsInline
             preload="auto"
-            onError={() => setFilmLost(true)}
+            onError={() => {
+              setFilmLost(true);
+              landTitle();
+            }}
+            onTimeUpdate={(e) => {
+              if (e.currentTarget.currentTime >= INTRO.duration - 0.85) landTitle();
+            }}
+            onEnded={landTitle}
             className="h-full w-full object-cover"
-            style={{ filter: 'saturate(0.95) brightness(0.85)' }}
           />
         )}
         {/*
-          The scrim earns the typography its contrast without costing the
-          footage its focus: heavy where the names live, near-clear through
-          the middle where the people are, a breath at the top for the label.
+          A breath of vignette so the corner chrome reads over footage; the
+          film's own frames are never worked against — no wash, no blur.
         */}
         <div
           className="absolute inset-0"
           style={{
             background:
-              'radial-gradient(120% 95% at 50% 42%, transparent 52%, rgba(11,9,7,0.5)), linear-gradient(to top, rgba(11,9,7,0.92) 0%, rgba(11,9,7,0.45) 32%, rgba(11,9,7,0.08) 58%, rgba(11,9,7,0.3) 100%)',
+              'radial-gradient(130% 105% at 50% 50%, transparent 62%, rgba(11,9,7,0.42))',
           }}
         />
       </div>
-      <motion.p
-        className="font-mono text-label uppercase text-paper/60"
-        initial={{ opacity: 0, y: -8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.15, duration: 0.5, ease: EASE.settle }}
-      >
-        WED · 7:00 PM
-      </motion.p>
+
+      {/* top bar: the label, and the film's one control */}
+      <div className="flex items-start justify-between gap-4">
+        <motion.p
+          className="font-mono text-label uppercase text-paper/60"
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: showFullChrome ? 1 : 0, y: 0 }}
+          transition={{ delay: 0.15, duration: 0.5, ease: EASE.settle }}
+        >
+          WED · 7:00 PM
+        </motion.p>
+        {!reduced && !filmLost && (
+          <motion.button
+            type="button"
+            data-intro-keep
+            onClick={toggleSound}
+            aria-pressed={sound}
+            aria-label={sound ? 'Mute the film' : 'Play the film with sound'}
+            data-cursor={sound ? 'go quiet' : 'hear it'}
+            className={chip}
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.5, ease: EASE.settle }}
+          >
+            {sound ? (
+              <Volume2 size={12} strokeWidth={2} aria-hidden />
+            ) : (
+              <VolumeX size={12} strokeWidth={2} aria-hidden />
+            )}
+            {sound ? 'sound on' : 'sound off'}
+          </motion.button>
+        )}
+      </div>
 
       {/* Beat one: the text that would actually have arrived. */}
       <AnimatePresence>
-        {beat === 'text' && (
+        {shownBeat === 'text' && (
           <motion.div
             key="sms"
             className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-center"
             initial={{ opacity: 0, y: 18, scale: 0.94 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -14, scale: 0.97, filter: 'blur(4px)' }}
-            transition={{ delay: 0.4, type: 'spring', stiffness: 260, damping: 30 }}
+            transition={{ delay: 0.35, type: 'spring', stiffness: 260, damping: 30 }}
           >
             <p className="mb-2 font-mono text-micro uppercase text-paper/55">Ditto</p>
             <p className="rounded-[1.2rem] rounded-bl-md bg-cobalt px-5 py-3 font-editorial text-lede font-medium text-paper-bright shadow-lift">
@@ -179,11 +279,11 @@ export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () =
         )}
       </AnimatePresence>
 
-      {/* Beat two: the two people it is about, then the one sentence. */}
+      {/* Beat three: the film's black tail is the end card. */}
       <div className="max-w-[min(46rem,92vw)]">
         <AnimatePresence>
-          {beat === 'people' && (
-            <motion.div key="hero" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+          {shownBeat === 'people' && (
+            <motion.div key="hero" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               <h1 className="font-display text-hero uppercase leading-[0.86] text-paper">
                 {[pair.personA.name, pair.personB.name].map((name, i) => (
                   <motion.span
@@ -199,11 +299,6 @@ export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () =
                 ))}
               </h1>
 
-              {/*
-                Hero-scale, because it is the hero. Ditto's own landing leads
-                with one swashy serif sentence over photography; this is our
-                sentence, in our serif, at the size a thesis deserves.
-              */}
               {/*
                 Word by word, not as a block. Four words carry the whole
                 thesis, so each one gets its own beat — the acid pair lands
@@ -239,37 +334,37 @@ export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () =
       </div>
 
       <div className="flex items-end justify-between gap-6">
-        <span className="pointer-events-auto flex items-baseline gap-4">
+        <motion.span
+          className="pointer-events-auto flex items-baseline gap-4"
+          animate={{ opacity: showFullChrome ? 1 : 0 }}
+          transition={{ duration: 0.45, ease: EASE.settle }}
+        >
           <PrototypeDisclosure />
           <Link
             href="/film"
             data-cursor="roll it"
             className="shrink-0 py-1.5 font-mono text-[0.62rem] uppercase tracking-[0.24em] text-tungsten underline-offset-4 hover:underline"
+            tabIndex={showFullChrome ? undefined : -1}
           >
             {`film · 00:${MASTER.duration}`}
           </Link>
-        </span>
+        </motion.span>
         {/*
-          Keeps breathing until somebody moves.
-
-          This pulsed once and stopped, which turned the only affordance on the
-          opening screen into a caption. A visitor who reads and hesitates was
-          left with a static card and no interactive element anywhere in the
-          DOM -- measured: zero buttons, zero links, and nothing that ever
-          advances on its own. The gesture is forgiving (any pointer press
-          works, not just a drag), so the fix is to say so and to keep the
-          invitation alive rather than to take the first choice away by
-          auto-advancing. The stage is about choosing; it should not choose.
+          The skip affordance keeps breathing until somebody moves, and it
+          survives the film's white frames the same way the sound control
+          does: chipped in ink. The gesture is forgiving — any pointer press
+          works — and the invitation stays alive rather than auto-advancing.
+          The stage is about choosing; it should not choose.
         */}
         <motion.p
-          className="shrink-0 font-mono text-label uppercase text-paper/70"
+          className="shrink-0 border border-paper/20 bg-ink/60 px-2.5 py-1.5 font-mono text-label uppercase text-paper/80 backdrop-blur-sm"
           initial={{ opacity: 0 }}
-          animate={{ opacity: beat === 'people' ? [0.35, 1, 0.35] : 0 }}
+          animate={{ opacity: shownBeat === 'text' ? 0 : [0.45, 1, 0.45] }}
           transition={{
             delay: 0.7,
             duration: 2.6,
             ease: 'easeInOut',
-            repeat: beat === 'people' ? Infinity : 0,
+            repeat: shownBeat === 'text' ? 0 : Infinity,
           }}
         >
           drag it &mdash; or tap anywhere

@@ -11,8 +11,8 @@ export const SURFACES: Surface[] = [
   {
     "path": "/",
     "kind": "argument",
-    "words": 459,
-    "decisions": 30
+    "words": 485,
+    "decisions": 33
   },
   {
     "path": "/compiler",
