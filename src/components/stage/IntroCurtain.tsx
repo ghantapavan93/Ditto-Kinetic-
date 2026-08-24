@@ -75,17 +75,30 @@ export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () =
 
   /*
    * If autoplay is declined outright (data saver, low-power mode), the
-   * opening must not sit as a poster with two chips and no story: after a
-   * grace period a stalled film hands the frame to the title card, which
-   * reads perfectly well over the cut's dark first frame.
+   * opening must not sit as a poster with two chips and no story — but
+   * "declined" and "still loading" are different states, and the first
+   * version conflated them: a 3-second timer that only asked `paused` fired
+   * mid-download on any real connection, landed the title, then had it
+   * yanked away when playback began — the opening read as broken pieces.
+   * So the film is asked to play directly: a NotAllowedError is a real
+   * refusal and hands the frame to the title at once. The slow-network
+   * backstop only fires if the clock has never moved at all.
    */
   useEffect(() => {
     if (reduced) return;
+    const film = filmRef.current;
+    if (!film) return;
+    let gone = false;
+    film.play().catch((err: unknown) => {
+      if (!gone && err instanceof DOMException && err.name === 'NotAllowedError') landTitle();
+    });
     const t = setTimeout(() => {
-      const film = filmRef.current;
-      if (!film || film.paused) landTitle();
-    }, 3200);
-    return () => clearTimeout(t);
+      if (!gone && film.currentTime === 0 && film.paused) landTitle();
+    }, 8000);
+    return () => {
+      gone = true;
+      clearTimeout(t);
+    };
   }, [reduced, landTitle]);
 
   /*
