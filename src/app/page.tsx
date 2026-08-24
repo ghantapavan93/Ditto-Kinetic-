@@ -4,6 +4,15 @@ import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
 export default function Page() {
   return (
     <main>
+      {/*
+        The opening film starts fetching with the HTML, not with the client
+        bundle. React hoists these into <head>; by the time the stage mounts
+        and the <video> asks for bytes, the poster is painted and the first
+        seconds are already in cache — the cold open never shows a spinner.
+      */}
+      <link rel="preload" href="/film/exports/intro-first.webp" as="image" />
+      <link rel="preload" href="/film/exports/intro.mp4" as="video" type="video/mp4" />
+
       <StageLoader />
 
       <noscript>

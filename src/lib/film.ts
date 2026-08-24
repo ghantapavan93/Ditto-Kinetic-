@@ -121,9 +121,15 @@ export const shotSrc = (s: FilmShot) => src(s.file);
  * plays it whole, keeps DOM type out of its frames, and lands the title
  * card on its black tail. `first` is its exact first frame, used as the
  * poster so paint and playback are continuous.
+ *
+ * It plays the exports/ re-encode, never the source: the source parks its
+ * moov atom after 5.6MB of mdat, which forces a browser to fetch nearly
+ * the whole file before frame one — the opening bought itself a buffering
+ * spinner. The export is faststart (moov first, ~38% smaller), so playback
+ * begins on the first few hundred kilobytes.
  */
 export const INTRO = {
-  src: src(STORYBOARD_ALT.file),
+  src: '/film/exports/intro.mp4',
   first: '/film/exports/intro-first.webp',
   duration: STORYBOARD_ALT.duration,
 };
