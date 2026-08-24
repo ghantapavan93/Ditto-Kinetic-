@@ -103,6 +103,38 @@
 }
 
 /*
+ * The cut itself. With View Transitions on, every navigation snapshots the
+ * outgoing page and the incoming one; this is the edit between them — the
+ * old frame dips to black a breath faster than the new one arrives, which is
+ * how films cut and how slideshows don't. Browsers without the API just
+ * navigate. Under reduced motion the global rule above zeroes these too.
+ */
+::view-transition-old(root) {
+  animation: fs-cut-out 190ms cubic-bezier(0.55, 0, 0.85, 0.4) both;
+}
+::view-transition-new(root) {
+  animation: fs-cut-in 260ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes fs-cut-out {
+  to {
+    opacity: 0;
+    filter: brightness(0.35) saturate(0.4);
+  }
+}
+@keyframes fs-cut-in {
+  from {
+    opacity: 0;
+    filter: brightness(0.5) saturate(0.6);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none;
+  }
+}
+
+/*
  * CUT TO: while the palette is open the page behind it freezes like a paused
  * film — colour drains, a breath of blur. cmdk renders this overlay element
  * itself; the styling is the only thing ours.
@@ -127,6 +159,33 @@
     opacity: var(--grain-opacity);
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
     mix-blend-mode: overlay;
+  }
+
+  /*
+   * A print develops when you look at it. Undeveloped: washed, soft, pale —
+   * the state a photograph is in before the chemistry finishes. The observer
+   * adds .is-developed the first time the print enters the viewport, and the
+   * transition does the darkroom's work. No-JS and reduced-motion readers get
+   * finished prints immediately: development is a reward, never a gate.
+   */
+  .u-develop {
+    filter: grayscale(0.85) blur(5px) brightness(1.12) contrast(0.85);
+    opacity: 0.45;
+    transition:
+      filter 1100ms cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 1100ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .is-developed .u-develop,
+  .u-develop.is-developed {
+    filter: none;
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .u-develop {
+      filter: none;
+      opacity: 1;
+      transition: none;
+    }
   }
 
   .u-drag-none {

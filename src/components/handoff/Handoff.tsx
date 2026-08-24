@@ -167,6 +167,19 @@ export function Handoff({
         {stage === 'pass' && (
           <motion.div
             key="pass"
+            /*
+              The ticket is holdable. Drag it and it follows with real
+              elasticity, let go and it springs home — the pass behaves like
+              paper in a hand, not a card in a layout, which is the difference
+              between screenshotting an interface and photographing an object.
+              Buttons live outside the draggable card so the shutter still
+              clicks clean.
+            */
+            drag
+            dragSnapToOrigin
+            dragElastic={0.18}
+            dragTransition={{ bounceStiffness: 320, bounceDamping: 22 }}
+            whileDrag={{ rotate: 2.5, scale: 1.05, cursor: 'grabbing' }}
             initial={{ opacity: 0, y: 26, rotate: -3, scale: 0.94 }}
             animate={{ opacity: 1, y: 0, rotate: captured ? 0 : -1.4, scale: captured ? 1.04 : 1 }}
             exit={{
