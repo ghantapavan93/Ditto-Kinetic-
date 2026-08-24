@@ -120,7 +120,18 @@ export function AppShell() {
         />
       </div>
 
-      <PrototypeDisclosure className="mt-5 max-w-[24rem] text-center" />
+      <div className="mt-5 max-w-[24rem] text-center">
+        <PrototypeDisclosure className="text-center" />
+        {/*
+          Tracking their movement, not freezing them in it: the join flow this
+          shell was modelled on is real, but Ditto's public product has since
+          pushed even harder into living entirely inside iMessage.
+        */}
+        <p className="mt-2 font-mono text-micro uppercase leading-relaxed text-paper/55">
+          a shell modelled on the web join flow &mdash; the live product has since moved
+          further into iMessage, which /thread takes seriously.
+        </p>
+      </div>
     </div>
   );
 }

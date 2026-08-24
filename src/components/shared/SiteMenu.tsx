@@ -69,6 +69,7 @@ export const GROUPS: Group[] = [
     title: 'the wider view',
     photo: '/photos/photo-grid.webp',
     entries: [
+      { href: '/reel', label: 'the fast tour', blurb: 'every surface, about a second each' },
       { href: '/zoom', label: 'one camera, all of it', blurb: 'from two people to the whole system in one move' },
       { href: '/network', label: 'the whole campus', blurb: 'every pair at once, one missing edge' },
       { href: '/world', label: 'every campus at once', blurb: 'the same idea at planetary scale' },

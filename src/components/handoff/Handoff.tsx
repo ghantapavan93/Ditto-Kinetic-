@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Check } from 'lucide-react';
 import { SPRING } from '@/lib/motion';
@@ -306,9 +307,75 @@ export function Handoff({
             </motion.button>
 
             <PrototypeDisclosure className="mt-16 text-center" />
+
+            {/*
+              The backstage door. The product ends at "go have a real life,"
+              and nothing may crowd that line — so this appears alone, small,
+              in the corner, and only after the quiet has had its beat. The
+              consumer product would stop here. The prototype has receipts.
+            */}
+            <StillHere />
           </motion.div>
         )}
       </AnimatePresence>
     </div>
+  );
+}
+
+function StillHere() {
+  const [shown, setShown] = useState(false);
+  const [openDoor, setOpenDoor] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setShown(true), 2800);
+    return () => clearTimeout(t);
+  }, []);
+
+  if (!shown) return null;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.9 }}
+      className="fixed bottom-4 right-4 z-sheet text-right"
+    >
+      {!openDoor ? (
+        <button
+          onClick={() => setOpenDoor(true)}
+          data-cursor="backstage"
+          className="font-hand text-[1.15rem] text-paper/55 transition-colors hover:text-paper"
+        >
+          still here?
+        </button>
+      ) : (
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45 }}
+          className="border border-paper/15 bg-ink/90 px-4 py-3.5 backdrop-blur-sm"
+        >
+          <p className="font-voice text-[1rem] italic leading-snug text-paper/80">
+            the product would stop here.
+            <br />
+            <span className="text-paper">I didn&rsquo;t.</span>
+          </p>
+          <div className="mt-3 flex flex-col items-end gap-1.5">
+            <Link
+              href="/reel"
+              className="font-mono text-micro uppercase text-tungsten underline-offset-4 hover:underline"
+            >
+              the fast tour &rarr;
+            </Link>
+            <Link
+              href="/start"
+              className="font-mono text-micro uppercase text-paper/62 underline-offset-4 hover:text-paper hover:underline"
+            >
+              see the proof &rarr;
+            </Link>
+          </div>
+        </motion.div>
+      )}
+    </motion.div>
   );
 }

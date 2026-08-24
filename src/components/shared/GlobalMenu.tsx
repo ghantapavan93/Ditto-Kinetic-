@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
 import { usePathname } from 'next/navigation';
 import { SiteMenu } from './SiteMenu';
 
@@ -17,9 +17,47 @@ import { SiteMenu } from './SiteMenu';
  * has its own door in the chrome), opening the same SiteMenu the stage uses —
  * one list, three doors now, still impossible for them to disagree.
  */
+const seenStore = {
+  count: 0,
+  listeners: new Set<() => void>(),
+  visit(path: string) {
+    try {
+      const raw = window.sessionStorage.getItem('fs-seen');
+      const set = new Set<string>(raw ? (JSON.parse(raw) as string[]) : []);
+      set.add(path);
+      window.sessionStorage.setItem('fs-seen', JSON.stringify([...set]));
+      if (set.size !== seenStore.count) {
+        seenStore.count = set.size;
+        seenStore.listeners.forEach((l) => l());
+      }
+    } catch {
+      /* private mode: the chip just says "everything" */
+    }
+  },
+  subscribe(cb: () => void) {
+    seenStore.listeners.add(cb);
+    return () => seenStore.listeners.delete(cb);
+  },
+  read: () => seenStore.count,
+};
+
 export function GlobalMenu() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+
+  /*
+   * Spatial memory, kept in the visitor's pocket. Each route visited joins a
+   * sessionStorage set — nothing leaves the browser, nothing persists past
+   * the tab — and the chip quietly reports how much of the world has been
+   * seen. Not points, not homework: just "you've seen six pieces of this."
+   * The count lives in a tiny external store (sessionStorage is the external
+   * system), so the effect only tells it about the visit and re-rendering
+   * happens through subscription rather than a setState inside the effect.
+   */
+  useEffect(() => {
+    seenStore.visit(pathname);
+  }, [pathname]);
+  const seen = useSyncExternalStore(seenStore.subscribe, seenStore.read, () => 0);
 
   if (pathname === '/') return null;
 
@@ -30,7 +68,7 @@ export function GlobalMenu() {
         data-cursor="see all of it"
         className="fixed bottom-3 right-3 z-overlay border border-paper/25 bg-ink/85 px-3 py-2 font-mono text-micro uppercase text-paper/70 backdrop-blur-sm transition-colors hover:border-paper/50 hover:text-paper"
       >
-        everything
+        everything{seen > 1 ? ` \u00b7 ${seen} seen` : ''}
       </button>
       <SiteMenu open={open} onOpenChange={setOpen} />
     </>

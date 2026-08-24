@@ -156,6 +156,76 @@ export function FirstSceneStage() {
     }
   }, [scene.id]);
 
+  /*
+   * The stage teaches itself, then hands over.
+   *
+   * Nobody reads a tutorial modal, and a busy reviewer glancing at this tab
+   * while half-reading a message can miss the entire thesis if the dial just
+   * sits there. So on a first visit the stage demonstrates the mechanic:
+   * a beat after the intro clears, the dial steps one room by itself — proof
+   * that this thing moves — a handwritten "your turn" appears, and if the
+   * visitor still does nothing the world auditions the remaining rooms one
+   * by one, stopping on the winner so even a hands-off viewer receives the
+   * argument: THIS ONE. they need less pressure.
+   *
+   * The first real input — pointer, key, wheel, touch — ends the
+   * demonstration permanently for the session (sessionStorage, nothing
+   * leaves the browser). The listener attaches shortly AFTER the chrome
+   * mounts so the tap that dismissed the intro doesn't count as ownership.
+   * It never commits a scene on the visitor's behalf, and under reduced
+   * motion it does not run at all: a self-moving interface is exactly what
+   * that preference declined.
+   */
+  // Lazy init: the stage is client-only (ssr:false), so sessionStorage is
+  // readable at first render and the state never needs a sync write-back.
+  const [owned, setOwned] = useState(
+    () => typeof window === 'undefined' || !!window.sessionStorage.getItem('fs-owned'),
+  );
+  const [demoHint, setDemoHint] = useState(false);
+  useEffect(() => {
+    if (phase !== 'exploring' || reduced || owned) return;
+
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    const claim = () => {
+      window.sessionStorage.setItem('fs-owned', '1');
+      setOwned(true);
+      setDemoHint(false);
+      timers.forEach(clearTimeout);
+    };
+
+    // One demonstration step, then the invitation.
+    timers.push(setTimeout(() => usePrototype.getState().stepScene(1), 1500));
+    timers.push(setTimeout(() => setDemoHint(true), 2700));
+
+    // The idle audition: keep stepping until the winner is on stage.
+    for (let k = 0; k < 5; k++) {
+      timers.push(
+        setTimeout(() => {
+          const st = usePrototype.getState();
+          if (st.phase !== 'exploring') return;
+          if (st.sceneId === 'postshow') return;
+          st.stepScene(1);
+        }, 5200 + k * 2100),
+      );
+    }
+
+    const arm = setTimeout(() => {
+      window.addEventListener('pointerdown', claim, { once: true });
+      window.addEventListener('keydown', claim, { once: true });
+      window.addEventListener('wheel', claim, { once: true, passive: true });
+      window.addEventListener('touchstart', claim, { once: true, passive: true });
+    }, 450);
+    timers.push(arm);
+
+    return () => {
+      timers.forEach(clearTimeout);
+      window.removeEventListener('pointerdown', claim);
+      window.removeEventListener('keydown', claim);
+      window.removeEventListener('wheel', claim);
+      window.removeEventListener('touchstart', claim);
+    };
+  }, [phase, reduced, owned]);
+
   const [depthByTime, setDepthByTime] = useState(false);
   useEffect(() => {
     if (phase !== 'exploring') return;
@@ -676,7 +746,21 @@ export function FirstSceneStage() {
               <PrototypeDisclosure compact className="hidden pt-1 sm:block" />
               </div>
 
-              <div className="order-1 flex shrink-0 flex-col items-center gap-3 self-center sm:order-2 sm:self-end short:gap-2">
+              <div className="relative order-1 flex shrink-0 flex-col items-center gap-3 self-center sm:order-2 sm:self-end short:gap-2">
+                <AnimatePresence>
+                  {demoHint && !owned && (
+                    <motion.p
+                      key="your-turn"
+                      initial={{ opacity: 0, y: 6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, transition: { duration: 0.25 } }}
+                      transition={{ duration: 0.5 }}
+                      className="pointer-events-none absolute -top-9 left-1/2 -translate-x-1/2 whitespace-nowrap font-hand text-[1.3rem] text-tungsten"
+                    >
+                      &larr; your turn &rarr;
+                    </motion.p>
+                  )}
+                </AnimatePresence>
                 {depth && (
                   <motion.div
                     initial={{ opacity: 0, y: 6 }}
