@@ -146,7 +146,18 @@
 }
 
 @layer utilities {
-  .u-stack-grain {
+  /*
+   * The grain's ::after needs its host to be a containing block, so the
+   * utility supplies `position: relative` — but only when the host has not
+   * chosen a position of its own. The unguarded version emitted after
+   * Tailwind's utilities and silently rewrote every `absolute` and `fixed`
+   * it was combined with: the intro's full-bleed film backdrop became an
+   * in-flow flex item letterboxed across the top of the opening frame,
+   * which is how the homepage shipped with a hard seam through its first
+   * second. The :not() guard matches nothing Tailwind positions, so there
+   * is no longer an order for the two declarations to fight over.
+   */
+  .u-stack-grain:not(.absolute):not(.fixed):not(.sticky) {
     position: relative;
   }
 

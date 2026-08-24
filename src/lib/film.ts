@@ -120,6 +120,10 @@ export const MASTER = {
   poster: '/film/exports/poster.webp',
   teaser: '/film/exports/first-scene-teaser.mp4',
   hero: '/film/exports/hero.mp4',
+  /** The hero's exact first frame — the poster, so paint and playback are continuous. */
+  heroFirst: '/film/exports/hero-first.webp',
+  /** The hero's final frame — the still that stands in when the video can't play. */
+  heroHold: '/film/exports/hero-hold.webp',
   /** Sum of the trim map in scripts/build-film.mjs. */
   duration: 54,
 };

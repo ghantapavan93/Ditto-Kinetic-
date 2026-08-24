@@ -35,6 +35,13 @@ export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () =
   const [beat, setBeat] = useState<'text' | 'people'>('text');
   const reduced = useReducedMotion();
 
+  /*
+   * If the film can't arrive, the words stand alone on ink. A broken video
+   * element degrades to its poster at best and a black box at worst; either
+   * way the one thing the opening must never show is a partial backdrop.
+   */
+  const [filmLost, setFilmLost] = useState(false);
+
   useEffect(() => {
     const t = setTimeout(() => setBeat('people'), 1900);
     return () => clearTimeout(t);
@@ -54,21 +61,28 @@ export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () =
 
   return (
     <motion.div
-      className="pointer-events-none absolute inset-0 z-overlay flex flex-col justify-between px-gutter py-[clamp(1.25rem,4vh,2.5rem)]"
+      className="pointer-events-none absolute inset-0 isolate z-overlay flex flex-col justify-between px-gutter py-[clamp(1.25rem,4vh,2.5rem)] bg-ink"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0, filter: 'blur(8px)' }}
       transition={{ duration: DUR.settle, ease: EASE.settle }}
     >
       {/*
-        The world behind the words.
+        The film opens the site, playing, in focus.
 
-        Ditto's own join flow opens on a photograph — a campus lawn shot soft,
-        grainy and blue, with the interface floating in front of it. Ours
-        opened on flat black, which read as an editorial site clearing its
-        throat rather than an evening starting. One heavily blurred blue-hour
-        frame under the intro moves the first five seconds into their world;
-        it leaves with the curtain, and the stage underneath stays the stage.
+        This used to be hero.mp4 under blur(18px) — footage as atmosphere. In
+        practice eighteen pixels of blur turned the opening frame into a brown
+        smear that read as a failed image load, and it threw away the one shot
+        that performs the whole thesis: the same two people standing still
+        while a diner becomes a library becomes a courtyard becomes a theatre
+        street. So the shot now plays sharp, once, and holds its final frame —
+        the lit marquee — behind the names. The scrim below, not a blur, is
+        what keeps the type readable.
+
+        `isolate` matters: the backdrop sits at -z-10, and without a stacking
+        context on the curtain it slid *behind* the WebGL stage, letting the
+        room plate and the desk objects poke through the opening frame with a
+        hard seam where the two met.
       */}
       <div
         aria-hidden
@@ -76,38 +90,44 @@ export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () =
         style={{ '--grain-opacity': '0.14' } as React.CSSProperties}
       >
         {/*
-          The film breathes behind the words: eight muted seconds of the
-          world-turn, played once, blurred into atmosphere. Reduced motion
-          keeps the still photograph — a self-playing backdrop is exactly
-          what that preference declined — and the poster covers the frame
-          until the video can.
+          Reduced motion keeps the held frame as a photograph — a self-playing
+          backdrop is exactly what that preference declined. A failed video
+          removes itself entirely: the words stand alone on ink, which is an
+          opening, where a broken frame is only a defect.
         */}
-        {reduced ? (
+        {filmLost ? null : reduced ? (
           /* eslint-disable-next-line @next/next/no-img-element -- decorative pre-sized webp */
           <img
-            src="/photos/twilight-stroll.webp"
+            src={MASTER.heroHold}
             alt=""
             decoding="async"
-            className="h-full w-full scale-110 object-cover"
-            style={{ filter: 'blur(22px) saturate(0.8) brightness(0.5)' }}
+            onError={() => setFilmLost(true)}
+            className="h-full w-full object-cover"
+            style={{ filter: 'saturate(0.95) brightness(0.85)' }}
           />
         ) : (
           <video
-            src="/film/exports/hero.mp4"
-            poster="/photos/twilight-stroll.webp"
+            src={MASTER.hero}
+            poster={MASTER.heroFirst}
             autoPlay
             muted
             playsInline
-            preload="metadata"
-            className="h-full w-full scale-110 object-cover"
-            style={{ filter: 'blur(18px) saturate(0.8) brightness(0.5)' }}
+            preload="auto"
+            onError={() => setFilmLost(true)}
+            className="h-full w-full object-cover"
+            style={{ filter: 'saturate(0.95) brightness(0.85)' }}
           />
         )}
+        {/*
+          The scrim earns the typography its contrast without costing the
+          footage its focus: heavy where the names live, near-clear through
+          the middle where the people are, a breath at the top for the label.
+        */}
         <div
           className="absolute inset-0"
           style={{
             background:
-              'radial-gradient(110% 80% at 50% 100%, rgba(11,9,7,0.9), rgba(11,9,7,0.45) 55%, rgba(11,9,7,0.62))',
+              'radial-gradient(120% 95% at 50% 42%, transparent 52%, rgba(11,9,7,0.5)), linear-gradient(to top, rgba(11,9,7,0.92) 0%, rgba(11,9,7,0.45) 32%, rgba(11,9,7,0.08) 58%, rgba(11,9,7,0.3) 100%)',
           }}
         />
       </div>

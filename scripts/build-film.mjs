@@ -68,8 +68,16 @@ const TEASER = [
 ];
 ff(concatArgs(TEASER, join(OUT, 'first-scene-teaser.mp4'), { crf: 24 }));
 
-console.log('hero (muted, lighter)…');
-ff(concatArgs([{ file: EDIT[3].file, in: 0.0, out: 8.0 }], join(OUT, 'hero.mp4'), { audio: false, crf: 26, width: 1280, height: 720 }));
+console.log('hero (muted, full-bleed)…');
+// Full 1080p: this plays sharp behind the homepage intro now, not blurred,
+// so it renders at viewport width and 720p would visibly soften.
+ff(concatArgs([{ file: EDIT[3].file, in: 0.0, out: 8.0 }], join(OUT, 'hero.mp4'), { audio: false, crf: 27 }));
+
+// The intro's companion stills: the exact first frame doubles as the video
+// poster (paint and playback stay continuous), and the final marquee frame
+// stands in for the whole video under reduced motion.
+ff(['-i', join(OUT, 'hero.mp4'), '-frames:v', '1', '-vf', 'scale=1600:-1', join(OUT, 'hero-first.webp')]);
+ff(['-sseof', '-0.15', '-i', join(OUT, 'hero.mp4'), '-frames:v', '1', '-vf', 'scale=1600:-1', '-q:v', '68', join(OUT, 'hero-hold.webp')]);
 
 console.log('posters…');
 const POSTER_AT = { wednesday: 2.0, open: 2.5, coffee: 3.0, turn: 4.0, thisone: 2.0, break: 4.0, collapse: 4.0, phonesdown: 6.0, ditto: 4.0 };
