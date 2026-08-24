@@ -61,20 +61,33 @@ export function FilmStage() {
     track('film_viewed');
   }, []);
 
-  /* The clock: one rAF, one rounded state write per tenth of a second. */
+  /*
+   * The clock: one rAF for tenth-of-a-second precision in the foreground,
+   * with the element's own timeupdate as co-driver — rAF freezes in a
+   * throttled or backgrounded tab while timeupdate keeps firing a few times
+   * a second, so the typography can never silently detach from the film.
+   */
   useEffect(() => {
     if (phase !== 'cinema') return;
+    const v = video.current;
+    const write = () => {
+      if (!video.current) return;
+      const now = round1(video.current.currentTime);
+      setT((prev) => (prev === now ? prev : now));
+    };
     let raf = 0;
     const tick = () => {
-      const v = video.current;
-      if (v) {
-        const now = round1(v.currentTime);
-        setT((prev) => (prev === now ? prev : now));
-      }
+      write();
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
+    v?.addEventListener('timeupdate', write);
+    v?.addEventListener('seeked', write);
+    return () => {
+      cancelAnimationFrame(raf);
+      v?.removeEventListener('timeupdate', write);
+      v?.removeEventListener('seeked', write);
+    };
   }, [phase]);
 
   const play = useCallback(() => {
