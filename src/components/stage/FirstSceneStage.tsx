@@ -256,6 +256,33 @@ export function FirstSceneStage() {
   /** The reason fragment currently under the pointer, if any. */
   const [reading, setReading] = useState<Fragment | null>(null);
 
+  /*
+   * Feel / explain. Hold the spacebar and the chrome recedes — labels,
+   * evidence and controls fade to almost nothing, leaving photography, light
+   * and two people. Release and the machinery returns. One page, two
+   * readings: the designer's and the engineer's. Deliberately unlabeled; the
+   * people who find it will feel found.
+   */
+  const [feel, setFeel] = useState(false);
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      if (e.key !== ' ' || e.repeat) return;
+      const tag = (e.target as HTMLElement | null)?.tagName;
+      if (tag === 'TEXTAREA' || tag === 'INPUT' || tag === 'BUTTON') return;
+      e.preventDefault();
+      setFeel(true);
+    };
+    const up = (e: KeyboardEvent) => {
+      if (e.key === ' ') setFeel(false);
+    };
+    window.addEventListener('keydown', down);
+    window.addEventListener('keyup', up);
+    return () => {
+      window.removeEventListener('keydown', down);
+      window.removeEventListener('keyup', up);
+    };
+  }, []);
+
   /** Handoff progress 0..1, driving the WebGL layer's exit. */
   const [exiting, setExiting] = useState(0);
   const exitRef = useRef(0);
@@ -430,7 +457,7 @@ export function FirstSceneStage() {
               only way "what could happen" is worth looking at. The controls
               stay lit so you can always get back out.
             */
-            animate={{ opacity: cloudOpen ? 0.16 : 1 }}
+            animate={{ opacity: feel ? 0.04 : cloudOpen ? 0.16 : 1 }}
             exit={{ opacity: 0, filter: 'blur(6px)' }}
             transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
             className="pointer-events-none absolute inset-0 z-artifacts flex flex-col justify-between px-gutter py-[clamp(1rem,3.5vh,2rem)] pb-[clamp(2.4rem,6vh,2.6rem)] sm:pb-[clamp(1rem,3.5vh,2rem)]"
@@ -835,9 +862,9 @@ export function FirstSceneStage() {
       </AnimatePresence>
 
       <PairSwap />
-      {showStageChrome && <JourneyRail phase={phase} />}
+      {showStageChrome && !feel && <JourneyRail phase={phase} />}
       <NarrativeCursor />
-      {showStageChrome && <TooMuch />}
+      {showStageChrome && !feel && <TooMuch />}
 
       {/*
         The disclosure persists on the stage, quietly, and at every width.

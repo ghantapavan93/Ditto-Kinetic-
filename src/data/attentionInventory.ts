@@ -53,7 +53,7 @@ export const SURFACES: Surface[] = [
   {
     "path": "/held-back",
     "kind": "argument",
-    "words": 250,
+    "words": 258,
     "decisions": 4
   },
   {
@@ -89,7 +89,7 @@ export const SURFACES: Surface[] = [
   {
     "path": "/mutual",
     "kind": "argument",
-    "words": 343,
+    "words": 347,
     "decisions": 4
   },
   {
@@ -113,13 +113,13 @@ export const SURFACES: Surface[] = [
   {
     "path": "/zoom",
     "kind": "argument",
-    "words": 153,
+    "words": 158,
     "decisions": 3
   },
   {
     "path": "/gravity",
     "kind": "argument",
-    "words": 134,
+    "words": 141,
     "decisions": 11
   },
   {
@@ -137,7 +137,7 @@ export const SURFACES: Surface[] = [
   {
     "path": "/attention",
     "kind": "argument",
-    "words": 167,
+    "words": 173,
     "decisions": 5
   },
   {
@@ -161,7 +161,7 @@ export const SURFACES: Surface[] = [
   {
     "path": "/possibility",
     "kind": "product",
-    "words": 180,
+    "words": 189,
     "decisions": 7
   },
   {

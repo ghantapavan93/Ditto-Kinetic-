@@ -8,6 +8,7 @@ import { BookOpen, Coffee, Image as ImageIcon, Receipt, Route, Ticket } from 'lu
 import { SCRUB_DAYS, openWorld, type Candidate } from '@/lib/intersections';
 import { DevelopingFrame } from '@/components/after/DevelopingFrame';
 import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
+import { ColdOpen } from '@/components/shared/ColdOpen';
 import { NarrativeCursor } from '@/components/shared/NarrativeCursor';
 import { useReducedMotion } from '@/components/shared/useReducedMotion';
 import { track } from '@/lib/analytics';
@@ -158,6 +159,7 @@ export function PossibilityStage() {
         }}
       />
 
+      <ColdOpen k="possibility" lines={[]} voice="sometimes the opening should appear before the person does." />
       <NarrativeCursor />
 
       <div className="relative flex h-full flex-col justify-between px-gutter py-[clamp(1.25rem,4vh,2.25rem)]">

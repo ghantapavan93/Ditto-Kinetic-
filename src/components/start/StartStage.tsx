@@ -10,6 +10,20 @@ import { track } from '@/lib/analytics';
 import { SnapshotRow } from '@/components/shared/SnapshotRow';
 
 /**
+ * The portal photograph for each lane — the one frame that says what that
+ * door feels like before a word is read. Keys are WAYS_IN keys, so a lane
+ * added without a photograph fails loudly here rather than silently shipping
+ * a grey card.
+ */
+const PORTAL_PHOTO: Record<string, string> = {
+  'ninety-seconds': '/photos/neon-downtown.webp',
+  'is-it-real': '/photos/print-rain-window.webp',
+  'the-model': '/photos/print-closeup-01.webp',
+  'the-feeling': '/photos/moment-02.webp',
+  'the-whole-thing': '/photos/moment-01.webp',
+};
+
+/**
  * The front door.
  *
  * Built because a review of this project pointed out something obvious in
@@ -90,8 +104,17 @@ export function StartStage() {
                 href={way.route}
                 data-cursor="open it"
                 onClick={() => track('start_lane_taken', { lane: way.key, route: way.route })}
-                className="group grid gap-2 sm:grid-cols-[1fr_auto] sm:items-baseline"
+                className="group grid gap-3 sm:grid-cols-[auto_1fr_auto] sm:items-center"
               >
+                {/* the portal: what this door feels like, before a word is read */}
+                {/* eslint-disable-next-line @next/next/no-img-element -- pre-sized local webp */}
+                <img
+                  src={PORTAL_PHOTO[way.key] ?? '/photos/moment-01.webp'}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  className="hidden h-[4.6rem] w-[7rem] rounded-[2px] object-cover opacity-60 saturate-[0.6] transition-all duration-settle group-hover:opacity-95 group-hover:saturate-90 sm:block"
+                />
                 <div>
                   <p className="font-voice text-[clamp(1.05rem,2.4vw,1.3rem)] leading-snug text-paper/85 transition-colors group-hover:text-paper">
                     {way.forWhom}

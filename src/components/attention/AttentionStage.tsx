@@ -12,6 +12,7 @@ import {
   saidAs,
 } from '@/lib/attention';
 import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
+import { ColdOpen } from '@/components/shared/ColdOpen';
 import { NarrativeCursor } from '@/components/shared/NarrativeCursor';
 import { track } from '@/lib/analytics';
 import { SnapshotRow } from '@/components/shared/SnapshotRow';
@@ -61,6 +62,7 @@ export function AttentionStage() {
         }}
       />
 
+      <ColdOpen k="attention" lines={['this page costs', 'you time too.']} />
       <NarrativeCursor />
 
       <div className="relative mx-auto flex min-h-screen max-w-[66rem] flex-col gap-10 px-gutter py-[clamp(1.5rem,5vh,3rem)]">

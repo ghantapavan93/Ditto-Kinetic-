@@ -13,6 +13,7 @@ import {
   readMutuality,
 } from '@/lib/mutuality';
 import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
+import { ColdOpen } from '@/components/shared/ColdOpen';
 import { NarrativeCursor } from '@/components/shared/NarrativeCursor';
 import { useReducedMotion } from '@/components/shared/useReducedMotion';
 import { track } from '@/lib/analytics';
@@ -56,6 +57,7 @@ export function MutualStage() {
 
   return (
     <div className="u-stack-grain relative min-h-screen overflow-hidden bg-ink">
+      <ColdOpen k="mutual" lines={['one match.', 'two experiences.']} />
       <NarrativeCursor />
 
       <div className="relative mx-auto flex min-h-screen max-w-[64rem] flex-col gap-8 px-gutter py-[clamp(1.5rem,5vh,3rem)]">

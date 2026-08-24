@@ -10,6 +10,7 @@ import { PAIRS } from '@/data/pairs';
 import { heldBack } from '@/lib/restraint';
 import { SEND_THRESHOLD, sendDecision } from '@/lib/rankScenes';
 import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
+import { ColdOpen } from '@/components/shared/ColdOpen';
 import { NarrativeCursor } from '@/components/shared/NarrativeCursor';
 import { HeldBackCard } from './HeldBackCard';
 import { track } from '@/lib/analytics';
@@ -69,6 +70,7 @@ export function RestraintStage() {
         }}
       />
 
+      <ColdOpen k="held-back" lines={['these were good.']} voice="none were good enough tonight." />
       <NarrativeCursor />
 
       <div className="relative mx-auto flex min-h-screen max-w-[68rem] flex-col gap-10 px-gutter py-[clamp(1.5rem,5vh,3rem)]">

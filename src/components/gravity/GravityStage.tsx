@@ -13,6 +13,7 @@ import {
   type Disruption,
 } from '@/lib/rankScenes';
 import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
+import { ColdOpen } from '@/components/shared/ColdOpen';
 import { NarrativeCursor } from '@/components/shared/NarrativeCursor';
 import { useReducedMotion } from '@/components/shared/useReducedMotion';
 import { track } from '@/lib/analytics';
@@ -85,6 +86,7 @@ export function GravityStage() {
         }}
       />
 
+      <ColdOpen k="gravity" lines={['stop scoring', 'the people.']} voice="move the conditions." />
       <NarrativeCursor />
 
       <div className="relative flex h-full flex-col justify-between px-gutter py-[clamp(1.25rem,4vh,2.25rem)]">

@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { PAIRS } from '@/data/pairs';
 import { WAYPOINTS, distanceToPair, levelAt } from '@/lib/zoom';
 import { spring, type Spring } from '@/lib/motion';
+import { ColdOpen } from '@/components/shared/ColdOpen';
 import { PrototypeDisclosure } from '@/components/shared/PrototypeDisclosure';
 import { useReducedMotion } from '@/components/shared/useReducedMotion';
 import { track } from '@/lib/analytics';
@@ -130,6 +131,7 @@ export function ZoomStage() {
 
   return (
     <div className="relative h-screen overflow-hidden bg-ink">
+      <ColdOpen k="zoom" lines={['how far does one', 'introduction go?']} />
       <div className="fixed inset-0">
         <ZoomScene t={t} reducedMotion={reduced} />
       </div>
