@@ -1,7 +1,8 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
 import { SURFACES } from '@/data/attentionInventory';
@@ -14,6 +15,8 @@ import { track } from '@/lib/analytics';
 const SurfaceField = dynamic(() => import('./SurfaceField').then((m) => m.SurfaceField), {
   ssr: false,
 });
+
+const noopSubscribe = () => () => {};
 
 /** What each surface is for, in one line. */
 const SAYS: Record<string, string> = {
@@ -44,6 +47,7 @@ const SAYS: Record<string, string> = {
   '/possibility': 'an opening appears in your life before a person does',
   '/moments': 'the world the argument is for, cut like a film',
   '/vision': 'tonight to 2030, one camera, their own direction taken seriously',
+  '/reel': 'every surface, about a second each',
 };
 
 /**
@@ -65,6 +69,29 @@ export function AllStage() {
   const a = useMemo(() => audit(SURFACES), []);
   const [active, setActive] = useState(0);
   const reduced = useReducedMotion();
+  const router = useRouter();
+
+  /*
+   * The visitor's own trail, from the same sessionStorage set the
+   * everything-chip counts. Objects already seen glow warmer on the desk —
+   * spatial memory, not a scoreboard. Read behind a hydration-safe isClient
+   * gate (server snapshot false), because this page IS server-rendered and a
+   * lazy sessionStorage read produced markup the server could not have made.
+   */
+  const isClient = useSyncExternalStore(
+    noopSubscribe,
+    () => true,
+    () => false,
+  );
+  const visited = useMemo<ReadonlySet<string>>(() => {
+    if (!isClient) return new Set<string>();
+    try {
+      const raw = window.sessionStorage.getItem('fs-seen');
+      return new Set<string>(raw ? (JSON.parse(raw) as string[]) : []);
+    } catch {
+      return new Set<string>();
+    }
+  }, [isClient]);
 
   const current = a.costs[active];
 
@@ -78,7 +105,9 @@ export function AllStage() {
         <SurfaceField
           costs={a.costs}
           active={active}
+          visited={visited}
           onPick={setActive}
+          onOpen={(path) => router.push(path)}
           reducedMotion={reduced}
         />
       </div>
@@ -120,6 +149,9 @@ export function AllStage() {
               <p className="font-mono text-[0.58rem] uppercase tracking-[0.26em] text-paper/55">
                 {current.surface.kind === 'product' ? 'could ship' : 'an argument'} ·{' '}
                 {saidAs(current.seconds)}
+                {visited.has(current.surface.path) && (
+                  <span className="text-mint"> · seen</span>
+                )}
               </p>
 
               {/* The page had no heading at all, so a screen reader got no
@@ -165,9 +197,10 @@ export function AllStage() {
           </div>
 
           <p className="max-w-[54ch] font-editorial text-[0.72rem] lowercase leading-relaxed tracking-wide text-paper/55">
-            size is what a surface costs to read. mint is close to the centre and could ship;
-            amber orbits and exists to argue. this page is on the map too, and is measured the
-            same way — see{' '}
+            every surface is the object its own page is about — a dial, an envelope, a door —
+            and its size is still what it costs to read. mint is close in and could ship; amber
+            orbits and argues. what you&rsquo;ve already seen glows warmer. click an object once
+            to look, again to walk in. this page is on the map too, measured the same way — see{' '}
             <Link href="/attention" className="inline-block py-1 underline underline-offset-4 hover:text-paper/60">
               the bill
             </Link>
