@@ -76,7 +76,7 @@ export const EDIT = [
 
 const ff = (args) => execFileSync(ffmpegPath, ['-y', '-v', 'error', ...args], { stdio: 'inherit' });
 
-function concatArgs(cuts, outFile, { width = 1920, height = 1080, audio = true, crf = 20 } = {}) {
+function concatArgs(cuts, outFile, { width = 1920, height = 1080, audio = true, crf = 20, preset = 'medium' } = {}) {
   const inputs = cuts.flatMap((c) => ['-i', join(SRC, c.file)]);
   const parts = cuts
     .map((c, i) => {
@@ -91,7 +91,7 @@ function concatArgs(cuts, outFile, { width = 1920, height = 1080, audio = true, 
     ...inputs,
     '-filter_complex', parts + concat,
     '-map', '[v]', ...(audio ? ['-map', '[a]'] : []),
-    '-c:v', 'libx264', '-preset', 'medium', '-crf', String(crf),
+    '-c:v', 'libx264', '-preset', preset, '-crf', String(crf),
     ...(audio ? ['-c:a', 'aac', '-b:a', '192k'] : ['-an']),
     '-movflags', '+faststart',
     outFile,
@@ -135,7 +135,11 @@ if (existsSync(join(SRC, 'Ditto_brand_sequence_storyboard_1080p_202608240400.mp4
       { file: EDIT[3].file, in: 0.0, out: 8.0 },
     ],
     join(OUT, 'intro.mp4'),
-    { crf: 26 },
+    // The opening is the first thing anyone sees; it gets the patient
+    // encode. CRF 22 at preset slow keeps the source's texture — the paper
+    // grain in the baked lettering, the tonal falloff on the campus walk —
+    // that the earlier CRF 26 visibly flattened.
+    { crf: 22, preset: 'slow' },
   ));
   ff(['-i', join(OUT, 'intro.mp4'), '-frames:v', '1', '-vf', 'scale=1600:-1', join(OUT, 'intro-first.webp')]);
 }
