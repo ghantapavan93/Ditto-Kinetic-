@@ -374,6 +374,30 @@ export const MM_COPY = {
   thread: {
     before: 'before the room, there was a decision.',
   },
+  friction: {
+    easy: 'easy to get to',
+    'a-little-far': 'a little far this week',
+    heavy: 'the journey outweighs the evening',
+  },
+  sources: {
+    explicit: 'you said',
+    observed: 'I noticed',
+    inferred: 'I’m inferring',
+    corrected: 'you corrected',
+    temporary: 'this expires',
+  },
+  selectedLine: 'wants this too · aligned intent · shares an hour · a first hour exists',
+  hearFootnote: 'the third one retires the reasoning itself — permanently, and never across a hard boundary',
+  evalsFootnote: 'the same suite runs in ci — these marks are computed here, now, from the real engine.',
+  dock: {
+    small: 'the product · small outside',
+    large: 'the system · large underneath',
+  },
+  fields: {
+    intersection: 'the viable intersection',
+    hers: 'her read',
+    theirs: 'their read',
+  },
   scenarios: {
     'free-thursday': 'the boundary moved — and the next one showed itself. one thing at a time, honestly.',
     'nyc-window': 'a second universe, active. it closes on its own when the window does.',

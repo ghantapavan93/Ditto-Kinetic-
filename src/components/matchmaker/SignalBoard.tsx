@@ -24,13 +24,7 @@ const FIRMNESS_TINT: Record<Firmness, string> = {
   unknown: 'border-paper/25 text-paper/62',
 };
 
-const SOURCE_VOICE: Record<Belief['source'], string> = {
-  explicit: 'you said',
-  observed: 'I noticed',
-  inferred: 'I’m inferring',
-  corrected: 'you corrected',
-  temporary: 'this expires',
-};
+const SOURCE_VOICE: Record<Belief['source'], string> = MM_COPY.sources;
 
 const NEXT_FIRMNESS: Record<Firmness, Firmness> = { hard: 'soft', soft: 'open', open: 'hard', unknown: 'unknown' };
 
@@ -70,10 +64,12 @@ export function SignalBoard({
             type="button"
             onClick={() => b.status === 'live' && onCorrect(b.key, NEXT_FIRMNESS[b.firmness])}
             disabled={b.status === 'retired'}
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            /* Cards arrive from the phone's side of the world — the reveal
+               reads as the model leaving the device, not a grid fading in. */
+            initial={{ opacity: 0, x: 70, y: -14, rotate: 3 }}
+            whileInView={{ opacity: 1, x: 0, y: 0, rotate: 0 }}
             viewport={{ once: true, margin: '-40px' }}
-            transition={{ delay: i * 0.05, duration: 0.45, ease: EASE.settle }}
+            transition={{ delay: i * 0.06, duration: 0.55, ease: EASE.settle }}
             data-cursor="correct it"
             className={`relative rounded-artifact border bg-paper/[0.02] px-3 py-2.5 text-left transition-colors ${
               b.status === 'retired' ? 'border-paper/10 opacity-45' : `${FIRMNESS_TINT[b.firmness].split(' ')[0]} hover:bg-paper/[0.05]`

@@ -223,6 +223,41 @@ export function MatchmakerStage() {
           )}
         </AnimatePresence>
 
+        {/* the docked phone: the product stays small while the system opens.
+            Decorative, fixed, wide screens only — the contrast §the whole
+            page argues, kept literally in view. */}
+        <AnimatePresence>
+          {act === 'system' && (
+            <motion.div
+              key="dock"
+              aria-hidden
+              initial={{ opacity: 0, x: 60, rotate: 8 }}
+              animate={{ opacity: 1, x: 0, rotate: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.9, ease: EASE.settle }}
+              className="pointer-events-none fixed right-8 top-24 z-overlay hidden 2xl:block"
+              style={{ perspective: 800 }}
+            >
+              <motion.div
+                animate={{ y: [0, -7, 0] }}
+                transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut' }}
+                style={{ transform: 'rotateY(-16deg) rotateZ(4deg)' }}
+                className="flex h-[290px] w-[146px] flex-col overflow-hidden rounded-[1.7rem] border-[6px] border-ink bg-ink-soft/60 shadow-lift backdrop-blur-sm"
+              >
+                <div className="mx-auto mt-2 h-[12px] w-[56px] rounded-full bg-ink" />
+                <div className="flex flex-1 flex-col items-start justify-center gap-2 px-3">
+                  <span className="w-fit rounded-[0.8rem] rounded-bl-sm bg-cobalt/80 px-2.5 py-1.5 font-editorial text-[0.6rem] text-paper-bright">
+                    {MM_COPY.bridge.found}
+                  </span>
+                  <span className="font-mono text-[0.46rem] uppercase tracking-[0.16em] text-paper/62">wed · 7:00 pm</span>
+                </div>
+              </motion.div>
+              <p className="mt-3 text-right font-mono text-[0.5rem] uppercase tracking-[0.2em] text-paper/55">{MM_COPY.dock.small}</p>
+              <p className="text-right font-mono text-[0.5rem] uppercase tracking-[0.2em] text-mint/80">{MM_COPY.dock.large}</p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* the system — everything the phone was hiding */}
         <div ref={systemRef}>
           <AnimatePresence>

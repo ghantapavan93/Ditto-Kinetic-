@@ -155,7 +155,7 @@ export function XRay({ run, onClose }: { run: RunResult; onClose: () => void }) 
             </div>
           ))}
           <p className="mt-1 font-editorial text-[0.68rem] lowercase text-paper/55">
-            the same suite runs in ci — these marks are computed here, now, from the real engine.
+            {MM_COPY.evalsFootnote}
           </p>
         </div>
       )}

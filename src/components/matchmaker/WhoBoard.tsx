@@ -46,11 +46,48 @@ function DirectionBars({ e }: { e: CandidateEval }) {
   );
 }
 
-const FRICTION_SAYS: Record<CandidateEval['frictionRead'], string> = {
-  easy: 'easy to get to',
-  'a-little-far': 'a little far this week',
-  heavy: 'the journey outweighs the evening',
-};
+const FRICTION_SAYS = MM_COPY.friction;
+
+/**
+ * The two fields, drawn. Two people are two preference landscapes; what a
+ * single score erases, two translucent fields and their lens restore. The
+ * lens is sized by the harmonic join — a one-sided pair renders as two
+ * big circles with almost nothing between them, which is the argument.
+ */
+function FieldOverlap({ e, seeker }: { e: CandidateEval; seeker: string }) {
+  const spread = 46 - e.reciprocal * 26; // weaker join → circles further apart
+  const cxA = 50 - spread / 2;
+  const cxB = 50 + spread / 2;
+  const rA = 16 + e.aToB * 14;
+  const rB = 16 + e.bToA * 14;
+  return (
+    <div className="relative mx-auto mt-5 max-w-[30rem]">
+      <svg viewBox="0 0 100 56" className="w-full" role="img" aria-label={`${seeker} and ${e.candidate.name}: two reads, one intersection`}>
+        <defs>
+          <clipPath id="mm-lens">
+            <circle cx={cxA} cy={28} r={rA} />
+          </clipPath>
+        </defs>
+        <circle cx={cxA} cy={28} r={rA} fill="#FFB865" fillOpacity="0.13" stroke="#FFB865" strokeOpacity="0.55" strokeWidth="0.4" />
+        <circle cx={cxB} cy={28} r={rB} fill="#6E7BFF" fillOpacity="0.13" stroke="#6E7BFF" strokeOpacity="0.55" strokeWidth="0.4" />
+        <g clipPath="url(#mm-lens)">
+          <circle cx={cxB} cy={28} r={rB} fill="#5FE3AE" fillOpacity="0.28" stroke="#5FE3AE" strokeOpacity="0.9" strokeWidth="0.5" />
+        </g>
+      </svg>
+      <div className="pointer-events-none absolute inset-0 flex items-center justify-between px-2">
+        <div className="text-left">
+          <p className="font-editorial text-[0.8rem] text-paper">{seeker}</p>
+          <p className="font-mono text-[0.55rem] uppercase tracking-[0.14em] text-tungsten">{e.aToB.toFixed(2)}</p>
+        </div>
+        <p className="mt-16 font-mono text-[0.52rem] uppercase tracking-[0.18em] text-mint">{MM_COPY.fields.intersection} · {e.reciprocal.toFixed(2)}</p>
+        <div className="text-right">
+          <p className="font-editorial text-[0.8rem] text-paper">{e.candidate.name}</p>
+          <p className="font-mono text-[0.55rem] uppercase tracking-[0.14em] text-cobalt-glow">{e.bToA.toFixed(2)}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export function WhoBoard({
   run,
@@ -112,6 +149,8 @@ export function WhoBoard({
           {MM_COPY.who.mutualLine}
         </p>
 
+        {ranked[0] && <FieldOverlap e={ranked[0]} seeker={run.model.name} />}
+
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <label htmlFor="mm-bias" className="font-mono text-micro uppercase text-paper/62">{MM_COPY.who.clone}</label>
           <input
@@ -134,7 +173,13 @@ export function WhoBoard({
             <motion.div
               key={e.candidate.id}
               layout
-              transition={{ duration: 0.5, ease: EASE.settle }}
+              /*
+                The snap. When the field reorders, the incoming winner lands
+                with the site's snap ease rather than drifting into place —
+                a decision should feel like one.
+              */
+              animate={i === 0 && !e.exitedAt ? { scale: [1, 1.045, 1] } : { scale: 1 }}
+              transition={{ layout: { duration: 0.5, ease: EASE.settle }, scale: { duration: 0.45, ease: EASE.snap } }}
               className={`rounded-artifact border px-4 py-3.5 ${
                 i === 0 && !e.exitedAt ? 'border-mint/35 bg-mint/[0.05]' : 'border-paper/12 bg-paper/[0.02]'
               }`}

@@ -95,7 +95,7 @@ export function Verdict({
                   <div>
                     <p className="font-display text-[1.4rem] uppercase leading-none text-paper">{selected.candidate.name}</p>
                     <p className="mt-1.5 font-editorial text-[0.78rem] lowercase text-paper/70">
-                      wants this too · aligned intent · shares an hour · {selected.frictionRead === 'easy' ? 'easy to get to' : 'worth the trip'} · a first hour exists
+                      {MM_COPY.selectedLine}
                     </p>
                   </div>
                 </div>
@@ -112,7 +112,7 @@ export function Verdict({
                   <button onClick={() => onHearMeOut('not-now')} className="min-h-[44px] border border-paper/25 px-4 py-2 font-mono text-micro uppercase text-paper/80 transition-colors hover:border-paper/60">{MM_COPY.whyNot.notNow}</button>
                   <button onClick={() => onHearMeOut('never')} className="min-h-[44px] border border-acid/50 px-4 py-2 font-mono text-micro uppercase text-acid transition-colors hover:bg-acid hover:text-ink">{MM_COPY.whyNot.never}</button>
                 </div>
-                <p className="mt-2 font-editorial text-[0.68rem] lowercase text-paper/55">the third one retires the reasoning itself — permanently, and never across a hard boundary</p>
+                <p className="mt-2 font-editorial text-[0.68rem] lowercase text-paper/55">{MM_COPY.hearFootnote}</p>
               </div>
             )}
           </motion.div>
