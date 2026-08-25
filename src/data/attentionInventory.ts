@@ -23,8 +23,8 @@ export const SURFACES: Surface[] = [
   {
     "path": "/matchmaker",
     "kind": "product",
-    "words": 403,
-    "decisions": 45
+    "words": 430,
+    "decisions": 47
   },
   {
     "path": "/app",

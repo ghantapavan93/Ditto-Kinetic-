@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { EASE } from '@/lib/motion';
-import { MM_COPY, type AskableQuestion } from '@/data/matchmaking';
+import { MM_COPY } from '@/data/matchmaking';
 import type { CandidateEval, RunResult } from '@/lib/matchmaker';
 
 /**
@@ -91,18 +91,12 @@ function FieldOverlap({ e, seeker }: { e: CandidateEval; seeker: string }) {
 
 export function WhoBoard({
   run,
-  question,
-  answered,
-  onAnswer,
   bias,
   onBias,
   windowOpen,
   onToggleWindow,
 }: {
   run: RunResult;
-  question: { question: AskableQuestion; distinctWinners: number } | null;
-  answered: number | null;
-  onAnswer: (index: number) => void;
   bias: number;
   onBias: (value: number) => void;
   windowOpen: boolean;
@@ -113,36 +107,6 @@ export function WhoBoard({
 
   return (
     <div>
-      {/* the one question */}
-      {question && (
-        <div className="rounded-artifact border border-paper/12 bg-paper/[0.02] px-5 py-4">
-          <p className="font-editorial text-[0.72rem] lowercase text-paper/62">{MM_COPY.question.setup}</p>
-          <p className="mt-3 font-voice text-[clamp(1.15rem,2.6vw,1.5rem)] italic leading-snug text-paper">
-            {question.question.prompt}
-          </p>
-          <div className="mt-4 flex flex-wrap gap-2">
-            {question.question.options.map((o, i) => (
-              <button
-                key={o.label}
-                onClick={() => onAnswer(i)}
-                aria-pressed={answered === i}
-                className={`min-h-[44px] border px-4 py-2 font-mono text-micro uppercase transition-colors ${
-                  answered === i ? 'border-acid text-acid' : 'border-paper/25 text-paper/80 hover:border-paper/60 hover:text-paper'
-                }`}
-              >
-                {o.label}
-              </button>
-            ))}
-          </div>
-          {answered !== null && (
-            <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-3 font-display text-[1rem] uppercase text-mint">
-              {MM_COPY.question.done}
-            </motion.p>
-          )}
-          <p className="mt-2 font-editorial text-[0.68rem] lowercase text-paper/55">{MM_COPY.question.measured}</p>
-        </div>
-      )}
-
       {/* the field */}
       <div className="mt-8">
         <p className="max-w-[30ch] font-display text-[clamp(1.3rem,3.2vw,2rem)] uppercase leading-[0.95] text-paper">

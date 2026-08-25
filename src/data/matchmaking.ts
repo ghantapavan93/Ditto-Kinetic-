@@ -365,6 +365,8 @@ export const MM_COPY = {
     evals: 'evals',
     policy: 'confidence × consequence × reversibility',
     replayNote: 'change one signal, run again, diff the Wednesday.',
+    retire: 'retire the energy signal',
+    soften: 'correct smoking to soft',
   },
   after: {
     eyebrow: 'act eleven · after',
@@ -373,6 +375,43 @@ export const MM_COPY = {
   },
   thread: {
     before: 'before the room, there was a decision.',
+  },
+  actOne: 'act one · what you told me',
+  seekerLines: {
+    maya: 'buried week, new york soon',
+    priya: 'low-key week, daylight person',
+  },
+  surface: {
+    accumulate: 'twenty-four answers, held',
+    moreDataA: 'more data',
+    moreDataB: "isn't always",
+    moreDataC: 'more understanding.',
+    askA: 'ask the question',
+    askB: 'that changes the answer.',
+    oneLeft: 'one question could still change Wednesday.',
+    snap: 'SNAP.',
+    peek: 'the thinking behind this — pull the glass',
+  },
+  glass: {
+    surface: 'surface',
+    thinking: 'thinking',
+    proof: 'proof',
+    hint: 'D pulls the glass',
+  },
+  handoff: {
+    whoDone: 'who ✓',
+    how: 'HOW?',
+    contractTitle: 'INTRODUCTION / 042',
+    rows: [
+      ['PAIR', ''],
+      ['MUTUALITY', 'viable'],
+      ['INTENT', 'aligned'],
+      ['READINESS', 'current'],
+      ['AVAILABILITY', 'overlap'],
+      ['TRAVEL FRICTION', 'low'],
+      ['OPEN UNCERTAINTY', 'first-scene shape'],
+      ['NEXT', 'select conditions'],
+    ],
   },
   friction: {
     easy: 'easy to get to',

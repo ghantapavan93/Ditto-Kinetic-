@@ -110,14 +110,14 @@ export function XRay({ run, onClose }: { run: RunResult; onClose: () => void }) 
               aria-pressed={replayWith === 'retire-energy'}
               className={`min-h-[36px] border px-3 py-1.5 font-mono text-[0.6rem] uppercase ${replayWith === 'retire-energy' ? 'border-mint/60 text-mint' : 'border-paper/20 text-paper/70 hover:border-paper/45'}`}
             >
-              retire the energy signal
+              {MM_COPY.xray.retire}
             </button>
             <button
               onClick={() => setReplayWith('soften-smoking')}
               aria-pressed={replayWith === 'soften-smoking'}
               className={`min-h-[36px] border px-3 py-1.5 font-mono text-[0.6rem] uppercase ${replayWith === 'soften-smoking' ? 'border-mint/60 text-mint' : 'border-paper/20 text-paper/70 hover:border-paper/45'}`}
             >
-              correct smoking to soft
+              {MM_COPY.xray.soften}
             </button>
           </div>
           {replayRun && (

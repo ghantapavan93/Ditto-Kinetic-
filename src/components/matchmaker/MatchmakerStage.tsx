@@ -15,27 +15,34 @@ import {
 import { correctBelief, retireSignal, type Firmness, type PersonModel } from '@/lib/personModel';
 import { ASKABLE, CANDIDATES, MAYA_MODEL, MM_COPY, POOLS, PRIYA_MODEL, type CandidateProfile } from '@/data/matchmaking';
 import { PhoneReplay } from './PhoneReplay';
+import { SurfaceReveal } from './SurfaceReveal';
+import { HandoffSequence } from './HandoffSequence';
 import { SignalBoard } from './SignalBoard';
 import { WhoBoard } from './WhoBoard';
 import { Verdict } from './Verdict';
 import { XRay } from './XRay';
 
 /**
- * The matchmaker, as one story.
+ * The matchmaker, as three sheets of glass.
  *
- * Twelve acts compressed into one continuous surface: the reconstructed
- * onboarding in a phone, the compiled person model behind it, the one
- * question worth asking, the two-directional field, the holds and their
- * counterfactuals, the Wednesday verdict, and the bridge into FIRST SCENE
- * — the same six-room stage this site has always been, now with its
- * upstream question answered. Press D (or the button) and the phone's
- * machinery opens: run, trace, replay, evals. All of it computes from the
- * pure engine in `src/lib/matchmaker.ts`; nothing on this page is a
- * decorated number.
+ * SURFACE is the whole consumer story: the phone, twenty-four answers
+ * falling away, one question, SNAP, found someone, into the room. THINKING
+ * pulls the first sheet — the compiled beliefs, the two-directional field,
+ * the holds and their counterfactuals. PROOF pulls the second — trace,
+ * replay, evals. One gesture (D, or the glass control) moves between them,
+ * and everything below the surface computes from the same pure engine, so
+ * the simple outside and the inspectable underneath can never disagree.
+ *
+ * The handoff at the end is the page's thesis stated physically: WHO does
+ * not link to HOW — it emits an introduction, and the six rooms assemble
+ * around the surviving pair before the route changes.
  */
 
 const SEEKERS: Record<string, PersonModel> = { maya: MAYA_MODEL, priya: PRIYA_MODEL };
 const poolFor = (id: string): CandidateProfile[] => CANDIDATES.filter((c) => POOLS[id].includes(c.id));
+
+type GlassView = 'surface' | 'thinking' | 'proof';
+const GLASS_ORDER: GlassView[] = ['surface', 'thinking', 'proof'];
 
 export function MatchmakerStage() {
   const router = useRouter();
@@ -50,17 +57,16 @@ export function MatchmakerStage() {
   const [windowOpen, setWindowOpen] = useState(false);
   const [scenarioNote, setScenarioNote] = useState<string | null>(null);
   const [hearNote, setHearNote] = useState<string | null>(null);
-  const [xray, setXray] = useState(false);
+  const [view, setView] = useState<GlassView>('surface');
+  const [handingOff, setHandingOff] = useState(false);
   const systemRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     track('matchmaker_viewed');
   }, []);
 
-  /** The run — every board below derives from this one call. */
   const run: RunResult = useMemo(() => runMatchmaker(model, pool, week), [model, pool, week]);
 
-  /** The question, measured against the seeker's pristine model. */
   const question = useMemo(
     () => chooseQuestion(SEEKERS[seekerId], poolFor(seekerId), 1, ASKABLE[seekerId]),
     [seekerId],
@@ -98,8 +104,6 @@ export function MatchmakerStage() {
   };
 
   const onToggleWindow = () => {
-    // Stepping into the window is stepping into week 2 — the away weeks are
-    // real weeks, not a parallel switch, so the whole run moves with them.
     setWindowOpen((open) => {
       setWeek(open ? 1 : 2);
       return !open;
@@ -131,30 +135,35 @@ export function MatchmakerStage() {
     setTimeout(() => systemRef.current?.scrollIntoView({ behavior: 'smooth' }), 60);
   };
 
-  const bridge = () => {
+  /** The handoff: play the WHO → HOW sequence, then change routes. */
+  const openFirstScene = () => setHandingOff(true);
+  const completeHandoff = useCallback(() => {
     const target = run.decision.selected?.candidate.bridgesTo;
     track('matchmaker_bridged', { pair: target ?? 'none' });
     router.push(target ? `/?pair=${target}` : '/');
-  };
+  }, [run, router]);
 
-  /** D opens the machinery; Escape closes it. Buttons exist for touch. */
+  /** D pulls the glass: surface → thinking → proof → surface. */
+  const pullGlass = useCallback(() => {
+    setView((v) => {
+      const next = GLASS_ORDER[(GLASS_ORDER.indexOf(v) + 1) % GLASS_ORDER.length];
+      if (next === 'proof') track('matchmaker_xray_opened');
+      return next;
+    });
+  }, []);
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const tag = (e.target as HTMLElement | null)?.tagName;
       if (tag === 'INPUT' || tag === 'TEXTAREA') return;
-      if (e.key.toLowerCase() === 'd') {
-        setXray((v) => {
-          if (!v) track('matchmaker_xray_opened');
-          return !v;
-        });
-      }
-      if (e.key === 'Escape') setXray(false);
+      if (e.key.toLowerCase() === 'd') pullGlass();
+      if (e.key === 'Escape') setView('surface');
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, []);
+  }, [pullGlass]);
 
-  const selectedName = run.decision.selected?.candidate.name;
+  const selected = run.decision.selected;
 
   return (
     <div className="u-stack-grain relative min-h-screen bg-ink">
@@ -162,7 +171,6 @@ export function MatchmakerStage() {
       <NarrativeCursor />
 
       <div className="relative mx-auto flex min-h-screen max-w-[64rem] flex-col px-gutter py-[clamp(1.5rem,5vh,3rem)]">
-        {/* header */}
         <header className="flex items-baseline justify-between gap-4">
           <p className="font-mono text-[0.62rem] uppercase tracking-[0.3em] text-tungsten">{MM_COPY.cold.eyebrow}</p>
           <Link
@@ -173,6 +181,34 @@ export function MatchmakerStage() {
             first scene →
           </Link>
         </header>
+
+        {/* the glass control — three sheets, one gesture */}
+        {act === 'system' && (
+          <div className="sticky top-3 z-overlay mt-3 flex items-center gap-2 self-end">
+            {GLASS_ORDER.map((g, i) => (
+              <button
+                key={g}
+                onClick={() => setView(g)}
+                aria-pressed={view === g}
+                data-cursor="pull the glass"
+                className={`flex items-center gap-1.5 border px-2.5 py-1.5 font-mono text-[0.56rem] uppercase tracking-[0.16em] backdrop-blur-sm transition-all ${
+                  view === g
+                    ? 'border-mint/60 bg-ink/85 text-mint'
+                    : 'border-paper/20 bg-ink/70 text-paper/62 hover:border-paper/45'
+                }`}
+                style={{ transform: `translateY(${view === g ? 0 : i * 2}px)` }}
+              >
+                <span aria-hidden className="flex flex-col gap-[2px]">
+                  {GLASS_ORDER.slice(0, i + 1).map((_, j) => (
+                    <span key={j} className={`block h-[2px] w-3 rounded-full ${view === g ? 'bg-mint/80' : 'bg-paper/40'}`} />
+                  ))}
+                </span>
+                {MM_COPY.glass[g]}
+              </button>
+            ))}
+            <span className="font-mono text-[0.5rem] uppercase tracking-[0.14em] text-paper/55">{MM_COPY.glass.hint}</span>
+          </div>
+        )}
 
         {/* act zero — the direct opening */}
         <section className="flex min-h-[62vh] flex-col justify-center">
@@ -189,18 +225,10 @@ export function MatchmakerStage() {
               {MM_COPY.cold.replay}
             </button>
             <button
-              onClick={() => {
-                startPhone('skip');
-              }}
+              onClick={() => startPhone('skip')}
               className="min-h-[44px] border border-paper/25 px-5 py-2.5 font-mono text-micro uppercase text-paper/80 transition-colors hover:border-paper/60 hover:text-paper"
             >
               {MM_COPY.cold.skip}
-            </button>
-            <button
-              onClick={() => setXray(true)}
-              className="min-h-[44px] px-2 py-2 font-mono text-micro uppercase text-mint/80 underline-offset-4 transition-colors hover:text-mint hover:underline"
-            >
-              {MM_COPY.xray.open} · {MM_COPY.xray.hint}
             </button>
           </div>
           <p className="mt-6 max-w-[52ch] font-mono text-micro uppercase leading-relaxed text-paper/55">{MM_COPY.cold.disclosure}</p>
@@ -217,17 +245,15 @@ export function MatchmakerStage() {
               className="border-t border-paper/[0.09] py-10"
               style={{ perspective: 1200 }}
             >
-              <p className="mb-5 font-mono text-[0.56rem] uppercase tracking-[0.24em] text-paper/55">act one · what you told me</p>
+              <p className="mb-5 font-mono text-[0.56rem] uppercase tracking-[0.24em] text-paper/55">{MM_COPY.actOne}</p>
               <PhoneReplay mode={phoneMode} onDone={beginSystem} />
             </motion.section>
           )}
         </AnimatePresence>
 
-        {/* the docked phone: the product stays small while the system opens.
-            Decorative, fixed, wide screens only — the contrast §the whole
-            page argues, kept literally in view. */}
+        {/* the docked phone — small outside, large underneath */}
         <AnimatePresence>
-          {act === 'system' && (
+          {act === 'system' && view !== 'surface' && (
             <motion.div
               key="dock"
               aria-hidden
@@ -258,81 +284,78 @@ export function MatchmakerStage() {
           )}
         </AnimatePresence>
 
-        {/* the system — everything the phone was hiding */}
+        {/* the system */}
         <div ref={systemRef}>
           <AnimatePresence>
             {act === 'system' && (
               <motion.div key="system" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.7, ease: EASE.settle }}>
+                {/* SURFACE — the magic reveal, and nothing else */}
                 <section className="border-t border-paper/[0.09] py-10">
-                  <p className="mb-1 font-mono text-[0.56rem] uppercase tracking-[0.24em] text-paper/55">{MM_COPY.heard.eyebrow}</p>
-                  <p className="mb-6 font-editorial text-[0.8rem] lowercase text-paper/62">
-                    {model.name} · {seekerId === 'maya' ? 'buried week, new york soon' : 'low-key week, daylight person'}
-                  </p>
-                  <SignalBoard model={run.model} onCorrect={onCorrect} />
-                </section>
-
-                <section className="border-t border-paper/[0.09] py-10">
-                  <p className="mb-5 font-mono text-[0.56rem] uppercase tracking-[0.24em] text-paper/55">{MM_COPY.question.eyebrow}</p>
-                  <WhoBoard
-                    run={run}
-                    question={question}
-                    answered={answered}
-                    onAnswer={onAnswer}
-                    bias={model.similarityBias}
-                    onBias={(v) => setModel((m) => ({ ...m, similarityBias: v }))}
-                    windowOpen={windowOpen}
-                    onToggleWindow={onToggleWindow}
-                  />
-                </section>
-
-                <section className="border-t border-paper/[0.09] py-10">
-                  <p className="mb-5 font-mono text-[0.56rem] uppercase tracking-[0.24em] text-paper/55">{MM_COPY.whyNot.eyebrow}</p>
-                  <Verdict
-                    run={run}
-                    thinWeek={thinWeek}
-                    onToggleThinWeek={onToggleThinWeek}
-                    onScenario={onScenario}
-                    scenarioNote={scenarioNote}
-                    onHearMeOut={onHearMeOut}
-                  />
-                  {hearNote && (
-                    <p className="mt-3 border-l-2 border-paper/25 pl-3 font-editorial text-[0.8rem] lowercase text-paper/70">{hearNote}</p>
+                  <SurfaceReveal run={run} question={question} answered={answered} onAnswer={onAnswer} onOpen={openFirstScene} />
+                  {view === 'surface' && (
+                    <button
+                      onClick={() => setView('thinking')}
+                      className="mt-8 py-1.5 font-mono text-[0.6rem] uppercase tracking-[0.16em] text-mint/70 underline-offset-4 transition-colors hover:text-mint hover:underline"
+                    >
+                      {MM_COPY.surface.peek}
+                    </button>
                   )}
                 </section>
 
-                {/* the bridge */}
-                {!run.decision.abstained && selectedName && (
-                  <section className="border-t border-paper/[0.09] py-12">
-                    <motion.div initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, ease: EASE.settle }}>
-                      <p className="w-fit rounded-[1.2rem] rounded-bl-md bg-cobalt px-5 py-3 font-editorial text-lede font-medium text-paper-bright shadow-lift">
-                        {MM_COPY.bridge.found}
-                      </p>
-                      <p className="mt-6 font-display text-[clamp(2rem,6.5vw,4rem)] uppercase leading-[0.9] text-paper">
-                        {run.model.name} <span className="text-acid">×</span> {selectedName}
-                      </p>
-                      <p className="mt-5 font-editorial text-[0.8rem] lowercase text-paper/62">{MM_COPY.bridge.then}</p>
-                      <p className="mt-1 font-voice text-[clamp(1.3rem,3vw,1.9rem)] italic text-paper/85">{MM_COPY.bridge.ask}</p>
-                      <div className="mt-6 flex flex-wrap items-center gap-3">
-                        <button
-                          onClick={bridge}
-                          data-cursor="into the room"
-                          className="u-sheen min-h-[44px] border border-acid bg-acid px-5 py-2.5 font-mono text-[0.68rem] uppercase tracking-[0.18em] text-ink transition-colors hover:bg-transparent hover:text-acid"
-                        >
-                          {MM_COPY.bridge.cta}
-                        </button>
+                {/* THINKING — the sheets beneath */}
+                <AnimatePresence>
+                  {view !== 'surface' && (
+                    <motion.div
+                      key="thinking"
+                      initial={{ opacity: 0, y: 24 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 16 }}
+                      transition={{ duration: 0.55, ease: EASE.settle }}
+                    >
+                      <section className="border-t border-paper/[0.09] py-10">
+                        <p className="mb-1 font-mono text-[0.56rem] uppercase tracking-[0.24em] text-paper/55">{MM_COPY.heard.eyebrow}</p>
+                        <p className="mb-6 font-editorial text-[0.8rem] lowercase text-paper/62">
+                          {model.name} · {MM_COPY.seekerLines[seekerId]}
+                        </p>
+                        <SignalBoard model={run.model} onCorrect={onCorrect} />
+                      </section>
+
+                      <section className="border-t border-paper/[0.09] py-10">
+                        <p className="mb-5 font-mono text-[0.56rem] uppercase tracking-[0.24em] text-paper/55">{MM_COPY.who.eyebrow}</p>
+                        <WhoBoard
+                          run={run}
+                          bias={model.similarityBias}
+                          onBias={(v) => setModel((m) => ({ ...m, similarityBias: v }))}
+                          windowOpen={windowOpen}
+                          onToggleWindow={onToggleWindow}
+                        />
+                      </section>
+
+                      <section className="border-t border-paper/[0.09] py-10">
+                        <p className="mb-5 font-mono text-[0.56rem] uppercase tracking-[0.24em] text-paper/55">{MM_COPY.whyNot.eyebrow}</p>
+                        <Verdict
+                          run={run}
+                          thinWeek={thinWeek}
+                          onToggleThinWeek={onToggleThinWeek}
+                          onScenario={onScenario}
+                          scenarioNote={scenarioNote}
+                          onHearMeOut={onHearMeOut}
+                        />
+                        {hearNote && (
+                          <p className="mt-3 border-l-2 border-paper/25 pl-3 font-editorial text-[0.8rem] lowercase text-paper/70">{hearNote}</p>
+                        )}
                         {seekerId === 'maya' && (
                           <button
                             onClick={onSecondPerson}
-                            className="min-h-[44px] border border-paper/25 px-5 py-2.5 font-mono text-micro uppercase text-paper/80 transition-colors hover:border-paper/60 hover:text-paper"
+                            className="mt-6 min-h-[44px] border border-paper/25 px-5 py-2.5 font-mono text-micro uppercase text-paper/80 transition-colors hover:border-paper/60 hover:text-paper"
                           >
                             {MM_COPY.bridge.second}
                           </button>
                         )}
-                      </div>
-                      <p className="mt-4 max-w-[52ch] font-editorial text-[0.72rem] lowercase text-paper/55">{MM_COPY.bridge.carried}</p>
+                      </section>
                     </motion.div>
-                  </section>
-                )}
+                  )}
+                </AnimatePresence>
               </motion.div>
             )}
           </AnimatePresence>
@@ -350,7 +373,20 @@ export function MatchmakerStage() {
         </footer>
       </div>
 
-      <AnimatePresence>{xray && <XRay run={run} onClose={() => setXray(false)} />}</AnimatePresence>
+      {/* PROOF — the deepest sheet */}
+      <AnimatePresence>{view === 'proof' && <XRay run={run} onClose={() => setView('thinking')} />}</AnimatePresence>
+
+      {/* WHO → HOW */}
+      <AnimatePresence>
+        {handingOff && selected && (
+          <HandoffSequence
+            seeker={run.model.name}
+            selected={selected}
+            showContract={view !== 'surface'}
+            onComplete={completeHandoff}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

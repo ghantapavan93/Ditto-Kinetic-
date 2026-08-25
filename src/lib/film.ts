@@ -216,7 +216,9 @@ export const CUES: Cue[] = [
   // 03 — COFFEE
   { at: 7.5, until: 8.8, voice: 'human', text: 'right person.', enter: 'dissolve', pos: 'lower' },
   { at: 9.0, until: 10.9, voice: 'campaign', text: 'WRONG FIRST DATE.', enter: 'cut', size: 'lg', pos: 'lower' },
-  { at: 10.9, until: 12.0, voice: 'system', text: '01 / COFFEE', sub: 'too much conversational pressure', enter: 'cut', pos: 'lower' },
+  // 10.9 → 12.4: nothing. The awkward café breathes; the system only starts
+  // talking once the world actually starts moving. The card that used to sit
+  // here duplicated the 12.4 tick and cost the cut its confidence.
 
   // 04 — THE TURN (system ticks ride the transformation; text stays small)
   { at: 12.4, until: 13.7, voice: 'system', text: '01 / COFFEE', sub: 'too much pressure', enter: 'cut', pos: 'lower' },
