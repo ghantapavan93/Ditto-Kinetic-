@@ -402,7 +402,13 @@ export function FilmStage() {
                         onClick={() => router.push('/')}
                         className="u-sheen border border-acid bg-acid px-5 py-2.5 font-mono text-[0.68rem] uppercase tracking-[0.18em] text-ink transition-colors hover:bg-transparent hover:text-acid"
                       >
-                        play the system →
+                        see the scene →
+                      </button>
+                      <button
+                        onClick={() => router.push('/matchmaker')}
+                        className="border border-paper/25 px-5 py-2.5 font-mono text-[0.68rem] uppercase tracking-[0.18em] text-paper/80 hover:border-paper/60 hover:text-paper"
+                      >
+                        see who →
                       </button>
                       <a
                         href="#the-cut"

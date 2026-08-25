@@ -785,6 +785,14 @@ export function FirstSceneStage() {
                 >
                   start here
                 </Link>
+                {/* The layer beneath: the room answers HOW — this is WHO. */}
+                <Link
+                  href="/matchmaker"
+                  data-cursor="there was a decision"
+                  className="min-h-[44px] px-1 py-2 font-mono text-micro uppercase text-paper/62 underline-offset-4 transition-colors hover:text-paper hover:underline"
+                >
+                  before the room
+                </Link>
                 <button
                   onClick={() => setMenuOpen(true)}
                   data-cursor="see all of it"

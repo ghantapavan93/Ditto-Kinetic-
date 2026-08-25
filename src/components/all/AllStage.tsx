@@ -20,6 +20,7 @@ const noopSubscribe = () => () => {};
 
 /** What each surface is for, in one line. */
 const SAYS: Record<string, string> = {
+  '/matchmaker': 'who should meet? beliefs, one question, a refusable Wednesday',
   '/': 'same two people, six rooms, and the room is the variable nobody moves',
   '/compiler': 'one messy sentence in, one evening out',
   '/app': 'the whole engine in the shape it would ship in',

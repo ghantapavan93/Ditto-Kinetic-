@@ -56,6 +56,7 @@ export const GROUPS: Group[] = [
     title: 'how it decides',
     photo: '/photos/bookstore-reading.webp',
     entries: [
+      { href: '/matchmaker', label: 'the matchmaker', blurb: 'who should meet — beliefs, one question, a Wednesday that can refuse' },
       { href: '/compiler', label: 'say it in one sentence', blurb: 'one line about your life, compiled into a plan' },
       { href: '/mutual', label: 'both sides, separately', blurb: 'one score for two people is not neutral' },
       { href: '/profile', label: 'what it knows about you', blurb: 'the whole model, small enough to read' },

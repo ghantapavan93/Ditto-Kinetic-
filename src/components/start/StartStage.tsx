@@ -20,6 +20,7 @@ const PORTAL_PHOTO: Record<string, string> = {
   'is-it-real': '/photos/print-rain-window.webp',
   'the-model': '/photos/print-closeup-01.webp',
   'the-feeling': '/photos/moment-02.webp',
+  'who-decides': '/photos/print-hands-ticket.webp',
   'the-whole-thing': '/photos/moment-01.webp',
 };
 
@@ -66,7 +67,7 @@ export function StartStage() {
 
         <section className="max-w-[40rem]">
           <h1 className="font-display text-[clamp(2rem,6.4vw,4rem)] uppercase leading-[0.9] text-paper">
-            five ways in.
+            six ways in.
           </h1>
           <p className="mt-5 max-w-[46ch] font-voice text-[clamp(1.05rem,2.4vw,1.35rem)] leading-snug text-paper/70">
             a concept build for ditto, around one line: the right person
@@ -91,7 +92,7 @@ export function StartStage() {
         />
 
         {/* the lanes */}
-        <section aria-label="Five ways into this project" className="grid gap-0">
+        <section aria-label="Ways into this project" className="grid gap-0">
           {WAYS_IN.map((way, i) => (
             <motion.div
               key={way.key}

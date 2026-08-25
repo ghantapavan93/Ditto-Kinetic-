@@ -15,7 +15,7 @@ export type Proof = {
 };
 
 export const PROOF: Proof = {
-  claims: 38,
-  assertions: 1125,
-  routes: 29,
+  claims: 39,
+  assertions: 1153,
+  routes: 30,
 };

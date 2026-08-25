@@ -11,14 +11,20 @@ export const SURFACES: Surface[] = [
   {
     "path": "/",
     "kind": "argument",
-    "words": 493,
-    "decisions": 33
+    "words": 500,
+    "decisions": 34
   },
   {
     "path": "/compiler",
     "kind": "product",
     "words": 186,
     "decisions": 8
+  },
+  {
+    "path": "/matchmaker",
+    "kind": "product",
+    "words": 432,
+    "decisions": 45
   },
   {
     "path": "/app",
@@ -101,14 +107,14 @@ export const SURFACES: Surface[] = [
   {
     "path": "/start",
     "kind": "argument",
-    "words": 145,
+    "words": 144,
     "decisions": 5
   },
   {
     "path": "/film",
     "kind": "product",
-    "words": 186,
-    "decisions": 17
+    "words": 188,
+    "decisions": 19
   },
   {
     "path": "/reel",
@@ -149,7 +155,7 @@ export const SURFACES: Surface[] = [
   {
     "path": "/all",
     "kind": "argument",
-    "words": 449,
+    "words": 457,
     "decisions": 5
   },
   {

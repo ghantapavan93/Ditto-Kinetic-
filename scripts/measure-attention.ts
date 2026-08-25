@@ -56,6 +56,7 @@ export const SHARED_DIRS = ['three', 'shared', 'reasoning', 'feedback', 'handoff
 export const ROUTES: { path: string; dir: string; kind: 'argument' | 'product' }[] = [
   { path: '/', dir: 'components/stage', kind: 'argument' },
   { path: '/compiler', dir: 'components/compiler', kind: 'product' },
+  { path: '/matchmaker', dir: 'components/matchmaker', kind: 'product' },
   { path: '/app', dir: 'components/app', kind: 'product' },
   { path: '/wednesday', dir: 'components/drop', kind: 'product' },
   { path: '/after', dir: 'components/after', kind: 'product' },

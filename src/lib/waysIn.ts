@@ -65,6 +65,13 @@ export const WAYS_IN: WayIn[] = [
     doesNot: 'contain a single real person. every face is generated, and the reel says so.',
   },
   {
+    key: 'who-decides',
+    forWhom: 'you want the question before the room: who should meet at all',
+    route: '/matchmaker',
+    does: 'replays the observed onboarding, then opens the engine under it — beliefs with sources, one measured question, two-directional fit, and a Wednesday allowed to refuse.',
+    doesNot: 'claim any of it is how Ditto decides. the flow is observed; the engine under it is this concept’s, and every number is synthetic.',
+  },
+  {
     key: 'the-whole-thing',
     forWhom: 'you want the argument, all of it, in order',
     route: '/',

@@ -106,6 +106,9 @@ import { cardTarget } from '../src/components/three/cardTransform';
 import { FRAGMENT_MAX_WIDTH, FRAGMENT_SCALE, fragmentSlot } from '../src/lib/fragments';
 import { damp } from '../src/lib/motion';
 import { NO_CONDITIONS, SAFETY_FLOOR, SCORED_FIELDS, SEND_THRESHOLD, WEIGHTS, belowSafetyFloor, metricsFor, rankScenes, scoreScene, sendDecision, type Conditions, type Learned, weightsFor } from '../src/lib/rankScenes';
+import { EVAL_CASES, runAllEvals } from '../src/lib/matchmakerEvals';
+import { runMatchmaker } from '../src/lib/matchmaker';
+import { CANDIDATES, MAYA_MODEL, POOLS } from '../src/data/matchmaking';
 
 const HEADING8 = '\nClaim 8 — the lenses are a partition, not a cast:';
 const HEADING9 = '\nClaim 9 — the possibility cloud is uncertainty made physical:';
@@ -138,6 +141,7 @@ const HEADING35 = "\nClaim 35 \u2014 a plan is not a ranking:";
 const HEADING36 = "\nClaim 36 \u2014 one card, one evening; one ranking, one partition:";
 const HEADING37 = "\nClaim 37 — everything on this site can actually be read:";
 const HEADING38 = "\nClaim 38 \u2014 the guards look where they say they look:";
+const HEADING39 = '\nClaim 39 — the matchmaker keeps its promises, executably:';
 
 const HEADING7 = '\nClaim 7 — last week changes this week:';
 
@@ -2861,6 +2865,34 @@ console.log(HEADING38);
     `  ${componentDirs.length} component directories -- ${billedDirs.size} billed, ${SHARED_DIRS.length} declared shared`,
   );
   expect('no component directory is silently unbilled', unbilled.join(','), '');
+}
+
+
+/* ---- claim 39: the matchmaker keeps its promises, executably ---------- */
+
+console.log(HEADING39);
+{
+  /*
+   * The upstream layer runs the same eval suite its own X-ray surface runs
+   * in the browser — one list, two doors, no way to green one without the
+   * other. The aggregate is asserted case by case so a regression names
+   * itself, and the properties that carry the concept (one-sidedness
+   * cannot win, privacy cannot leak, thin weeks abstain, the whole run is
+   * reproducible) are asserted directly against the engine as well.
+   */
+  const mmResults = runAllEvals();
+  for (const { case_, result } of mmResults) {
+    expect(`eval · ${case_.title}`, result.pass, true);
+  }
+  console.log(`  ${mmResults.length} executable cases, all against the live engine`);
+
+  const mmPool = CANDIDATES.filter((c) => POOLS.maya.includes(c.id));
+  const mmA = runMatchmaker(MAYA_MODEL, mmPool, 1);
+  const mmB = runMatchmaker(MAYA_MODEL, mmPool, 1);
+  expect('the run is deterministic byte for byte', JSON.stringify(mmA) === JSON.stringify(mmB), true);
+  expect('a selected Wednesday clears the mutual bar with margin', (mmA.decision.selected?.reciprocal ?? 0) > 0.6, true);
+  expect('the counts the X-ray shows are the run’s own counts', mmA.decision.counts.pool, mmPool.length);
+  expect('the eval list is not empty by accident', EVAL_CASES.length >= 14, true);
 }
 
 
