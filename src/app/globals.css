@@ -173,6 +173,18 @@
   }
 
   /*
+   * Grain over live video drops the blend. `mix-blend-mode` forces the
+   * compositor to read the decoded frame back through the blend equation
+   * every frame, which pushes the video off the cheap hardware-overlay
+   * path — on integrated GPUs that alone can stutter a film the network
+   * delivered perfectly. Normal blending at lower opacity keeps the dust
+   * without taxing the decoder's lane.
+   */
+  .u-grain-flat::after {
+    mix-blend-mode: normal;
+  }
+
+  /*
    * A print develops when you look at it. Undeveloped: washed, soft, pale —
    * the state a photograph is in before the chemistry finishes. The observer
    * adds .is-developed the first time the print enters the viewport, and the

@@ -414,6 +414,7 @@ export function FirstSceneStage() {
           locked={locked}
           exiting={exiting}
           reducedMotion={reduced}
+          suspended={phase === 'intro'}
           timeShift={timeShift}
           intimacy={intimacy}
           swap={Math.max(swap, cloudOpen ? 0.5 : 0)}

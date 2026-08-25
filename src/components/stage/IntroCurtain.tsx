@@ -264,7 +264,7 @@ export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () =
   /* The film's paper-white frames would erase white micro type; the corner
      chrome that must survive every frame wears ink. */
   const chip =
-    'pointer-events-auto flex items-center gap-1.5 border border-paper/25 bg-ink/60 px-2.5 py-1.5 font-editorial text-[0.68rem] lowercase tracking-wide text-paper/85 backdrop-blur-sm transition-colors hover:border-paper/60 hover:text-paper';
+    'pointer-events-auto flex items-center gap-1.5 border border-paper/25 bg-ink/85 px-2.5 py-1.5 font-editorial text-[0.68rem] lowercase tracking-wide text-paper/85 transition-colors hover:border-paper/60 hover:text-paper';
 
   const showFullChrome = shownBeat !== 'film';
 
@@ -273,7 +273,14 @@ export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () =
       className="pointer-events-none absolute inset-0 isolate z-overlay flex flex-col justify-between bg-ink px-gutter py-[clamp(1.25rem,4vh,2.5rem)]"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      exit={{ opacity: 0, filter: 'blur(8px)' }}
+      /*
+        Opacity only on the way out. The old exit also animated blur(8px),
+        which filters the full 1080p surface — video included — for its
+        whole duration, right when the WebGL stage is waking up underneath.
+        On integrated GPUs that was a guaranteed hitch at the exact moment
+        the handoff should feel effortless.
+      */
+      exit={{ opacity: 0 }}
       transition={{ duration: DUR.settle, ease: EASE.settle }}
     >
       {/*
@@ -286,8 +293,8 @@ export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () =
       */}
       <div
         aria-hidden
-        className="u-stack-grain absolute inset-0 -z-10 overflow-hidden"
-        style={{ '--grain-opacity': '0.14' } as React.CSSProperties}
+        className="u-stack-grain u-grain-flat absolute inset-0 -z-10 overflow-hidden"
+        style={{ '--grain-opacity': '0.08' } as React.CSSProperties}
       >
         {filmLost || reduced ? null : (
           <video
@@ -500,10 +507,10 @@ export function IntroCurtain({ pair, onBegin }: { pair: MatchPair; onBegin: () =
         <motion.button
           type="button"
           data-intro-skip
-          className={`pointer-events-auto shrink-0 border px-2.5 py-1.5 font-mono text-label uppercase backdrop-blur-sm transition-colors ${
+          className={`pointer-events-auto shrink-0 border px-2.5 py-1.5 font-mono text-label uppercase transition-colors ${
             skipHot
-              ? 'border-acid bg-ink/80 text-acid'
-              : 'border-paper/20 bg-ink/60 text-paper/80 hover:border-paper/55 hover:text-paper'
+              ? 'border-acid bg-ink/90 text-acid'
+              : 'border-paper/20 bg-ink/85 text-paper/80 hover:border-paper/55 hover:text-paper'
           }`}
           initial={{ opacity: 0 }}
           animate={{ opacity: shownBeat === 'text' ? 0 : skipHot ? 1 : [0.45, 1, 0.45] }}

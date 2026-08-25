@@ -39,6 +39,13 @@ type StageProps = {
   swap?: number;
   /** 0 closed, 1 fanned into every version of the night. */
   cloud?: number;
+  /**
+   * True while the stage is fully hidden behind the opaque intro film. A
+   * render loop spinning behind 18 seconds of video is pure GPU theft from
+   * the decoder — on integrated graphics it is the difference between a
+   * film that flows and one that reads as "buffering" with a full buffer.
+   */
+  suspended?: boolean;
 };
 
 /**
@@ -218,6 +225,22 @@ export function SpatialStage(props: StageProps & { onFragment?: (f: Fragment | n
   const [failed, setFailed] = useState(false);
 
   /*
+   * The warm-up window. With `suspended` honoured from the first frame the
+   * scene would never render during the intro, and the price — shader
+   * compilation, texture upload — would come due at the exact moment the
+   * curtain lifts. Instead the loop runs for the first ~1.5s (the film's
+   * near-black phone-glow open, where decode load is at its lightest),
+   * everything compiles behind the opaque frame, and only then does the
+   * stage go quiet until it is actually on show.
+   */
+  const [warmed, setWarmed] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setWarmed(true), 1500);
+    return () => clearTimeout(t);
+  }, []);
+  const frameloop = props.suspended && warmed ? 'never' : 'always';
+
+  /*
    * Whether WebGL exists at all, read without an effect.
    *
    * The previous fix listened for `webglcontextlost`, which is the right event
@@ -317,9 +340,11 @@ export function SpatialStage(props: StageProps & { onFragment?: (f: Fragment | n
         };
         canvas.addEventListener('webglcontextlost', onLost);
       }}
-      // Frameloop stays 'always' — the idle drift and settling motion are part
-      // of how a weak scene communicates that it has not resolved.
-      frameloop="always"
+      // 'always' whenever the stage is visible — the idle drift and settling
+      // motion are part of how a weak scene communicates that it has not
+      // resolved. 'never' only while it is hidden behind the intro film,
+      // after the warm-up has compiled everything (see above).
+      frameloop={frameloop}
     >
       <Suspense fallback={null}>
         <StageContents {...props} onFragment={props.onFragment ?? (() => {})} />
