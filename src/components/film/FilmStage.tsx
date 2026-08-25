@@ -184,7 +184,14 @@ export function FilmStage() {
   const marks = coarse ? SCHOOLS.slice(0, SCHOOLS_MOBILE_COUNT) : SCHOOLS;
 
   return (
-    <div className="u-stack-grain bg-ink text-paper">
+    /*
+     * u-grain-flat: the page's grain must not blend over a playing master —
+     * mix-blend-mode reads every decoded frame back through the compositor
+     * and keeps the film off the hardware-overlay path, which is the same
+     * per-frame tax that made the homepage opening stutter on integrated
+     * GPUs. Flat grain keeps the texture; the decoder keeps its lane.
+     */
+    <div className="u-stack-grain u-grain-flat bg-ink text-paper" style={{ '--grain-opacity': '0.08' } as React.CSSProperties}>
       {/* ============ THE FILM ============ */}
       <section className="relative h-[100svh] overflow-hidden" aria-label="The film">
         <video
@@ -660,7 +667,12 @@ function CutStrip({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0, transition: { duration: 0.25 } }}
-            className="fixed inset-0 z-disclosure grid place-items-center bg-ink/92 p-4 backdrop-blur-sm"
+            /*
+              Solid ink, no backdrop blur: the blur re-filtered the page
+              behind the lightbox on every frame WHILE the shot played —
+              the one moment this overlay exists for.
+            */
+            className="fixed inset-0 z-disclosure grid place-items-center bg-ink/95 p-4"
             onClick={() => setOpen(false)}
             role="dialog"
             aria-label={shot.title}
