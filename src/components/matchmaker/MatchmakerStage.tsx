@@ -13,7 +13,7 @@ import {
   applyScenario, chooseQuestion, runMatchmaker, withAnswer, type RunResult, type Scenario,
 } from '@/lib/matchmaker';
 import { correctBelief, retireSignal, type Firmness, type PersonModel } from '@/lib/personModel';
-import { ASKABLE, CANDIDATES, MAYA_MODEL, MM_COPY, POOLS, PRIYA_MODEL, type CandidateProfile } from '@/data/matchmaking';
+import { ASKABLE, CANDIDATES, MAYA_MODEL, MM_COPY, POOLS, PRIYA_MODEL, SEEKER_PHOTOS, type CandidateProfile } from '@/data/matchmaking';
 import { PhoneReplay } from './PhoneReplay';
 import { SurfaceReveal } from './SurfaceReveal';
 import { HandoffSequence } from './HandoffSequence';
@@ -178,7 +178,7 @@ export function MatchmakerStage() {
             data-cursor="back to the stage"
             className="py-1.5 font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
-            first scene →
+            {MM_COPY.navStage}
           </Link>
         </header>
 
@@ -275,7 +275,7 @@ export function MatchmakerStage() {
                   <span className="w-fit rounded-[0.8rem] rounded-bl-sm bg-cobalt/80 px-2.5 py-1.5 font-editorial text-[0.6rem] text-paper-bright">
                     {MM_COPY.bridge.found}
                   </span>
-                  <span className="font-mono text-[0.46rem] uppercase tracking-[0.16em] text-paper/62">wed · 7:00 pm</span>
+                  <span className="font-mono text-[0.46rem] uppercase tracking-[0.16em] text-paper/62">{MM_COPY.dock.clock}</span>
                 </div>
               </motion.div>
               <p className="mt-3 text-right font-mono text-[0.5rem] uppercase tracking-[0.2em] text-paper/55">{MM_COPY.dock.small}</p>
@@ -291,7 +291,7 @@ export function MatchmakerStage() {
               <motion.div key="system" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.7, ease: EASE.settle }}>
                 {/* SURFACE — the magic reveal, and nothing else */}
                 <section className="border-t border-paper/[0.09] py-10">
-                  <SurfaceReveal run={run} question={question} answered={answered} onAnswer={onAnswer} onOpen={openFirstScene} />
+                  <SurfaceReveal key={seekerId} run={run} question={question} answered={answered} onAnswer={onAnswer} onOpen={openFirstScene} />
                   {view === 'surface' && (
                     <button
                       onClick={() => setView('thinking')}
@@ -367,7 +367,7 @@ export function MatchmakerStage() {
             data-cursor="roll it"
             className="py-1.5 font-editorial text-[0.7rem] lowercase tracking-wide text-paper/55 underline-offset-4 transition-colors hover:text-paper hover:underline"
           >
-            the film →
+            {MM_COPY.navFilm}
           </Link>
           <PrototypeDisclosure className="text-right" />
         </footer>
@@ -381,6 +381,7 @@ export function MatchmakerStage() {
         {handingOff && selected && (
           <HandoffSequence
             seeker={run.model.name}
+            seekerPhoto={SEEKER_PHOTOS[seekerId]}
             selected={selected}
             showContract={view !== 'surface'}
             onComplete={completeHandoff}

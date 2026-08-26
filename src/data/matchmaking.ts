@@ -269,6 +269,12 @@ export const CANDIDATES: CandidateProfile[] = [
   },
 ];
 
+/** The print each seeker carries into the handoff. */
+export const SEEKER_PHOTOS: Record<string, string> = {
+  maya: '/photos/print-selfie-01.webp',
+  priya: '/photos/print-closeup-02.webp',
+};
+
 /** Which candidates each seeker's run draws from. */
 export const POOLS: Record<string, string[]> = {
   maya: ['jonah', 'kai', 'dean', 'leah', 'marcus', 'rosa', 'inez'],
@@ -365,6 +371,8 @@ export const MM_COPY = {
     evals: 'evals',
     policy: 'confidence × consequence × reversibility',
     replayNote: 'change one signal, run again, diff the Wednesday.',
+    runRows: ['seeker', 'candidates', 'eligible', 'mutual frontier', 'share an hour', 'low friction', 'scene viable'],
+    action: 'action',
     retire: 'retire the energy signal',
     soften: 'correct smoking to soft',
   },
@@ -376,6 +384,8 @@ export const MM_COPY = {
   thread: {
     before: 'before the room, there was a decision.',
   },
+  navStage: 'first scene →',
+  navFilm: 'the film →',
   actOne: 'act one · what you told me',
   seekerLines: {
     maya: 'buried week, new york soon',
@@ -429,6 +439,7 @@ export const MM_COPY = {
   hearFootnote: 'the third one retires the reasoning itself — permanently, and never across a hard boundary',
   evalsFootnote: 'the same suite runs in ci — these marks are computed here, now, from the real engine.',
   dock: {
+    clock: 'wed · 7:00 pm',
     small: 'the product · small outside',
     large: 'the system · large underneath',
   },

@@ -144,8 +144,18 @@ export function SurfaceReveal({
               </div>
             )}
 
+            {/* a thinner week can pull the floor out from under the surface
+                (the toggle lives one glass down) — the refusal shows here
+                too, rather than leaving an empty strip. */}
+            {(beat === 'snap' || beat === 'found') && !winner && (
+              <div className="mt-6 border-l-2 border-acid pl-4">
+                <p className="font-display text-[1.4rem] uppercase leading-[0.95] text-paper">{MM_COPY.wednesday.abstainA}</p>
+                <p className="mt-2 max-w-[34ch] font-voice text-[0.98rem] italic text-paper/80">{MM_COPY.wednesday.abstainB}</p>
+              </div>
+            )}
+
             {/* the field, physically moved */}
-            {(beat === 'snap' || beat === 'found') && (
+            {(beat === 'snap' || beat === 'found') && winner && (
               <div className="mt-6">
                 <div className="grid max-w-[26rem] gap-2">
                   {ranked.map((e, i) => (

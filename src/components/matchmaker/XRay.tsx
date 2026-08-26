@@ -71,15 +71,14 @@ export function XRay({ run, onClose }: { run: RunResult; onClose: () => void }) 
 
       {tab === 'run' && (
         <div className="mt-4 font-mono text-[0.66rem] uppercase leading-relaxed tracking-[0.1em] text-paper/80">
-          <p>seeker · {run.model.name} · week {run.week}</p>
-          <p className="mt-1">candidates · {counts.pool}</p>
-          <p>eligible · {counts.eligible}</p>
-          <p>mutual frontier · {counts.mutual}</p>
-          <p>share an hour · {counts.scheduled}</p>
-          <p>low friction · {counts.lowFriction}</p>
-          <p>scene viable · {counts.sceneViable}</p>
+          {[
+            `${run.model.name} · week ${run.week}`,
+            counts.pool, counts.eligible, counts.mutual, counts.scheduled, counts.lowFriction, counts.sceneViable,
+          ].map((v, i) => (
+            <p key={MM_COPY.xray.runRows[i]}>{MM_COPY.xray.runRows[i]} · {v}</p>
+          ))}
           <p className="mt-1 text-mint">
-            action · {run.decision.abstained ? 'abstain' : `select ${run.decision.selected?.candidate.name}`}
+            {MM_COPY.xray.action} · {run.decision.abstained ? 'abstain' : `select ${run.decision.selected?.candidate.name}`}
           </p>
           <p className="mt-3 border-t border-paper/10 pt-3 normal-case tracking-normal text-paper/70">
             <span className="uppercase tracking-[0.14em] text-paper/55">{MM_COPY.xray.policy}</span>

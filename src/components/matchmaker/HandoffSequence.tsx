@@ -22,11 +22,13 @@ import type { CandidateEval } from '@/lib/matchmaker';
  */
 export function HandoffSequence({
   seeker,
+  seekerPhoto,
   selected,
   showContract,
   onComplete,
 }: {
   seeker: string;
+  seekerPhoto: string;
   selected: CandidateEval;
   showContract: boolean;
   onComplete: () => void;
@@ -70,7 +72,7 @@ export function HandoffSequence({
           className="u-paper absolute rounded-artifact p-1.5 pb-4"
         >
           {/* eslint-disable-next-line @next/next/no-img-element -- decorative pre-sized webp */}
-          <img src="/photos/print-selfie-01.webp" alt="" className="h-24 w-20 object-cover" />
+          <img src={seekerPhoto} alt="" className="h-24 w-20 object-cover" />
         </motion.div>
         <motion.div
           initial={{ x: 150, rotate: 7, opacity: 0 }}
